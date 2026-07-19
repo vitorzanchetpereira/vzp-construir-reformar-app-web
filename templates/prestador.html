@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% from "_macros.html" import estrelas %}
+{% block titulo %}{{ p['nome'] }}{% endblock %}
+{% block conteudo %}
+
+<a class="voltar" href="{{ url_for('prestadores', categoria=p['categoria_slug']) }}">← {{ p['categoria_nome'] }}</a>
+
+<section class="perfil">
+  <div class="perfil-head">
+    <span class="perfil-icone">{{ p['categoria_icone'] }}</span>
+    <div>
+      <h1 class="perfil-nome">
+        {{ p['nome'] }}
+        {% if p['verificado'] %}<span class="selo">✔ Verificado</span>{% endif %}
+      </h1>
+      <p class="perfil-cat">{{ p['categoria_nome'] }} · {{ p['cidade'] }}</p>
+      <div class="perfil-nota">
+        {{ estrelas(p['media']) }}
+        <span>{{ p['media'] }} · {{ p['n_avaliacoes'] }} avaliação(ões)</span>
+      </div>
+    </div>
+  </div>
+
+  {% if p['descricao'] %}<p class="perfil-desc">{{ p['descricao'] }}</p>{% endif %}
+
+  <div class="perfil-contato">
+    {% if p['whatsapp'] %}
+      <a class="btn btn-zap" href="https://wa.me/{{ p['whatsapp'] }}" target="_blank" rel="noopener">
+        💬 Chamar no WhatsApp
+      </a>
+    {% endif %}
+    {% if p['telefone'] %}<span class="contato-tel">📞 {{ p['telefone'] }}</span>{% endif %}
+  </div>
+</section>
+
+<section class="avaliacoes">
+  <h2 class="secao-titulo">Avaliações</h2>
+  {% if avaliacoes %}
+    {% for a in avaliacoes %}
+      <div class="avaliacao">
+        <div class="avaliacao-head">
+          <strong>{{ a['autor'] }}</strong>
+          {{ estrelas(a['nota']) }}
+        </div>
+        {% if a['comentario'] %}<p>{{ a['comentario'] }}</p>{% endif %}
+        <span class="avaliacao-data">{{ a['criado_em']|data }}</span>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="vazio-inline">Ainda sem avaliações. Seja o primeiro a avaliar.</p>
+  {% endif %}
+</section>
+
+<section class="form-box">
+  <h2 class="secao-titulo">Deixe sua avaliação</h2>
+  <p class="sub" style="margin-top:-8px">As avaliações passam por moderação da equipe VZP antes de aparecer.</p>
+  <form action="{{ url_for('avaliar', pid=p['id']) }}" method="post" class="form">
+    <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+    <div class="campo">
+      <label for="autor">Seu nome</label>
+      <input type="text" id="autor" name="autor" required>
+    </div>
+    <div class="campo">
+      <label for="nota">Nota</label>
+      <select id="nota" name="nota" required>
+        <option value="5">★★★★★ — Excelente</option>
+        <option value="4">★★★★ — Muito bom</option>
+        <option value="3">★★★ — Regular</option>
+        <option value="2">★★ — Ruim</option>
+        <option value="1">★ — Péssimo</option>
+      </select>
+    </div>
+    <div class="campo">
+      <label for="comentario">Comentário (opcional)</label>
+      <textarea id="comentario" name="comentario" rows="3"></textarea>
+    </div>
+    <button class="btn btn-primary" type="submit">Enviar avaliação</button>
+  </form>
+</section>
+
+{% endblock %}

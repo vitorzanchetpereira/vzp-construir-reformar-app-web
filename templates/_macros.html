@@ -1,0 +1,24 @@
+{% macro estrelas(media) %}
+  {% set cheias = (media | float) | round(0, 'floor') | int %}
+  <span class="estrelas" title="{{ media }} de 5">
+    {%- for i in range(5) -%}
+      {%- if i < cheias -%}★{%- else -%}<span class="vazia">★</span>{%- endif -%}
+    {%- endfor -%}
+  </span>
+{% endmacro %}
+
+{% macro card(p) %}
+  <a class="card" href="{{ url_for('prestador', pid=p['id']) }}">
+    <div class="card-topo">
+      <span class="card-icone">{{ p['categoria_icone'] }}</span>
+      {% if p['verificado'] %}<span class="selo" title="Prestador verificado">✔ Verificado</span>{% endif %}
+    </div>
+    <h3 class="card-nome">{{ p['nome'] }}</h3>
+    <p class="card-cat">{{ p['categoria_nome'] }} · {{ p['cidade'] }}</p>
+    <p class="card-desc">{{ (p['descricao'] or '')[:90] }}{% if (p['descricao'] or '')|length > 90 %}…{% endif %}</p>
+    <div class="card-rodape">
+      {{ estrelas(p['media']) }}
+      <span class="card-nota">{{ p['media'] }} ({{ p['n_avaliacoes'] }})</span>
+    </div>
+  </a>
+{% endmacro %}

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Hub da Construção{% endblock %} · Sorriso/MT</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="topo">
+  <div class="container topo-inner">
+    <a class="marca" href="{{ url_for('index') }}">
+      <span class="marca-icone">🏗️</span>
+      <span class="marca-txt">Hub da Construção<small>Sorriso/MT</small></span>
+    </a>
+    <nav class="nav">
+      <a href="{{ url_for('prestadores') }}">Prestadores</a>
+      <a href="{{ url_for('sobre') }}">Como funciona</a>
+      {% if usuario %}
+        {% if usuario['papel'] == 'admin' %}
+          <a href="{{ url_for('admin_painel') }}">Painel admin</a>
+        {% else %}
+          <a href="{{ url_for('painel') }}">Meu painel</a>
+        {% endif %}
+        <a href="{{ url_for('sair') }}">Sair</a>
+      {% else %}
+        <a href="{{ url_for('entrar') }}">Entrar</a>
+        <a class="btn btn-primary" href="{{ url_for('cadastro') }}">Cadastrar meu negócio</a>
+      {% endif %}
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  {% with mensagens = get_flashed_messages(with_categories=true) %}
+    {% for categoria, msg in mensagens %}
+      <div class="flash flash-{{ categoria }}">{{ msg }}</div>
+    {% endfor %}
+  {% endwith %}
+  {% block conteudo %}{% endblock %}
+</main>
+
+<footer class="rodape">
+  <div class="container">
+    <p><strong>Hub da Construção</strong> — piloto Sorriso/MT · uma iniciativa VZP Engenharia / Base Empreendimentos</p>
+    <p class="mini">MVP — diretório da oferta com avaliações moderadas. Fechamento de negócio ainda ocorre direto entre as partes.</p>
+  </div>
+</footer>
+</body>
+</html>

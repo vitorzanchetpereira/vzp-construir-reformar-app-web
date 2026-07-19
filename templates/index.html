@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% from "_macros.html" import card, estrelas %}
+{% block conteudo %}
+
+<section class="hero">
+  <h1>Encontre quem faz sua obra acontecer</h1>
+  <p class="hero-sub">O diretório de prestadores e fornecedores da construção em <strong>Sorriso/MT</strong>.
+     Busque, compare avaliações e fale direto com o profissional.</p>
+  <form class="busca" action="{{ url_for('prestadores') }}" method="get">
+    <input type="text" name="q" placeholder="O que você precisa? Ex.: eletricista, terraplenagem, materiais…">
+    <button class="btn btn-primary" type="submit">Buscar</button>
+  </form>
+  <p class="hero-stats">{{ total }} prestadores já cadastrados</p>
+</section>
+
+<section>
+  <h2 class="secao-titulo">Categorias</h2>
+  <div class="grid-cats">
+    {% for c in categorias %}
+      <a class="cat-chip" href="{{ url_for('prestadores', categoria=c['slug']) }}">
+        <span class="cat-icone">{{ c['icone'] }}</span>
+        <span>{{ c['nome'] }}</span>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+
+<section>
+  <div class="secao-head">
+    <h2 class="secao-titulo">Em destaque</h2>
+    <a class="link" href="{{ url_for('prestadores') }}">Ver todos →</a>
+  </div>
+  <div class="grid-cards">
+    {% for p in destaques %}{{ card(p) }}{% endfor %}
+  </div>
+</section>
+
+<section class="cta">
+  <div>
+    <h2>É prestador ou fornecedor?</h2>
+    <p>Cadastre seu negócio de graça e comece a receber contatos. Assine para virar <strong>Verificado</strong> e aparecer no topo.</p>
+  </div>
+  <a class="btn btn-primary btn-lg" href="{{ url_for('cadastro') }}">Cadastrar meu negócio</a>
+</section>
+
+{% endblock %}

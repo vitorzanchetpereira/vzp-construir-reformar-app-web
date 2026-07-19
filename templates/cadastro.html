@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block titulo %}Cadastrar meu negócio{% endblock %}
+{% block conteudo %}
+
+<section class="form-box estreito">
+  <h1 class="pagina-titulo">Cadastre seu negócio</h1>
+  <p class="sub">Grátis para entrar no diretório. Você cria uma conta para gerenciar seu perfil e,
+     quando quiser, pode assinar para virar <strong>Verificado</strong> e aparecer no topo.</p>
+
+  <form action="{{ url_for('cadastro') }}" method="post" class="form">
+    <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+    <div class="campo">
+      <label for="nome">Nome do negócio / profissional *</label>
+      <input type="text" id="nome" name="nome" value="{{ form.get('nome','') }}" required>
+    </div>
+    <div class="campo">
+      <label for="categoria_id">Categoria *</label>
+      <select id="categoria_id" name="categoria_id" required>
+        <option value="">Selecione…</option>
+        {% for c in todas_categorias %}
+          <option value="{{ c['id'] }}" {% if form.get('categoria_id')|string == c['id']|string %}selected{% endif %}>
+            {{ c['icone'] }} {{ c['nome'] }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="campo">
+      <label for="cidade">Cidade</label>
+      <input type="text" id="cidade" name="cidade" value="{{ form.get('cidade','Sorriso/MT') }}">
+    </div>
+    <div class="grid-2">
+      <div class="campo">
+        <label for="telefone">Telefone</label>
+        <input type="text" id="telefone" name="telefone" value="{{ form.get('telefone','') }}" placeholder="(66) 3544-0000">
+      </div>
+      <div class="campo">
+        <label for="whatsapp">WhatsApp (só números, com DDD)</label>
+        <input type="text" id="whatsapp" name="whatsapp" value="{{ form.get('whatsapp','') }}" placeholder="5566990000000">
+      </div>
+    </div>
+    <div class="campo">
+      <label for="descricao">Descrição dos serviços</label>
+      <textarea id="descricao" name="descricao" rows="4" placeholder="Conte o que você faz, sua especialidade e área de atendimento.">{{ form.get('descricao','') }}</textarea>
+    </div>
+
+    <hr class="divisor">
+    <p class="sub" style="margin:0 0 4px"><strong>Dados de acesso</strong> — para você entrar e gerenciar o perfil.</p>
+    <div class="grid-2">
+      <div class="campo">
+        <label for="email">E-mail *</label>
+        <input type="email" id="email" name="email" value="{{ form.get('email','') }}" required>
+      </div>
+      <div class="campo">
+        <label for="senha">Senha * (mín. 6 caracteres)</label>
+        <input type="password" id="senha" name="senha" required>
+      </div>
+    </div>
+
+    <button class="btn btn-primary btn-lg" type="submit">Cadastrar gratuitamente</button>
+  </form>
+</section>
+
+{% endblock %}

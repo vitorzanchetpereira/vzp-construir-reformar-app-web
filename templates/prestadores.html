@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% from "_macros.html" import card %}
+{% block titulo %}Prestadores{% endblock %}
+{% block conteudo %}
+
+<section>
+  <h1 class="pagina-titulo">
+    {% if cat_atual %}{{ cat_atual['icone'] }} {{ cat_atual['nome'] }}
+    {% elif busca %}Resultados para “{{ busca }}”
+    {% else %}Todos os prestadores{% endif %}
+  </h1>
+
+  <form class="filtros" action="{{ url_for('prestadores') }}" method="get">
+    <input type="text" name="q" value="{{ busca }}" placeholder="Buscar por nome ou serviço…">
+    <select name="categoria">
+      <option value="">Todas as categorias</option>
+      {% for c in todas_categorias %}
+        <option value="{{ c['slug'] }}" {% if c['slug']==cat_slug %}selected{% endif %}>{{ c['nome'] }}</option>
+      {% endfor %}
+    </select>
+    <label class="check">
+      <input type="checkbox" name="verificado" value="1" {% if verificado=='1' %}checked{% endif %}>
+      Só verificados
+    </label>
+    <button class="btn btn-primary" type="submit">Filtrar</button>
+  </form>
+
+  {% if prestadores %}
+    <p class="contagem">{{ prestadores|length }} prestador(es) encontrado(s)</p>
+    <div class="grid-cards">
+      {% for p in prestadores %}{{ card(p) }}{% endfor %}
+    </div>
+  {% else %}
+    <div class="vazio">
+      <p>Nenhum prestador encontrado com esses filtros.</p>
+      <a class="btn" href="{{ url_for('prestadores') }}">Limpar filtros</a>
+    </div>
+  {% endif %}
+</section>
+
+{% endblock %}

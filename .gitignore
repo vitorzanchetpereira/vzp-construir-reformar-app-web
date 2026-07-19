@@ -1,0 +1,15 @@
+# Ambiente Python
+.venv/
+__pycache__/
+*.pyc
+
+# Banco local (não versionar dados)
+hub.db
+
+# Segredos locais
+.env
+
+# Sistema
+desktop.ini
+Thumbs.db
+.DS_Store

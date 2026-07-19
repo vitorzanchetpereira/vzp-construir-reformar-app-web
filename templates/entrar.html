@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block titulo %}Entrar{% endblock %}
+{% block conteudo %}
+
+<section class="form-box estreito">
+  <h1 class="pagina-titulo">Entrar</h1>
+  <p class="sub">Acesse para gerenciar seu perfil de prestador.</p>
+
+  <form action="{{ url_for('entrar') }}" method="post" class="form">
+    <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+    <div class="campo">
+      <label for="email">E-mail</label>
+      <input type="email" id="email" name="email" required autofocus>
+    </div>
+    <div class="campo">
+      <label for="senha">Senha</label>
+      <input type="password" id="senha" name="senha" required>
+    </div>
+    <button class="btn btn-primary btn-lg" type="submit">Entrar</button>
+  </form>
+
+  <p class="sub" style="margin-top:18px">
+    Ainda não tem cadastro? <a class="link" href="{{ url_for('cadastro') }}">Cadastre seu negócio</a>.
+  </p>
+</section>
+
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block titulo %}Editar perfil{% endblock %}
+{% block conteudo %}
+
+<a class="voltar" href="{{ url_for('painel') }}">← Voltar ao painel</a>
+
+<section class="form-box estreito">
+  <h1 class="pagina-titulo">Editar perfil</h1>
+
+  <form action="{{ url_for('painel_editar') }}" method="post" class="form">
+    <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+    <div class="campo">
+      <label for="nome">Nome do negócio / profissional *</label>
+      <input type="text" id="nome" name="nome" value="{{ p['nome'] }}" required>
+    </div>
+    <div class="campo">
+      <label for="categoria_id">Categoria *</label>
+      <select id="categoria_id" name="categoria_id" required>
+        {% for c in todas_categorias %}
+          <option value="{{ c['id'] }}" {% if p['categoria_id'] == c['id'] %}selected{% endif %}>
+            {{ c['icone'] }} {{ c['nome'] }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="campo">
+      <label for="cidade">Cidade</label>
+      <input type="text" id="cidade" name="cidade" value="{{ p['cidade'] }}">
+    </div>
+    <div class="grid-2">
+      <div class="campo">
+        <label for="telefone">Telefone</label>
+        <input type="text" id="telefone" name="telefone" value="{{ p['telefone'] or '' }}">
+      </div>
+      <div class="campo">
+        <label for="whatsapp">WhatsApp (só números, com DDD)</label>
+        <input type="text" id="whatsapp" name="whatsapp" value="{{ p['whatsapp'] or '' }}">
+      </div>
+    </div>
+    <div class="campo">
+      <label for="descricao">Descrição dos serviços</label>
+      <textarea id="descricao" name="descricao" rows="4">{{ p['descricao'] or '' }}</textarea>
+    </div>
+    <button class="btn btn-primary btn-lg" type="submit">Salvar alterações</button>
+  </form>
+</section>
+
+{% endblock %}
