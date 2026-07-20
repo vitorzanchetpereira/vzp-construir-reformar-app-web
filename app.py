@@ -98,7 +98,7 @@ def index():
         FROM prestadores p
         JOIN categorias c ON c.id = p.categoria_id
         LEFT JOIN avaliacoes a ON a.prestador_id = p.id AND a.status = 'aprovada'
-        GROUP BY p.id
+        GROUP BY p.id, c.id
         ORDER BY p.verificado DESC, media DESC, n_avaliacoes DESC
         LIMIT 6
         """
@@ -131,7 +131,7 @@ def prestadores():
         params.append(cat_slug)
     if verificado == "1":
         sql += " AND p.verificado = 1"
-    sql += " GROUP BY p.id ORDER BY p.verificado DESC, media DESC, n_avaliacoes DESC, p.nome"
+    sql += " GROUP BY p.id, c.id ORDER BY p.verificado DESC, media DESC, n_avaliacoes DESC, p.nome"
 
     rows = db.query(sql, params)
     cat_atual = db.query("SELECT * FROM categorias WHERE slug = ?", (cat_slug,), one=True) if cat_slug else None
