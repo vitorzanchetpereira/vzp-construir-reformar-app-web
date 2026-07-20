@@ -1,5 +1,5 @@
 """
-Hub da Construção — MVP.
+Construir & Reformar — MVP.
 Fase 1: diretório da oferta.  Fase 2: login do prestador, painel e moderação de avaliações.
 VZP Engenharia / Base Empreendimentos — piloto Sorriso/MT.
 """

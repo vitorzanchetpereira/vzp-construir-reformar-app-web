@@ -1,14 +1,14 @@
 # Blueprint do Render: cria o banco Postgres e o web service já conectados.
 # No Render: New > Blueprint > aponte para este repositório.
 databases:
-  - name: hub-construcao-db
+  - name: construir-reformar-db
     plan: free
-    databaseName: hub
-    user: hub
+    databaseName: construir_reformar
+    user: construir_reformar
 
 services:
   - type: web
-    name: hub-construcao
+    name: construir-reformar
     runtime: python
     plan: free
     buildCommand: pip install -r requirements.txt
@@ -20,7 +20,7 @@ services:
         generateValue: true          # o Render gera um segredo forte
       - key: DATABASE_URL
         fromDatabase:
-          name: hub-construcao-db
+          name: construir-reformar-db
           property: connectionString
       - key: ADMIN_EMAIL             # você preenche no painel do Render
         sync: false

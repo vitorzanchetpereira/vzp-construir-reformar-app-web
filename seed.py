@@ -74,7 +74,7 @@ def ensure_categorias():
 
 
 def ensure_admin():
-    email = os.environ.get("ADMIN_EMAIL", "admin@vzphub.local").strip().lower()
+    email = os.environ.get("ADMIN_EMAIL", "admin@construireformar.local").strip().lower()
     senha = os.environ.get("ADMIN_SENHA", "admin123")
     if not db.query("SELECT 1 FROM usuarios WHERE email = ?", (email,), one=True):
         db.execute(
@@ -98,10 +98,10 @@ def seed_demo():
             (prest_id[pnome], autor, nota, coment, status),
         )
     # conta de prestador para demonstração
-    if not db.query("SELECT 1 FROM usuarios WHERE email = ?", ("demo@vzphub.local",), one=True):
+    if not db.query("SELECT 1 FROM usuarios WHERE email = ?", ("demo@construireformar.local",), one=True):
         db.execute(
             "INSERT INTO usuarios (email, senha_hash, papel, prestador_id) VALUES (?,?, 'prestador', ?)",
-            ("demo@vzphub.local", generate_password_hash("demo123"), prest_id["Pinturas Colorir"]),
+            ("demo@construireformar.local", generate_password_hash("demo123"), prest_id["Pinturas Colorir"]),
         )
 
 

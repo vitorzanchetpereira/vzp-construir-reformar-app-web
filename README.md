@@ -1,4 +1,4 @@
-# Hub da Construção — MVP (Fase 1)
+# Construir & Reformar — MVP
 
 Diretório de prestadores e fornecedores da construção. Piloto **Sorriso/MT**.
 Iniciativa VZP Engenharia / Base Empreendimentos.
@@ -38,8 +38,8 @@ prestadores de exemplo de Sorriso/MT. Para recomeçar do zero, apague `hub.db`.
 ### Contas de teste (troque em produção!)
 | Papel | E-mail | Senha |
 |---|---|---|
-| Admin (equipe VZP) | `admin@vzphub.local` | `admin123` |
-| Prestador (demo) | `demo@vzphub.local` | `demo123` |
+| Admin (equipe VZP) | `admin@construireformar.local` | `admin123` |
+| Prestador (demo) | `demo@construireformar.local` | `demo123` |
 
 Admin entra em **/admin**; prestador em **/painel**.
 
