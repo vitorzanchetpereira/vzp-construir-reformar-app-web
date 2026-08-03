@@ -67,11 +67,15 @@ CREATE TABLE IF NOT EXISTS avaliacoes (
     criado_em    TEXT NOT NULL DEFAULT (datetime('now','localtime'))
 );
 CREATE INDEX IF NOT EXISTS idx_prestadores_categoria ON prestadores(categoria_id);
-CREATE INDEX IF NOT EXISTS idx_prestadores_regiao ON prestadores(regiao_id);
 CREATE INDEX IF NOT EXISTS idx_avaliacoes_prestador ON avaliacoes(prestador_id);
 CREATE INDEX IF NOT EXISTS idx_avaliacoes_status ON avaliacoes(status);
 CREATE INDEX IF NOT EXISTS idx_usuarios_email ON usuarios(email);
 """
+# idx_prestadores_regiao fica de fora daqui de propósito: em bancos que já tinham
+# a tabela prestadores (upgrade), a coluna regiao_id só existe depois de
+# _migrar_colunas() rodar — criar o índice aqui, no mesmo lote do CREATE TABLE
+# IF NOT EXISTS (que é no-op numa tabela já existente), falha com
+# "column regiao_id does not exist".
 
 _DDL_POSTGRES = """
 CREATE TABLE IF NOT EXISTS categorias (
