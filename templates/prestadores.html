@@ -7,6 +7,7 @@
   <h1 class="pagina-titulo">
     {% if cat_atual %}{{ cat_atual['icone'] }} {{ cat_atual['nome'] }}
     {% elif busca %}Resultados para “{{ busca }}”
+    {% elif regiao_atual %}Prestadores em {{ regiao_atual['nome'] }}/{{ regiao_atual['uf'] }}
     {% else %}Todos os prestadores{% endif %}
   </h1>
 
@@ -16,6 +17,12 @@
       <option value="">Todas as categorias</option>
       {% for c in todas_categorias %}
         <option value="{{ c['slug'] }}" {% if c['slug']==cat_slug %}selected{% endif %}>{{ c['nome'] }}</option>
+      {% endfor %}
+    </select>
+    <select name="regiao">
+      <option value="">Todas as regiões</option>
+      {% for r in todas_regioes %}
+        <option value="{{ r['slug'] }}" {% if r['slug']==regiao_slug %}selected{% endif %}>{{ r['nome'] }}/{{ r['uf'] }}</option>
       {% endfor %}
     </select>
     <label class="check">

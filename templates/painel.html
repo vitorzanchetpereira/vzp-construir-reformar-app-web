@@ -18,7 +18,7 @@
           {% if p['verificado'] %}<span class="selo">✔ Verificado</span>
           {% else %}<span class="selo selo-cinza">Não verificado</span>{% endif %}
         </h2>
-        <p class="perfil-cat">{{ p['categoria_nome'] }} · {{ p['cidade'] }}</p>
+        <p class="perfil-cat">{{ p['categoria_nome'] }}{% if p['regiao_nome'] %} · {{ p['regiao_nome'] }}/{{ p['regiao_uf'] }}{% endif %}</p>
         <div class="perfil-nota">
           {{ estrelas(stats['media']) }}
           <span>{{ stats['media'] }} · {{ stats['n'] }} avaliação(ões) aprovada(s)</span>
@@ -36,6 +36,30 @@
       pela equipe VZP para prestadores assinantes. Fale com a gente para ativar.
     </div>
   {% endif %}
+</section>
+
+<section>
+  <h2 class="secao-titulo">Fotos do trabalho</h2>
+  {% if fotos %}
+    <div class="galeria-grid">
+      {% for f in fotos %}
+        <div class="galeria-item">
+          <img src="{{ f['url'] }}" alt="">
+          <form action="{{ url_for('painel_fotos_remover', fid=f['id']) }}" method="post">
+            <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+            <button class="btn btn-mini btn-nao" type="submit">Remover</button>
+          </form>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="vazio-inline">Você ainda não tem fotos na galeria. Mostre seu trabalho!</p>
+  {% endif %}
+  <form action="{{ url_for('painel_fotos_adicionar') }}" method="post" enctype="multipart/form-data" class="form-foto">
+    <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+    <input type="file" name="foto" accept="image/*" required>
+    <button class="btn btn-primary btn-mini" type="submit">Adicionar foto</button>
+  </form>
 </section>
 
 <section>

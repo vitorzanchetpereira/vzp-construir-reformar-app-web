@@ -42,13 +42,14 @@
   <h2 class="secao-titulo">Prestadores &amp; selo Verificado</h2>
   <table class="tabela">
     <thead>
-      <tr><th>Prestador</th><th>Categoria</th><th>Avaliações</th><th>Selo</th><th></th></tr>
+      <tr><th>Prestador</th><th>Categoria</th><th>Região</th><th>Avaliações</th><th>Selo</th><th></th></tr>
     </thead>
     <tbody>
       {% for p in prestadores %}
         <tr>
           <td><a class="link" href="{{ url_for('prestador', pid=p['id']) }}" target="_blank">{{ p['nome'] }}</a></td>
           <td>{{ p['categoria_nome'] }}</td>
+          <td>{% if p['regiao_nome'] %}{{ p['regiao_nome'] }}/{{ p['regiao_uf'] }}{% else %}—{% endif %}</td>
           <td>{{ p['n_aprov'] }}</td>
           <td>
             {% if p['verificado'] %}<span class="selo">✔ Verificado</span>

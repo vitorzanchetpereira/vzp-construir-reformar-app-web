@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "_macros.html" import regiao_select with context %}
 {% block titulo %}Editar perfil{% endblock %}
 {% block conteudo %}
 
@@ -7,7 +8,7 @@
 <section class="form-box estreito">
   <h1 class="pagina-titulo">Editar perfil</h1>
 
-  <form action="{{ url_for('painel_editar') }}" method="post" class="form">
+  <form action="{{ url_for('painel_editar') }}" method="post" class="form" enctype="multipart/form-data">
     <input type="hidden" name="_csrf" value="{{ csrf_token }}">
     <div class="campo">
       <label for="nome">Nome do negócio / profissional *</label>
@@ -23,9 +24,11 @@
         {% endfor %}
       </select>
     </div>
+    {{ regiao_select(p['regiao_id']) }}
     <div class="campo">
-      <label for="cidade">Cidade</label>
-      <input type="text" id="cidade" name="cidade" value="{{ p['cidade'] }}">
+      <label for="foto">Foto de capa {% if p['foto_url'] %}(enviar substitui a atual){% else %}(opcional){% endif %}</label>
+      {% if p['foto_url'] %}<img class="foto-atual" src="{{ p['foto_url'] }}" alt="">{% endif %}
+      <input type="file" id="foto" name="foto" accept="image/*">
     </div>
     <div class="grid-2">
       <div class="campo">

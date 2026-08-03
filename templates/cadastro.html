@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "_macros.html" import regiao_select with context %}
 {% block titulo %}Cadastrar meu negócio{% endblock %}
 {% block conteudo %}
 
@@ -7,7 +8,7 @@
   <p class="sub">Grátis para entrar no diretório. Você cria uma conta para gerenciar seu perfil e,
      quando quiser, pode assinar para virar <strong>Verificado</strong> e aparecer no topo.</p>
 
-  <form action="{{ url_for('cadastro') }}" method="post" class="form">
+  <form action="{{ url_for('cadastro') }}" method="post" class="form" enctype="multipart/form-data">
     <input type="hidden" name="_csrf" value="{{ csrf_token }}">
     <div class="campo">
       <label for="nome">Nome do negócio / profissional *</label>
@@ -24,9 +25,10 @@
         {% endfor %}
       </select>
     </div>
+    {{ regiao_select(form.get('regiao_id')) }}
     <div class="campo">
-      <label for="cidade">Cidade</label>
-      <input type="text" id="cidade" name="cidade" value="{{ form.get('cidade','Sorriso/MT') }}">
+      <label for="foto">Foto de capa (opcional)</label>
+      <input type="file" id="foto" name="foto" accept="image/*">
     </div>
     <div class="grid-2">
       <div class="campo">

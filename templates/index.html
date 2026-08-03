@@ -4,10 +4,16 @@
 
 <section class="hero">
   <h1>Encontre quem faz sua obra acontecer</h1>
-  <p class="hero-sub">O diretório de prestadores e fornecedores da construção em <strong>Sorriso/MT</strong>.
-     Busque, compare avaliações e fale direto com o profissional.</p>
+  <p class="hero-sub">O diretório de prestadores e fornecedores da construção, por serviço e região.
+     Busque, veja indicações de verdade e fale direto com o profissional.</p>
   <form class="busca" action="{{ url_for('prestadores') }}" method="get">
     <input type="text" name="q" placeholder="O que você precisa? Ex.: eletricista, terraplenagem, materiais…">
+    <select name="regiao">
+      <option value="">Todas as regiões</option>
+      {% for r in todas_regioes %}
+        <option value="{{ r['slug'] }}" {% if r['slug']==regiao_slug %}selected{% endif %}>{{ r['nome'] }}/{{ r['uf'] }}</option>
+      {% endfor %}
+    </select>
     <button class="btn btn-primary" type="submit">Buscar</button>
   </form>
   <p class="hero-stats">{{ total }} prestadores já cadastrados</p>

@@ -3,7 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block titulo %}Construir &amp; Reformar{% endblock %} · Sorriso/MT</title>
+  <title>{% block titulo %}Construir &amp; Reformar{% endblock %}</title>
+  <meta name="theme-color" content="#f2711c">
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
+  <link rel="icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
@@ -11,7 +15,7 @@
   <div class="container topo-inner">
     <a class="marca" href="{{ url_for('index') }}">
       <span class="marca-icone">🏗️</span>
-      <span class="marca-txt">Construir &amp; Reformar<small>Sorriso/MT</small></span>
+      <span class="marca-txt">Construir &amp; Reformar<small>Mão de obra &amp; material</small></span>
     </a>
     <nav class="nav">
       <a href="{{ url_for('prestadores') }}">Prestadores</a>
@@ -19,8 +23,10 @@
       {% if usuario %}
         {% if usuario['papel'] == 'admin' %}
           <a href="{{ url_for('admin_painel') }}">Painel admin</a>
-        {% else %}
+        {% elif usuario['papel'] == 'prestador' %}
           <a href="{{ url_for('painel') }}">Meu painel</a>
+        {% else %}
+          <span class="nav-ola">Olá, {{ usuario['nome'] }}</span>
         {% endif %}
         <a href="{{ url_for('sair') }}">Sair</a>
       {% else %}
@@ -42,9 +48,10 @@
 
 <footer class="rodape">
   <div class="container">
-    <p><strong>Construir &amp; Reformar</strong> — piloto Sorriso/MT · uma iniciativa VZP Engenharia / Base Empreendimentos</p>
-    <p class="mini">MVP — diretório da oferta com avaliações moderadas. Fechamento de negócio ainda ocorre direto entre as partes.</p>
+    <p><strong>Construir &amp; Reformar</strong> — indicação de mão de obra e material por serviço e região · uma iniciativa VZP Engenharia / Base Empreendimentos</p>
+    <p class="mini">Diretório com indicações moderadas. Fechamento de negócio ainda ocorre direto entre as partes.</p>
   </div>
 </footer>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
 </body>
 </html>

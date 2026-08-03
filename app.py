@@ -1,15 +1,18 @@
 """
 Construir & Reformar — MVP.
 Fase 1: diretório da oferta.  Fase 2: login do prestador, painel e moderação de avaliações.
-VZP Engenharia / Base Empreendimentos — piloto Sorriso/MT.
+Fase "robusto": fotos (Cloudinary), contas de cliente/indicação, multi-região, PWA.
+VZP Engenharia / Base Empreendimentos.
 """
 import os
+import re
 import secrets
 from functools import wraps
 from flask import (Flask, render_template, request, redirect, url_for,
                    flash, abort, session)
 from werkzeug.security import generate_password_hash, check_password_hash
 import db
+import uploads
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("SECRET_KEY", "dev-only-troque-em-producao")
@@ -35,6 +38,38 @@ def csrf_protect():
 # ---------------------------------------------------------------- helpers
 def categorias():
     return db.query("SELECT * FROM categorias ORDER BY nome")
+
+
+def regioes():
+    return db.query("SELECT * FROM regioes ORDER BY nome")
+
+
+def _slugify(*partes):
+    texto = " ".join(partes).lower()
+    texto = re.sub(r"[^a-z0-9]+", "-", texto).strip("-")
+    return texto
+
+
+def obter_ou_criar_regiao(nome, uf):
+    nome = (nome or "").strip()
+    uf = (uf or "").strip().upper()[:2]
+    if not nome or not uf:
+        return None
+    slug = _slugify(nome, uf)
+    r = db.query("SELECT * FROM regioes WHERE slug = ?", (slug,), one=True)
+    if r:
+        return r["id"]
+    return db.execute("INSERT INTO regioes (nome, uf, slug) VALUES (?,?,?)", (nome, uf, slug))
+
+
+def resolver_regiao(form):
+    """Lê o select de região do formulário; se for 'outra cidade', cria a região na hora."""
+    valor = form.get("regiao_id", "")
+    if valor == "__nova__":
+        return obter_ou_criar_regiao(form.get("regiao_nome", ""), form.get("regiao_uf", ""))
+    if valor.isdigit():
+        return int(valor)
+    return None
 
 
 def usuario_atual():
@@ -83,42 +118,54 @@ def stats_aprovadas(prestador_id):
 
 @app.context_processor
 def inject_globals():
-    return {"todas_categorias": categorias(), "usuario": usuario_atual(),
-            "csrf_token": session.get("csrf", "")}
+    return {"todas_categorias": categorias(), "todas_regioes": regioes(),
+            "usuario": usuario_atual(), "csrf_token": session.get("csrf", "")}
 
 
 # ---------------------------------------------------------------- público
 @app.route("/")
 def index():
-    rows = db.query(
-        """
+    regiao_slug = request.args.get("regiao", "").strip()
+    sql = """
         SELECT p.*, c.nome AS categoria_nome, c.icone AS categoria_icone,
+               r.nome AS regiao_nome, r.uf AS regiao_uf,
                COUNT(a.id) AS n_avaliacoes,
                COALESCE(ROUND(AVG(a.nota),1),0) AS media
         FROM prestadores p
         JOIN categorias c ON c.id = p.categoria_id
+        LEFT JOIN regioes r ON r.id = p.regiao_id
         LEFT JOIN avaliacoes a ON a.prestador_id = p.id AND a.status = 'aprovada'
-        GROUP BY p.id, c.id
+    """
+    params = []
+    if regiao_slug:
+        sql += " WHERE r.slug = ?"
+        params.append(regiao_slug)
+    sql += """
+        GROUP BY p.id, c.id, r.id
         ORDER BY p.verificado DESC, media DESC, n_avaliacoes DESC
         LIMIT 6
-        """
-    )
+    """
+    rows = db.query(sql, params)
     total = db.query("SELECT COUNT(*) AS n FROM prestadores", one=True)["n"]
-    return render_template("index.html", categorias=categorias(), destaques=rows, total=total)
+    return render_template("index.html", categorias=categorias(), destaques=rows, total=total,
+                           regiao_slug=regiao_slug)
 
 
 @app.route("/prestadores")
 def prestadores():
     busca = request.args.get("q", "").strip()
     cat_slug = request.args.get("categoria", "").strip()
+    regiao_slug = request.args.get("regiao", "").strip()
     verificado = request.args.get("verificado", "")
 
     sql = """
         SELECT p.*, c.nome AS categoria_nome, c.icone AS categoria_icone, c.slug AS categoria_slug,
+               r.nome AS regiao_nome, r.uf AS regiao_uf, r.slug AS regiao_slug,
                COUNT(a.id) AS n_avaliacoes,
                COALESCE(ROUND(AVG(a.nota),1),0) AS media
         FROM prestadores p
         JOIN categorias c ON c.id = p.categoria_id
+        LEFT JOIN regioes r ON r.id = p.regiao_id
         LEFT JOIN avaliacoes a ON a.prestador_id = p.id AND a.status = 'aprovada'
         WHERE 1=1
     """
@@ -129,21 +176,28 @@ def prestadores():
     if cat_slug:
         sql += " AND c.slug = ?"
         params.append(cat_slug)
+    if regiao_slug:
+        sql += " AND r.slug = ?"
+        params.append(regiao_slug)
     if verificado == "1":
         sql += " AND p.verificado = 1"
-    sql += " GROUP BY p.id, c.id ORDER BY p.verificado DESC, media DESC, n_avaliacoes DESC, p.nome"
+    sql += " GROUP BY p.id, c.id, r.id ORDER BY p.verificado DESC, media DESC, n_avaliacoes DESC, p.nome"
 
     rows = db.query(sql, params)
     cat_atual = db.query("SELECT * FROM categorias WHERE slug = ?", (cat_slug,), one=True) if cat_slug else None
+    regiao_atual = db.query("SELECT * FROM regioes WHERE slug = ?", (regiao_slug,), one=True) if regiao_slug else None
     return render_template("prestadores.html", prestadores=rows, busca=busca,
-                           cat_slug=cat_slug, cat_atual=cat_atual, verificado=verificado)
+                           cat_slug=cat_slug, cat_atual=cat_atual, verificado=verificado,
+                           regiao_slug=regiao_slug, regiao_atual=regiao_atual)
 
 
 @app.route("/prestador/<int:pid>")
 def prestador(pid):
     row = db.query(
-        """SELECT p.*, c.nome AS categoria_nome, c.icone AS categoria_icone, c.slug AS categoria_slug
-           FROM prestadores p JOIN categorias c ON c.id = p.categoria_id WHERE p.id = ?""",
+        """SELECT p.*, c.nome AS categoria_nome, c.icone AS categoria_icone, c.slug AS categoria_slug,
+                  r.nome AS regiao_nome, r.uf AS regiao_uf
+           FROM prestadores p JOIN categorias c ON c.id = p.categoria_id
+           LEFT JOIN regioes r ON r.id = p.regiao_id WHERE p.id = ?""",
         (pid,), one=True,
     )
     if not row:
@@ -155,27 +209,31 @@ def prestador(pid):
         "SELECT * FROM avaliacoes WHERE prestador_id = ? AND status = 'aprovada' ORDER BY criado_em DESC",
         (pid,),
     )
-    return render_template("prestador.html", p=p, avaliacoes=avaliacoes)
+    fotos = db.query("SELECT * FROM prestador_fotos WHERE prestador_id = ? ORDER BY criado_em DESC", (pid,))
+    return render_template("prestador.html", p=p, avaliacoes=avaliacoes, fotos=fotos)
 
 
 @app.route("/prestador/<int:pid>/avaliar", methods=["POST"])
+@login_required
 def avaliar(pid):
     if not db.query("SELECT 1 FROM prestadores WHERE id = ?", (pid,), one=True):
         abort(404)
-    autor = request.form.get("autor", "").strip()
+    u = usuario_atual()
     comentario = request.form.get("comentario", "").strip()
     try:
         nota = int(request.form.get("nota", 0))
     except ValueError:
         nota = 0
-    if not autor or nota < 1 or nota > 5:
-        flash("Informe seu nome e uma nota de 1 a 5.", "erro")
+    if nota < 1 or nota > 5:
+        flash("Escolha uma nota de 1 a 5.", "erro")
         return redirect(url_for("prestador", pid=pid))
+    foto_url = uploads.upload_imagem(request.files.get("foto"))
     db.execute(
-        "INSERT INTO avaliacoes (prestador_id, autor, nota, comentario, status) VALUES (?,?,?,?, 'pendente')",
-        (pid, autor, nota, comentario),
+        "INSERT INTO avaliacoes (prestador_id, usuario_id, autor, nota, comentario, foto_url, status) "
+        "VALUES (?,?,?,?,?,?, 'pendente')",
+        (pid, u["id"], u["nome"], nota, comentario, foto_url),
     )
-    flash("Avaliação enviada! Ela passará por moderação antes de aparecer no perfil.", "ok")
+    flash("Indicação enviada! Ela passará por moderação antes de aparecer no perfil.", "ok")
     return redirect(url_for("prestador", pid=pid))
 
 
@@ -185,15 +243,15 @@ def cadastro():
         f = request.form
         nome = f.get("nome", "").strip()
         categoria_id = f.get("categoria_id", "")
-        cidade = f.get("cidade", "").strip() or "Sorriso/MT"
+        regiao_id = resolver_regiao(f)
         telefone = f.get("telefone", "").strip()
         whatsapp = f.get("whatsapp", "").strip()
         descricao = f.get("descricao", "").strip()
         email = f.get("email", "").strip().lower()
         senha = f.get("senha", "")
 
-        if not (nome and categoria_id and email and senha):
-            flash("Preencha nome, categoria, e-mail e senha.", "erro")
+        if not (nome and categoria_id and regiao_id and email and senha):
+            flash("Preencha nome, categoria, região, e-mail e senha.", "erro")
             return render_template("cadastro.html", form=f)
         if len(senha) < 6:
             flash("A senha precisa ter ao menos 6 caracteres.", "erro")
@@ -202,19 +260,46 @@ def cadastro():
             flash("Já existe uma conta com esse e-mail.", "erro")
             return render_template("cadastro.html", form=f)
 
+        foto_url = uploads.upload_imagem(request.files.get("foto"))
         pid = db.execute(
-            """INSERT INTO prestadores (nome, categoria_id, cidade, telefone, whatsapp, descricao)
-               VALUES (?,?,?,?,?,?)""",
-            (nome, categoria_id, cidade, telefone, whatsapp, descricao),
+            """INSERT INTO prestadores (nome, categoria_id, regiao_id, telefone, whatsapp, descricao, foto_url)
+               VALUES (?,?,?,?,?,?,?)""",
+            (nome, categoria_id, regiao_id, telefone, whatsapp, descricao, foto_url),
         )
         uid = db.execute(
-            "INSERT INTO usuarios (email, senha_hash, papel, prestador_id) VALUES (?,?, 'prestador', ?)",
-            (email, generate_password_hash(senha), pid),
+            "INSERT INTO usuarios (nome, email, senha_hash, papel, prestador_id) VALUES (?,?,?, 'prestador', ?)",
+            (nome, email, generate_password_hash(senha), pid),
         )
         session["usuario_id"] = uid
         flash("Cadastro realizado! Gerencie seu perfil por aqui.", "ok")
         return redirect(url_for("painel"))
     return render_template("cadastro.html", form={})
+
+
+@app.route("/conta/cadastro", methods=["GET", "POST"])
+def conta_cadastro():
+    if request.method == "POST":
+        f = request.form
+        nome = f.get("nome", "").strip()
+        email = f.get("email", "").strip().lower()
+        senha = f.get("senha", "")
+        if not (nome and email and senha):
+            flash("Preencha nome, e-mail e senha.", "erro")
+            return render_template("conta_cadastro.html", form=f)
+        if len(senha) < 6:
+            flash("A senha precisa ter ao menos 6 caracteres.", "erro")
+            return render_template("conta_cadastro.html", form=f)
+        if db.query("SELECT 1 FROM usuarios WHERE email = ?", (email,), one=True):
+            flash("Já existe uma conta com esse e-mail.", "erro")
+            return render_template("conta_cadastro.html", form=f)
+        uid = db.execute(
+            "INSERT INTO usuarios (nome, email, senha_hash, papel) VALUES (?,?,?, 'cliente')",
+            (nome, email, generate_password_hash(senha)),
+        )
+        session["usuario_id"] = uid
+        flash("Conta criada! Agora você pode indicar e avaliar prestadores.", "ok")
+        return redirect(url_for("index"))
+    return render_template("conta_cadastro.html", form={})
 
 
 @app.route("/sobre")
@@ -225,6 +310,7 @@ def sobre():
 # ---------------------------------------------------------------- autenticação
 @app.route("/entrar", methods=["GET", "POST"])
 def entrar():
+    proximo = request.values.get("next", "")
     if request.method == "POST":
         email = request.form.get("email", "").strip().lower()
         senha = request.form.get("senha", "")
@@ -232,9 +318,11 @@ def entrar():
         if u and check_password_hash(u["senha_hash"], senha):
             session["usuario_id"] = u["id"]
             flash("Login efetuado.", "ok")
+            if proximo and proximo.startswith("/"):
+                return redirect(proximo)
             return redirect(url_for("admin_painel" if u["papel"] == "admin" else "painel"))
         flash("E-mail ou senha inválidos.", "erro")
-    return render_template("entrar.html")
+    return render_template("entrar.html", proximo=proximo)
 
 
 @app.route("/sair")
@@ -250,8 +338,10 @@ def sair():
 def painel():
     u = usuario_atual()
     p = db.query(
-        """SELECT p.*, c.nome AS categoria_nome, c.icone AS categoria_icone
-           FROM prestadores p JOIN categorias c ON c.id = p.categoria_id WHERE p.id = ?""",
+        """SELECT p.*, c.nome AS categoria_nome, c.icone AS categoria_icone,
+                  r.nome AS regiao_nome, r.uf AS regiao_uf
+           FROM prestadores p JOIN categorias c ON c.id = p.categoria_id
+           LEFT JOIN regioes r ON r.id = p.regiao_id WHERE p.id = ?""",
         (u["prestador_id"],), one=True,
     )
     if not p:
@@ -260,8 +350,9 @@ def painel():
     avaliacoes = db.query(
         "SELECT * FROM avaliacoes WHERE prestador_id = ? ORDER BY criado_em DESC", (p["id"],)
     )
+    fotos = db.query("SELECT * FROM prestador_fotos WHERE prestador_id = ? ORDER BY criado_em DESC", (p["id"],))
     pendentes = sum(1 for a in avaliacoes if a["status"] == "pendente")
-    return render_template("painel.html", p=p, stats=s, avaliacoes=avaliacoes, pendentes=pendentes)
+    return render_template("painel.html", p=p, stats=s, avaliacoes=avaliacoes, pendentes=pendentes, fotos=fotos)
 
 
 @app.route("/painel/editar", methods=["GET", "POST"])
@@ -273,20 +364,50 @@ def painel_editar():
         f = request.form
         nome = f.get("nome", "").strip()
         categoria_id = f.get("categoria_id", "")
-        if not (nome and categoria_id):
-            flash("Nome e categoria são obrigatórios.", "erro")
+        regiao_id = resolver_regiao(f)
+        if not (nome and categoria_id and regiao_id):
+            flash("Nome, categoria e região são obrigatórios.", "erro")
             return redirect(url_for("painel_editar"))
-        db.execute(
-            """UPDATE prestadores SET nome=?, categoria_id=?, cidade=?, telefone=?, whatsapp=?, descricao=?
-               WHERE id=?""",
-            (nome, categoria_id, f.get("cidade", "").strip() or "Sorriso/MT",
-             f.get("telefone", "").strip(), f.get("whatsapp", "").strip(),
-             f.get("descricao", "").strip(), pid),
-        )
+        campos = "nome=?, categoria_id=?, regiao_id=?, telefone=?, whatsapp=?, descricao=?"
+        valores = [nome, categoria_id, regiao_id, f.get("telefone", "").strip(),
+                   f.get("whatsapp", "").strip(), f.get("descricao", "").strip()]
+        foto_url = uploads.upload_imagem(request.files.get("foto"))
+        if foto_url:
+            campos += ", foto_url=?"
+            valores.append(foto_url)
+        valores.append(pid)
+        db.execute(f"UPDATE prestadores SET {campos} WHERE id=?", valores)
         flash("Perfil atualizado!", "ok")
         return redirect(url_for("painel"))
     p = db.query("SELECT * FROM prestadores WHERE id = ?", (pid,), one=True)
     return render_template("painel_editar.html", p=p)
+
+
+@app.route("/painel/fotos", methods=["POST"])
+@prestador_required
+def painel_fotos_adicionar():
+    u = usuario_atual()
+    foto_url = uploads.upload_imagem(request.files.get("foto"))
+    if foto_url:
+        db.execute("INSERT INTO prestador_fotos (prestador_id, url) VALUES (?,?)", (u["prestador_id"], foto_url))
+        flash("Foto adicionada à galeria!", "ok")
+    else:
+        flash("Não foi possível enviar a foto. Confira o arquivo (imagem, até 5MB) e tente de novo.", "erro")
+    return redirect(url_for("painel"))
+
+
+@app.route("/painel/fotos/<int:fid>/remover", methods=["POST"])
+@prestador_required
+def painel_fotos_remover(fid):
+    u = usuario_atual()
+    foto = db.query(
+        "SELECT * FROM prestador_fotos WHERE id = ? AND prestador_id = ?", (fid, u["prestador_id"]), one=True
+    )
+    if not foto:
+        abort(404)
+    db.execute("DELETE FROM prestador_fotos WHERE id = ?", (fid,))
+    flash("Foto removida.", "ok")
+    return redirect(url_for("painel"))
 
 
 # ---------------------------------------------------------------- admin (equipe VZP)
@@ -299,9 +420,10 @@ def admin_painel():
            WHERE a.status = 'pendente' ORDER BY a.criado_em"""
     )
     prestadores = db.query(
-        """SELECT p.*, c.nome AS categoria_nome,
+        """SELECT p.*, c.nome AS categoria_nome, r.nome AS regiao_nome, r.uf AS regiao_uf,
                   (SELECT COUNT(*) FROM avaliacoes a WHERE a.prestador_id=p.id AND a.status='aprovada') AS n_aprov
            FROM prestadores p JOIN categorias c ON c.id = p.categoria_id
+           LEFT JOIN regioes r ON r.id = p.regiao_id
            ORDER BY p.verificado DESC, p.nome"""
     )
     return render_template("admin.html", pendentes=pendentes, prestadores=prestadores)

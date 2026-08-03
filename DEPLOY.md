@@ -24,6 +24,10 @@ git push -u origin main
 4. Ele vai pedir os valores marcados como `sync: false`:
    - **ADMIN_EMAIL** — o e-mail de login do admin (o seu).
    - **ADMIN_SENHA** — uma senha forte (essa é a conta que modera avaliações).
+   - **CLOUDINARY_URL** — opcional, para fotos de perfil/portfólio e das indicações
+     funcionarem. Pegue em [cloudinary.com](https://cloudinary.com) (conta grátis) →
+     Settings → API Keys → "API Environment variable". Pode deixar em branco por
+     enquanto — o site funciona normal, só sem upload de imagem.
 5. Clique em **Apply**. O Render instala, cria o banco, sobe o app e semeia os dados.
 
 ## 4. Pronto

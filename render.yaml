@@ -26,5 +26,7 @@ services:
         sync: false
       - key: ADMIN_SENHA             # você preenche no painel do Render (senha forte!)
         sync: false
+      - key: CLOUDINARY_URL          # opcional: sem isso, tudo funciona, só sem upload de foto
+        sync: false
       - key: SEED_DEMO
         value: "1"                   # "1" popula dados de exemplo; troque para "0" antes do lançamento real

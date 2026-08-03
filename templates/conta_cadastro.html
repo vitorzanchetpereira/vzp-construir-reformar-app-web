@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block titulo %}Criar conta{% endblock %}
+{% block conteudo %}
+
+<section class="form-box estreito">
+  <h1 class="pagina-titulo">Criar sua conta</h1>
+  <p class="sub">Para indicar e avaliar prestadores com seu nome de verdade — nada de indicação anônima.</p>
+
+  <form action="{{ url_for('conta_cadastro') }}" method="post" class="form">
+    <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+    <div class="campo">
+      <label for="nome">Seu nome *</label>
+      <input type="text" id="nome" name="nome" value="{{ form.get('nome','') }}" required autofocus>
+    </div>
+    <div class="campo">
+      <label for="email">E-mail *</label>
+      <input type="email" id="email" name="email" value="{{ form.get('email','') }}" required>
+    </div>
+    <div class="campo">
+      <label for="senha">Senha * (mín. 6 caracteres)</label>
+      <input type="password" id="senha" name="senha" required>
+    </div>
+    <button class="btn btn-primary btn-lg" type="submit">Criar conta grátis</button>
+  </form>
+
+  <p class="sub" style="margin-top:18px">
+    É prestador ou fornecedor? <a class="link" href="{{ url_for('cadastro') }}">Cadastre seu negócio</a>.
+  </p>
+</section>
+
+{% endblock %}

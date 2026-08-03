@@ -7,16 +7,20 @@
 
 <section class="perfil">
   <div class="perfil-head">
-    <span class="perfil-icone">{{ p['categoria_icone'] }}</span>
+    {% if p['foto_url'] %}
+      <img class="perfil-avatar" src="{{ p['foto_url'] }}" alt="{{ p['nome'] }}">
+    {% else %}
+      <span class="perfil-icone">{{ p['categoria_icone'] }}</span>
+    {% endif %}
     <div>
       <h1 class="perfil-nome">
         {{ p['nome'] }}
         {% if p['verificado'] %}<span class="selo">✔ Verificado</span>{% endif %}
       </h1>
-      <p class="perfil-cat">{{ p['categoria_nome'] }} · {{ p['cidade'] }}</p>
+      <p class="perfil-cat">{{ p['categoria_nome'] }}{% if p['regiao_nome'] %} · {{ p['regiao_nome'] }}/{{ p['regiao_uf'] }}{% endif %}</p>
       <div class="perfil-nota">
         {{ estrelas(p['media']) }}
-        <span>{{ p['media'] }} · {{ p['n_avaliacoes'] }} avaliação(ões)</span>
+        <span>{{ p['media'] }} · {{ p['n_avaliacoes'] }} indicação(ões)</span>
       </div>
     </div>
   </div>
@@ -30,11 +34,27 @@
       </a>
     {% endif %}
     {% if p['telefone'] %}<span class="contato-tel">📞 {{ p['telefone'] }}</span>{% endif %}
+    <a class="btn btn-indicar"
+       href="https://wa.me/?text={{ ('Olha essa indicação no Construir & Reformar: ' ~ p['nome'] ~ ' — ' ~ request.url)|urlencode }}"
+       target="_blank" rel="noopener">
+      📣 Indicar no WhatsApp
+    </a>
   </div>
 </section>
 
+{% if fotos %}
+<section class="galeria">
+  <h2 class="secao-titulo">Fotos do trabalho</h2>
+  <div class="galeria-grid">
+    {% for f in fotos %}
+      <a href="{{ f['url'] }}" target="_blank" rel="noopener"><img src="{{ f['url'] }}" alt=""></a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
 <section class="avaliacoes">
-  <h2 class="secao-titulo">Avaliações</h2>
+  <h2 class="secao-titulo">Indicações e avaliações</h2>
   {% if avaliacoes %}
     {% for a in avaliacoes %}
       <div class="avaliacao">
@@ -43,39 +63,48 @@
           {{ estrelas(a['nota']) }}
         </div>
         {% if a['comentario'] %}<p>{{ a['comentario'] }}</p>{% endif %}
+        {% if a['foto_url'] %}<img class="avaliacao-foto" src="{{ a['foto_url'] }}" alt="">{% endif %}
         <span class="avaliacao-data">{{ a['criado_em']|data }}</span>
       </div>
     {% endfor %}
   {% else %}
-    <p class="vazio-inline">Ainda sem avaliações. Seja o primeiro a avaliar.</p>
+    <p class="vazio-inline">Ainda sem indicações. Seja o primeiro a indicar.</p>
   {% endif %}
 </section>
 
 <section class="form-box">
-  <h2 class="secao-titulo">Deixe sua avaliação</h2>
-  <p class="sub" style="margin-top:-8px">As avaliações passam por moderação da equipe VZP antes de aparecer.</p>
-  <form action="{{ url_for('avaliar', pid=p['id']) }}" method="post" class="form">
-    <input type="hidden" name="_csrf" value="{{ csrf_token }}">
-    <div class="campo">
-      <label for="autor">Seu nome</label>
-      <input type="text" id="autor" name="autor" required>
-    </div>
-    <div class="campo">
-      <label for="nota">Nota</label>
-      <select id="nota" name="nota" required>
-        <option value="5">★★★★★ — Excelente</option>
-        <option value="4">★★★★ — Muito bom</option>
-        <option value="3">★★★ — Regular</option>
-        <option value="2">★★ — Ruim</option>
-        <option value="1">★ — Péssimo</option>
-      </select>
-    </div>
-    <div class="campo">
-      <label for="comentario">Comentário (opcional)</label>
-      <textarea id="comentario" name="comentario" rows="3"></textarea>
-    </div>
-    <button class="btn btn-primary" type="submit">Enviar avaliação</button>
-  </form>
+  <h2 class="secao-titulo">Deixe sua indicação</h2>
+  <p class="sub" style="margin-top:-8px">As indicações passam por moderação da equipe VZP antes de aparecer.</p>
+  {% if usuario %}
+    <form action="{{ url_for('avaliar', pid=p['id']) }}" method="post" class="form" enctype="multipart/form-data">
+      <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+      <p class="mini-info">Indicando como <strong>{{ usuario['nome'] }}</strong></p>
+      <div class="campo">
+        <label for="nota">Nota</label>
+        <select id="nota" name="nota" required>
+          <option value="5">★★★★★ — Excelente</option>
+          <option value="4">★★★★ — Muito bom</option>
+          <option value="3">★★★ — Regular</option>
+          <option value="2">★★ — Ruim</option>
+          <option value="1">★ — Péssimo</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label for="comentario">Conte como foi a experiência (opcional)</label>
+        <textarea id="comentario" name="comentario" rows="3"></textarea>
+      </div>
+      <div class="campo">
+        <label for="foto">Foto do serviço (opcional)</label>
+        <input type="file" id="foto" name="foto" accept="image/*">
+      </div>
+      <button class="btn btn-primary" type="submit">Enviar indicação</button>
+    </form>
+  {% else %}
+    <p class="sub">
+      <a class="link" href="{{ url_for('entrar', next=request.path) }}">Entre</a> ou
+      <a class="link" href="{{ url_for('conta_cadastro') }}">crie sua conta grátis</a> para indicar este prestador.
+    </p>
+  {% endif %}
 </section>
 
 {% endblock %}

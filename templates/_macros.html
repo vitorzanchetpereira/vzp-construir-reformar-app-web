@@ -10,15 +10,44 @@
 {% macro card(p) %}
   <a class="card" href="{{ url_for('prestador', pid=p['id']) }}">
     <div class="card-topo">
-      <span class="card-icone">{{ p['categoria_icone'] }}</span>
+      {% if p['foto_url'] %}
+        <img class="card-avatar" src="{{ p['foto_url'] }}" alt="">
+      {% else %}
+        <span class="card-icone">{{ p['categoria_icone'] }}</span>
+      {% endif %}
       {% if p['verificado'] %}<span class="selo" title="Prestador verificado">✔ Verificado</span>{% endif %}
     </div>
     <h3 class="card-nome">{{ p['nome'] }}</h3>
-    <p class="card-cat">{{ p['categoria_nome'] }} · {{ p['cidade'] }}</p>
+    <p class="card-cat">{{ p['categoria_nome'] }}{% if p['regiao_nome'] %} · {{ p['regiao_nome'] }}/{{ p['regiao_uf'] }}{% endif %}</p>
     <p class="card-desc">{{ (p['descricao'] or '')[:90] }}{% if (p['descricao'] or '')|length > 90 %}…{% endif %}</p>
     <div class="card-rodape">
       {{ estrelas(p['media']) }}
       <span class="card-nota">{{ p['media'] }} ({{ p['n_avaliacoes'] }})</span>
     </div>
   </a>
+{% endmacro %}
+
+{% macro regiao_select(selecionado_id=None) %}
+<div class="campo">
+  <label for="regiao_id">Região (cidade/UF) *</label>
+  <select id="regiao_id" name="regiao_id" data-regiao-select="#regiao-nova" required>
+    <option value="">Selecione…</option>
+    {% for r in todas_regioes %}
+      <option value="{{ r['id'] }}" {% if selecionado_id and selecionado_id|string == r['id']|string %}selected{% endif %}>
+        {{ r['nome'] }}/{{ r['uf'] }}
+      </option>
+    {% endfor %}
+    <option value="__nova__">Outra cidade…</option>
+  </select>
+</div>
+<div id="regiao-nova" class="grid-2 regiao-nova">
+  <div class="campo">
+    <label for="regiao_nome">Cidade</label>
+    <input type="text" id="regiao_nome" name="regiao_nome" placeholder="Ex.: Sinop">
+  </div>
+  <div class="campo">
+    <label for="regiao_uf">UF</label>
+    <input type="text" id="regiao_uf" name="regiao_uf" placeholder="MT" maxlength="2">
+  </div>
+</div>
 {% endmacro %}

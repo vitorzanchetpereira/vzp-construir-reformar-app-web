@@ -24,33 +24,50 @@ CREATE TABLE IF NOT EXISTS categorias (
     slug  TEXT NOT NULL UNIQUE,
     icone TEXT NOT NULL DEFAULT '🔧'
 );
+CREATE TABLE IF NOT EXISTS regioes (
+    id    INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome  TEXT NOT NULL,
+    uf    TEXT NOT NULL,
+    slug  TEXT NOT NULL UNIQUE
+);
 CREATE TABLE IF NOT EXISTS prestadores (
     id           INTEGER PRIMARY KEY AUTOINCREMENT,
     nome         TEXT NOT NULL,
     categoria_id INTEGER NOT NULL REFERENCES categorias(id),
-    cidade       TEXT NOT NULL DEFAULT 'Sorriso/MT',
+    regiao_id    INTEGER REFERENCES regioes(id),
     telefone     TEXT, whatsapp TEXT, descricao TEXT,
+    foto_url     TEXT,
     verificado   INTEGER NOT NULL DEFAULT 0,
     criado_em    TEXT NOT NULL DEFAULT (datetime('now','localtime'))
 );
-CREATE TABLE IF NOT EXISTS avaliacoes (
+CREATE TABLE IF NOT EXISTS prestador_fotos (
     id           INTEGER PRIMARY KEY AUTOINCREMENT,
     prestador_id INTEGER NOT NULL REFERENCES prestadores(id) ON DELETE CASCADE,
-    autor        TEXT NOT NULL,
-    nota         INTEGER NOT NULL CHECK (nota BETWEEN 1 AND 5),
-    comentario   TEXT,
-    status       TEXT NOT NULL DEFAULT 'pendente',
+    url          TEXT NOT NULL,
     criado_em    TEXT NOT NULL DEFAULT (datetime('now','localtime'))
 );
 CREATE TABLE IF NOT EXISTS usuarios (
     id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome         TEXT,
     email        TEXT NOT NULL UNIQUE,
     senha_hash   TEXT NOT NULL,
     papel        TEXT NOT NULL DEFAULT 'prestador',
     prestador_id INTEGER REFERENCES prestadores(id) ON DELETE CASCADE,
     criado_em    TEXT NOT NULL DEFAULT (datetime('now','localtime'))
 );
+CREATE TABLE IF NOT EXISTS avaliacoes (
+    id           INTEGER PRIMARY KEY AUTOINCREMENT,
+    prestador_id INTEGER NOT NULL REFERENCES prestadores(id) ON DELETE CASCADE,
+    usuario_id   INTEGER REFERENCES usuarios(id) ON DELETE SET NULL,
+    autor        TEXT NOT NULL,
+    nota         INTEGER NOT NULL CHECK (nota BETWEEN 1 AND 5),
+    comentario   TEXT,
+    foto_url     TEXT,
+    status       TEXT NOT NULL DEFAULT 'pendente',
+    criado_em    TEXT NOT NULL DEFAULT (datetime('now','localtime'))
+);
 CREATE INDEX IF NOT EXISTS idx_prestadores_categoria ON prestadores(categoria_id);
+CREATE INDEX IF NOT EXISTS idx_prestadores_regiao ON prestadores(regiao_id);
 CREATE INDEX IF NOT EXISTS idx_avaliacoes_prestador ON avaliacoes(prestador_id);
 CREATE INDEX IF NOT EXISTS idx_avaliacoes_status ON avaliacoes(status);
 CREATE INDEX IF NOT EXISTS idx_usuarios_email ON usuarios(email);
@@ -63,37 +80,111 @@ CREATE TABLE IF NOT EXISTS categorias (
     slug  TEXT NOT NULL UNIQUE,
     icone TEXT NOT NULL DEFAULT '🔧'
 );
+CREATE TABLE IF NOT EXISTS regioes (
+    id    SERIAL PRIMARY KEY,
+    nome  TEXT NOT NULL,
+    uf    TEXT NOT NULL,
+    slug  TEXT NOT NULL UNIQUE
+);
 CREATE TABLE IF NOT EXISTS prestadores (
     id           SERIAL PRIMARY KEY,
     nome         TEXT NOT NULL,
     categoria_id INTEGER NOT NULL REFERENCES categorias(id),
-    cidade       TEXT NOT NULL DEFAULT 'Sorriso/MT',
+    regiao_id    INTEGER REFERENCES regioes(id),
     telefone     TEXT, whatsapp TEXT, descricao TEXT,
+    foto_url     TEXT,
     verificado   INTEGER NOT NULL DEFAULT 0,
     criado_em    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-CREATE TABLE IF NOT EXISTS avaliacoes (
+CREATE TABLE IF NOT EXISTS prestador_fotos (
     id           SERIAL PRIMARY KEY,
     prestador_id INTEGER NOT NULL REFERENCES prestadores(id) ON DELETE CASCADE,
-    autor        TEXT NOT NULL,
-    nota         INTEGER NOT NULL CHECK (nota BETWEEN 1 AND 5),
-    comentario   TEXT,
-    status       TEXT NOT NULL DEFAULT 'pendente',
+    url          TEXT NOT NULL,
     criado_em    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 CREATE TABLE IF NOT EXISTS usuarios (
     id           SERIAL PRIMARY KEY,
+    nome         TEXT,
     email        TEXT NOT NULL UNIQUE,
     senha_hash   TEXT NOT NULL,
     papel        TEXT NOT NULL DEFAULT 'prestador',
     prestador_id INTEGER REFERENCES prestadores(id) ON DELETE CASCADE,
     criado_em    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+CREATE TABLE IF NOT EXISTS avaliacoes (
+    id           SERIAL PRIMARY KEY,
+    prestador_id INTEGER NOT NULL REFERENCES prestadores(id) ON DELETE CASCADE,
+    usuario_id   INTEGER REFERENCES usuarios(id) ON DELETE SET NULL,
+    autor        TEXT NOT NULL,
+    nota         INTEGER NOT NULL CHECK (nota BETWEEN 1 AND 5),
+    comentario   TEXT,
+    foto_url     TEXT,
+    status       TEXT NOT NULL DEFAULT 'pendente',
+    criado_em    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
 CREATE INDEX IF NOT EXISTS idx_prestadores_categoria ON prestadores(categoria_id);
+CREATE INDEX IF NOT EXISTS idx_prestadores_regiao ON prestadores(regiao_id);
 CREATE INDEX IF NOT EXISTS idx_avaliacoes_prestador ON avaliacoes(prestador_id);
 CREATE INDEX IF NOT EXISTS idx_avaliacoes_status ON avaliacoes(status);
 CREATE INDEX IF NOT EXISTS idx_usuarios_email ON usuarios(email);
 """
+
+# ---------------------------------------------------------------- migração incremental
+# Bancos criados antes desta versão têm prestadores.cidade (texto livre) e não têm
+# as colunas/tabelas novas. As checagens abaixo são idempotentes: rodam a cada
+# startup e só alteram o que ainda não existe, para não quebrar produção.
+_COLUNAS_NOVAS = {
+    "prestadores": [("regiao_id", "INTEGER"), ("foto_url", "TEXT")],
+    "usuarios": [("nome", "TEXT")],
+    "avaliacoes": [("usuario_id", "INTEGER"), ("foto_url", "TEXT")],
+}
+
+
+def _colunas_existentes(cur, tabela):
+    if BACKEND == "sqlite":
+        cur.execute(f"PRAGMA table_info({tabela})")
+        return {row[1] for row in cur.fetchall()}
+    cur.execute(
+        "SELECT column_name FROM information_schema.columns WHERE table_name = %s",
+        (tabela,),
+    )
+    return {row["column_name"] for row in cur.fetchall()}
+
+
+def _migrar_colunas(cur):
+    for tabela, colunas in _COLUNAS_NOVAS.items():
+        existentes = _colunas_existentes(cur, tabela)
+        for nome, tipo in colunas:
+            if nome not in existentes:
+                cur.execute(f"ALTER TABLE {tabela} ADD COLUMN {nome} {tipo}")
+
+
+def _migrar_cidade_para_regiao(cur):
+    """Prestadores antigos tinham só o texto 'cidade'; até hoje essa era sempre
+    'Sorriso/MT', então o backfill aponta todos os órfãos para essa região."""
+    existentes = _colunas_existentes(cur, "prestadores")
+    if "cidade" not in existentes:
+        return  # já migrado
+    cur.execute(_prep("SELECT id FROM regioes WHERE slug = ?"), ("sorriso-mt",))
+    row = cur.fetchone()
+    if not row:
+        cur.execute(
+            _prep("INSERT INTO regioes (nome, uf, slug) VALUES (?,?,?)"),
+            ("Sorriso", "MT", "sorriso-mt"),
+        )
+        cur.execute(_prep("SELECT id FROM regioes WHERE slug = ?"), ("sorriso-mt",))
+        row = cur.fetchone()
+    regiao_id = row["id"] if BACKEND == "postgres" else row[0]
+    cur.execute(
+        _prep("UPDATE prestadores SET regiao_id = ? WHERE regiao_id IS NULL"),
+        (regiao_id,),
+    )
+    try:
+        cur.execute("ALTER TABLE prestadores DROP COLUMN cidade")
+    except Exception:
+        # SQLite < 3.35 não suporta DROP COLUMN; a coluna fica órfã e sem uso,
+        # sem risco — o código da aplicação não lê nem escreve mais nela.
+        pass
 
 
 # ---------------------------------------------------------------- conexão
@@ -120,6 +211,8 @@ def init_db():
         cur.executescript(_DDL_SQLITE)
     else:
         cur.execute(_DDL_POSTGRES)
+    _migrar_colunas(cur)
+    _migrar_cidade_para_regiao(cur)
     conn.commit()
     cur.close()
     conn.close()

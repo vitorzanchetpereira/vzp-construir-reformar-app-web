@@ -8,6 +8,7 @@
 
   <form action="{{ url_for('entrar') }}" method="post" class="form">
     <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+    <input type="hidden" name="next" value="{{ proximo }}">
     <div class="campo">
       <label for="email">E-mail</label>
       <input type="email" id="email" name="email" required autofocus>
@@ -20,7 +21,8 @@
   </form>
 
   <p class="sub" style="margin-top:18px">
-    Ainda não tem cadastro? <a class="link" href="{{ url_for('cadastro') }}">Cadastre seu negócio</a>.
+    Quer indicar prestadores? <a class="link" href="{{ url_for('conta_cadastro') }}">Crie sua conta grátis</a>.<br>
+    É prestador ou fornecedor? <a class="link" href="{{ url_for('cadastro') }}">Cadastre seu negócio</a>.
   </p>
 </section>
 

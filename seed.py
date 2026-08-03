@@ -73,24 +73,33 @@ def ensure_categorias():
             db.execute("INSERT INTO categorias (nome, slug, icone) VALUES (?,?,?)", (nome, slug, icone))
 
 
+def ensure_regioes():
+    if not db.query("SELECT 1 FROM regioes WHERE slug = ?", ("sorriso-mt",), one=True):
+        db.execute("INSERT INTO regioes (nome, uf, slug) VALUES (?,?,?)", ("Sorriso", "MT", "sorriso-mt"))
+
+
 def ensure_admin():
     email = os.environ.get("ADMIN_EMAIL", "admin@construireformar.local").strip().lower()
     senha = os.environ.get("ADMIN_SENHA", "admin123")
-    if not db.query("SELECT 1 FROM usuarios WHERE email = ?", (email,), one=True):
+    admin = db.query("SELECT id, nome FROM usuarios WHERE email = ?", (email,), one=True)
+    if not admin:
         db.execute(
-            "INSERT INTO usuarios (email, senha_hash, papel) VALUES (?,?, 'admin')",
-            (email, generate_password_hash(senha)),
+            "INSERT INTO usuarios (nome, email, senha_hash, papel) VALUES (?,?,?, 'admin')",
+            ("Equipe VZP", email, generate_password_hash(senha)),
         )
+    elif not admin["nome"]:
+        db.execute("UPDATE usuarios SET nome = ? WHERE id = ?", ("Equipe VZP", admin["id"]))
 
 
 def seed_demo():
     cat_id = {r["slug"]: r["id"] for r in db.query("SELECT id, slug FROM categorias")}
+    regiao_id = db.query("SELECT id FROM regioes WHERE slug = ?", ("sorriso-mt",), one=True)["id"]
     prest_id = {}
     for nome, slug, tel, wpp, desc, verif in PRESTADORES:
         prest_id[nome] = db.execute(
-            """INSERT INTO prestadores (nome, categoria_id, cidade, telefone, whatsapp, descricao, verificado)
+            """INSERT INTO prestadores (nome, categoria_id, regiao_id, telefone, whatsapp, descricao, verificado)
                VALUES (?,?,?,?,?,?,?)""",
-            (nome, cat_id[slug], "Sorriso/MT", tel, wpp, desc, verif),
+            (nome, cat_id[slug], regiao_id, tel, wpp, desc, verif),
         )
     for pnome, autor, nota, coment, status in AVALIACOES:
         db.execute(
@@ -100,21 +109,40 @@ def seed_demo():
     # conta de prestador para demonstração
     if not db.query("SELECT 1 FROM usuarios WHERE email = ?", ("demo@construireformar.local",), one=True):
         db.execute(
-            "INSERT INTO usuarios (email, senha_hash, papel, prestador_id) VALUES (?,?, 'prestador', ?)",
-            ("demo@construireformar.local", generate_password_hash("demo123"), prest_id["Pinturas Colorir"]),
+            "INSERT INTO usuarios (nome, email, senha_hash, papel, prestador_id) VALUES (?,?,?, 'prestador', ?)",
+            ("Pinturas Colorir", "demo@construireformar.local", generate_password_hash("demo123"),
+             prest_id["Pinturas Colorir"]),
         )
+    # conta de cliente para demonstração (quem indica/avalia)
+    if not db.query("SELECT 1 FROM usuarios WHERE email = ?", ("cliente@construireformar.local",), one=True):
+        db.execute(
+            "INSERT INTO usuarios (nome, email, senha_hash, papel) VALUES (?,?,?, 'cliente')",
+            ("Cliente Demo", "cliente@construireformar.local", generate_password_hash("demo123")),
+        )
+
+
+def _preencher_nomes_faltantes():
+    """Contas de prestador criadas antes da coluna usuarios.nome existir ficam
+    sem nome; usa o nome do próprio prestador para não deixar exibição vazia."""
+    for u in db.query(
+        "SELECT u.id, p.nome FROM usuarios u JOIN prestadores p ON p.id = u.prestador_id "
+        "WHERE u.papel = 'prestador' AND (u.nome IS NULL OR u.nome = '')"
+    ):
+        db.execute("UPDATE usuarios SET nome = ? WHERE id = ?", (u["nome"], u["id"]))
 
 
 def run():
     db.init_db()
     ensure_categorias()
+    ensure_regioes()
     ensure_admin()
+    _preencher_nomes_faltantes()
     tem_prestadores = db.query("SELECT COUNT(*) AS n FROM prestadores", one=True)["n"] > 0
     if os.environ.get("SEED_DEMO", "1") != "0" and not tem_prestadores:
         seed_demo()
-        print("Seed: categorias + admin + dados de demonstração.")
+        print("Seed: categorias + região + admin + dados de demonstração.")
     else:
-        print("Seed: categorias + admin garantidos (sem demo).")
+        print("Seed: categorias + região + admin garantidos (sem demo).")
 
 
 if __name__ == "__main__":
