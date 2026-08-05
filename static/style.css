@@ -186,6 +186,9 @@ section{margin:38px 0}
 .btn-indicar{background:#e8f4ff;color:var(--azul-claro);border-color:#cfe6fb}
 .btn-indicar:hover{filter:brightness(.97)}
 
+.btn-mapa{background:#eef7f0;color:var(--verde);border-color:#cdeed6}
+.btn-mapa:hover{filter:brightness(.97)}
+
 .galeria-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
 .galeria-grid img{width:100%;height:120px;object-fit:cover;border-radius:12px;border:1px solid var(--linha)}
 .galeria-item{display:flex;flex-direction:column;gap:6px}

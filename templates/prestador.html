@@ -39,6 +39,11 @@
        target="_blank" rel="noopener">
       📣 Indicar no WhatsApp
     </a>
+    <a class="btn btn-mapa"
+       href="https://www.google.com/maps/search/?api=1&query={{ (p['nome'] ~ ', ' ~ p['regiao_nome'] ~ '/' ~ p['regiao_uf'] if p['regiao_nome'] else p['nome'])|urlencode }}"
+       target="_blank" rel="noopener">
+      📍 Ver no mapa
+    </a>
   </div>
 </section>
 

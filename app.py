@@ -620,6 +620,49 @@ def admin_categoria_excluir(cid):
     return redirect(url_for("admin_painel"))
 
 
+@app.route("/admin/regiao/criar", methods=["POST"])
+@admin_required
+def admin_regiao_criar():
+    nome = request.form.get("nome", "").strip()
+    uf = request.form.get("uf", "").strip()
+    if not (nome and uf):
+        flash("Informe cidade e UF.", "erro")
+        return redirect(url_for("admin_painel"))
+    if not obter_ou_criar_regiao(nome, uf):
+        flash("Não foi possível criar a região — confira cidade e UF.", "erro")
+        return redirect(url_for("admin_painel"))
+    flash(f"Região '{nome}/{uf.upper()}' criada!", "ok")
+    return redirect(url_for("admin_painel"))
+
+
+@app.route("/admin/regiao/<int:rid>/editar", methods=["POST"])
+@admin_required
+def admin_regiao_editar(rid):
+    r = db.query("SELECT * FROM regioes WHERE id = ?", (rid,), one=True)
+    if not r:
+        abort(404)
+    nome = request.form.get("nome", "").strip() or r["nome"]
+    uf = (request.form.get("uf", "").strip() or r["uf"]).upper()[:2]
+    db.execute("UPDATE regioes SET nome = ?, uf = ? WHERE id = ?", (nome, uf, rid))
+    flash("Região atualizada!", "ok")
+    return redirect(url_for("admin_painel"))
+
+
+@app.route("/admin/regiao/<int:rid>/excluir", methods=["POST"])
+@admin_required
+def admin_regiao_excluir(rid):
+    r = db.query("SELECT nome, uf FROM regioes WHERE id = ?", (rid,), one=True)
+    if not r:
+        abort(404)
+    em_uso = db.query("SELECT COUNT(*) AS n FROM prestadores WHERE regiao_id = ?", (rid,), one=True)["n"]
+    if em_uso:
+        flash(f"Não é possível excluir: {em_uso} prestador(es) ainda usam '{r['nome']}/{r['uf']}'.", "erro")
+        return redirect(url_for("admin_painel"))
+    db.execute("DELETE FROM regioes WHERE id = ?", (rid,))
+    flash(f"Região '{r['nome']}/{r['uf']}' excluída.", "ok")
+    return redirect(url_for("admin_painel"))
+
+
 @app.route("/admin/prestador/<int:pid>/excluir", methods=["POST"])
 @admin_required
 def admin_prestador_excluir(pid):
@@ -670,6 +713,25 @@ def api_categorias():
 @api_admin_required
 def api_regioes():
     return jsonify([dict(r) for r in regioes()])
+
+
+@app.route("/api/regioes", methods=["POST"])
+@api_admin_required
+def api_regioes_criar():
+    dados = request.get_json(silent=True) or {}
+    nome = (dados.get("nome") or "").strip()
+    uf = (dados.get("uf") or "").strip()
+    if not (nome and uf):
+        return jsonify({"erro": "informe nome (cidade) e uf"}), 400
+    existente = db.query(
+        "SELECT id FROM regioes WHERE LOWER(nome) = LOWER(?) AND LOWER(uf) = LOWER(?)", (nome, uf), one=True
+    )
+    if existente:
+        return jsonify({"ja_existia": True, "id": existente["id"], "nome": nome, "uf": uf.upper()})
+    rid = obter_ou_criar_regiao(nome, uf)
+    if not rid:
+        return jsonify({"erro": "não foi possível criar — confira cidade e uf"}), 400
+    return jsonify({"ok": True, "id": rid, "nome": nome, "uf": uf.upper()})
 
 
 @app.route("/api/categorias", methods=["POST"])

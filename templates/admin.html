@@ -107,4 +107,30 @@
   </form>
 </section>
 
+<section>
+  <h2 class="secao-titulo">Regiões</h2>
+  <div class="cat-lista">
+    {% for r in todas_regioes %}
+      <div class="cat-card">
+        <form action="{{ url_for('admin_regiao_editar', rid=r['id']) }}" method="post">
+          <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+          <input type="text" name="nome" value="{{ r['nome'] }}" required class="cat-card-nome" placeholder="Cidade">
+          <input type="text" name="uf" value="{{ r['uf'] }}" maxlength="2" class="cat-card-icone" placeholder="UF">
+          <button class="btn btn-mini" type="submit">Salvar</button>
+        </form>
+        <form action="{{ url_for('admin_regiao_excluir', rid=r['id']) }}" method="post">
+          <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+          <button class="btn btn-mini btn-nao" type="submit">Excluir</button>
+        </form>
+      </div>
+    {% endfor %}
+  </div>
+  <form action="{{ url_for('admin_regiao_criar') }}" method="post" class="form-foto" style="margin-top:16px">
+    <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+    <input type="text" name="nome" placeholder="Cidade (ex.: Sinop)" required style="flex:1;min-width:200px">
+    <input type="text" name="uf" placeholder="UF" maxlength="2" style="max-width:64px;text-align:center">
+    <button class="btn btn-primary btn-mini" type="submit">Adicionar região</button>
+  </form>
+</section>
+
 {% endblock %}
