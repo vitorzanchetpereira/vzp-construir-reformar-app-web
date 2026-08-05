@@ -127,11 +127,12 @@ CREATE TABLE IF NOT EXISTS avaliacoes (
     criado_em    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 CREATE INDEX IF NOT EXISTS idx_prestadores_categoria ON prestadores(categoria_id);
-CREATE INDEX IF NOT EXISTS idx_prestadores_regiao ON prestadores(regiao_id);
 CREATE INDEX IF NOT EXISTS idx_avaliacoes_prestador ON avaliacoes(prestador_id);
 CREATE INDEX IF NOT EXISTS idx_avaliacoes_status ON avaliacoes(status);
 CREATE INDEX IF NOT EXISTS idx_usuarios_email ON usuarios(email);
 """
+# (idx_prestadores_regiao: ver comentário acima do bloco _DDL_POSTGRES — mesma razão,
+# criado depois da migração de colunas, não aqui.)
 
 # ---------------------------------------------------------------- migração incremental
 # Bancos criados antes desta versão têm prestadores.cidade (texto livre) e não têm
@@ -217,6 +218,7 @@ def init_db():
         cur.execute(_DDL_POSTGRES)
     _migrar_colunas(cur)
     _migrar_cidade_para_regiao(cur)
+    cur.execute("CREATE INDEX IF NOT EXISTS idx_prestadores_regiao ON prestadores(regiao_id)")
     conn.commit()
     cur.close()
     conn.close()
