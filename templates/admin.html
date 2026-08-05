@@ -45,7 +45,7 @@
   <h2 class="secao-titulo">Prestadores &amp; selo Verificado</h2>
   <table class="tabela">
     <thead>
-      <tr><th>Prestador</th><th>Categoria</th><th>Região</th><th>Avaliações</th><th>Selo</th><th></th></tr>
+      <tr><th>Prestador</th><th>Categoria</th><th>Região</th><th>Avaliações</th><th>Selo</th><th></th><th></th></tr>
     </thead>
     <tbody>
       {% for p in prestadores %}
@@ -59,6 +59,9 @@
             {% else %}<span class="selo selo-cinza">—</span>{% endif %}
           </td>
           <td>
+            <a class="btn btn-mini" href="{{ url_for('admin_prestador_editar', pid=p['id']) }}">Editar</a>
+          </td>
+          <td>
             <form action="{{ url_for('admin_verificar', pid=p['id']) }}" method="post">
               <input type="hidden" name="_csrf" value="{{ csrf_token }}">
               <button class="btn btn-mini" type="submit">
@@ -70,6 +73,21 @@
       {% endfor %}
     </tbody>
   </table>
+</section>
+
+<section>
+  <h2 class="secao-titulo">Categorias de serviço</h2>
+  <div class="grid-cats">
+    {% for c in todas_categorias %}
+      <span class="cat-chip">{{ c['icone'] }} {{ c['nome'] }}</span>
+    {% endfor %}
+  </div>
+  <form action="{{ url_for('admin_categoria_criar') }}" method="post" class="form-foto">
+    <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+    <input type="text" name="icone" placeholder="🔧" maxlength="4" style="max-width:64px;text-align:center">
+    <input type="text" name="nome" placeholder="Nome da nova categoria" required style="flex:1;min-width:200px">
+    <button class="btn btn-primary btn-mini" type="submit">Adicionar categoria</button>
+  </form>
 </section>
 
 {% endblock %}

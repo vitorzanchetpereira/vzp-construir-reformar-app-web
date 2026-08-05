@@ -3,12 +3,12 @@
 {% block titulo %}Editar perfil{% endblock %}
 {% block conteudo %}
 
-<a class="voltar" href="{{ url_for('painel') }}">← Voltar ao painel</a>
+<a class="voltar" href="{{ voltar }}">← Voltar</a>
 
 <section class="form-box estreito">
-  <h1 class="pagina-titulo">Editar perfil</h1>
+  <h1 class="pagina-titulo">Editar {{ 'perfil' if voltar == url_for('painel') else 'prestador' }}</h1>
 
-  <form action="{{ url_for('painel_editar') }}" method="post" class="form" enctype="multipart/form-data">
+  <form action="{{ acao }}" method="post" class="form" enctype="multipart/form-data">
     <input type="hidden" name="_csrf" value="{{ csrf_token }}">
     <div class="campo">
       <label for="nome">Nome do negócio / profissional *</label>
