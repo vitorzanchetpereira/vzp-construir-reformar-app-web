@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block titulo %}Convidar admin{% endblock %}
+{% block conteudo %}
+
+<a class="voltar" href="{{ url_for('admin_painel') }}">← Voltar ao painel</a>
+
+<h1 class="pagina-titulo">Equipe admin</h1>
+
+<section class="form-box estreito">
+  <h2 class="secao-titulo" style="margin-top:0">Criar acesso de admin</h2>
+  <p class="sub">A pessoa entra em <code>/entrar</code> com esse e-mail e senha e cai direto no painel admin.</p>
+  <form action="{{ url_for('admin_convidar') }}" method="post" class="form">
+    <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+    <div class="campo">
+      <label for="nome">Nome *</label>
+      <input type="text" id="nome" name="nome" required>
+    </div>
+    <div class="campo">
+      <label for="email">E-mail *</label>
+      <input type="email" id="email" name="email" required>
+    </div>
+    <div class="campo">
+      <label for="senha">Senha * (mín. 6 caracteres)</label>
+      <input type="password" id="senha" name="senha" required>
+    </div>
+    <button class="btn btn-primary btn-lg" type="submit">Criar acesso de admin</button>
+  </form>
+</section>
+
+<section>
+  <h2 class="secao-titulo">Admins atuais</h2>
+  <table class="tabela">
+    <thead><tr><th>Nome</th><th>E-mail</th><th>Desde</th></tr></thead>
+    <tbody>
+      {% for a in admins %}
+        <tr>
+          <td>{{ a['nome'] or '—' }}</td>
+          <td>{{ a['email'] }}</td>
+          <td>{{ a['criado_em']|data }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+{% endblock %}

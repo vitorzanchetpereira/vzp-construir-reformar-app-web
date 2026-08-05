@@ -440,6 +440,33 @@ def admin_avaliacao(aid, acao):
     return redirect(url_for("admin_painel"))
 
 
+@app.route("/admin/convidar", methods=["GET", "POST"])
+@admin_required
+def admin_convidar():
+    if request.method == "POST":
+        f = request.form
+        nome = f.get("nome", "").strip()
+        email = f.get("email", "").strip().lower()
+        senha = f.get("senha", "")
+        if not (nome and email and senha):
+            flash("Preencha nome, e-mail e senha.", "erro")
+            return redirect(url_for("admin_convidar"))
+        if len(senha) < 6:
+            flash("A senha precisa ter ao menos 6 caracteres.", "erro")
+            return redirect(url_for("admin_convidar"))
+        if db.query("SELECT 1 FROM usuarios WHERE email = ?", (email,), one=True):
+            flash("Já existe uma conta com esse e-mail.", "erro")
+            return redirect(url_for("admin_convidar"))
+        db.execute(
+            "INSERT INTO usuarios (nome, email, senha_hash, papel) VALUES (?,?,?, 'admin')",
+            (nome, email, generate_password_hash(senha)),
+        )
+        flash(f"Admin {nome} criado — já pode entrar em /entrar com esse e-mail.", "ok")
+        return redirect(url_for("admin_convidar"))
+    admins = db.query("SELECT nome, email, criado_em FROM usuarios WHERE papel = 'admin' ORDER BY criado_em")
+    return render_template("admin_convidar.html", admins=admins)
+
+
 @app.route("/admin/prestador/<int:pid>/verificar", methods=["POST"])
 @admin_required
 def admin_verificar(pid):

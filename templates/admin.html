@@ -3,7 +3,10 @@
 {% block titulo %}Painel admin{% endblock %}
 {% block conteudo %}
 
-<h1 class="pagina-titulo">Painel administrativo <span class="tag-admin">VZP</span></h1>
+<div class="secao-head">
+  <h1 class="pagina-titulo">Painel administrativo <span class="tag-admin">VZP</span></h1>
+  <a class="btn" href="{{ url_for('admin_convidar') }}">Equipe admin</a>
+</div>
 
 <section>
   <h2 class="secao-titulo">Fila de moderação
