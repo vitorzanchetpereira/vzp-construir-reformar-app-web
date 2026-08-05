@@ -586,6 +586,51 @@ def admin_categoria_criar():
     return redirect(url_for("admin_painel"))
 
 
+@app.route("/admin/categoria/<int:cid>/editar", methods=["POST"])
+@admin_required
+def admin_categoria_editar(cid):
+    if not db.query("SELECT 1 FROM categorias WHERE id = ?", (cid,), one=True):
+        abort(404)
+    nome = request.form.get("nome", "").strip()
+    icone = request.form.get("icone", "").strip() or "🔧"
+    if not nome:
+        flash("Informe o nome da categoria.", "erro")
+        return redirect(url_for("admin_painel"))
+    outra = db.query("SELECT 1 FROM categorias WHERE LOWER(nome) = LOWER(?) AND id != ?", (nome, cid), one=True)
+    if outra:
+        flash("Já existe outra categoria com esse nome.", "erro")
+        return redirect(url_for("admin_painel"))
+    db.execute("UPDATE categorias SET nome = ?, icone = ? WHERE id = ?", (nome, icone, cid))
+    flash("Categoria atualizada!", "ok")
+    return redirect(url_for("admin_painel"))
+
+
+@app.route("/admin/categoria/<int:cid>/excluir", methods=["POST"])
+@admin_required
+def admin_categoria_excluir(cid):
+    cat = db.query("SELECT nome FROM categorias WHERE id = ?", (cid,), one=True)
+    if not cat:
+        abort(404)
+    em_uso = db.query("SELECT COUNT(*) AS n FROM prestadores WHERE categoria_id = ?", (cid,), one=True)["n"]
+    if em_uso:
+        flash(f"Não é possível excluir: {em_uso} prestador(es) ainda usam a categoria '{cat['nome']}'.", "erro")
+        return redirect(url_for("admin_painel"))
+    db.execute("DELETE FROM categorias WHERE id = ?", (cid,))
+    flash(f"Categoria '{cat['nome']}' excluída.", "ok")
+    return redirect(url_for("admin_painel"))
+
+
+@app.route("/admin/prestador/<int:pid>/excluir", methods=["POST"])
+@admin_required
+def admin_prestador_excluir(pid):
+    p = db.query("SELECT nome FROM prestadores WHERE id = ?", (pid,), one=True)
+    if not p:
+        abort(404)
+    db.execute("DELETE FROM prestadores WHERE id = ?", (pid,))
+    flash(f"Prestador '{p['nome']}' excluído.", "ok")
+    return redirect(url_for("admin_painel"))
+
+
 @app.route("/admin/prestador/<int:pid>/verificar", methods=["POST"])
 @admin_required
 def admin_verificar(pid):
@@ -639,6 +684,64 @@ def api_categorias_criar():
         return jsonify({"ja_existia": True, "id": existente, "nome": nome})
     cid = obter_ou_criar_categoria(nome, dados.get("icone"))
     return jsonify({"ok": True, "id": cid, "nome": nome})
+
+
+@app.route("/api/categorias/<int:cid>", methods=["PUT"])
+@api_admin_required
+def api_categoria_editar(cid):
+    if not db.query("SELECT 1 FROM categorias WHERE id = ?", (cid,), one=True):
+        return jsonify({"erro": "categoria não encontrada"}), 404
+    dados = request.get_json(silent=True) or {}
+    nome = (dados.get("nome") or "").strip()
+    if not nome:
+        return jsonify({"erro": "informe o nome"}), 400
+    outra = db.query("SELECT 1 FROM categorias WHERE LOWER(nome) = LOWER(?) AND id != ?", (nome, cid), one=True)
+    if outra:
+        return jsonify({"erro": "já existe outra categoria com esse nome"}), 400
+    icone = (dados.get("icone") or "").strip() or "🔧"
+    db.execute("UPDATE categorias SET nome = ?, icone = ? WHERE id = ?", (nome, icone, cid))
+    return jsonify({"ok": True, "id": cid, "nome": nome, "icone": icone})
+
+
+@app.route("/api/categorias/<int:cid>", methods=["DELETE"])
+@api_admin_required
+def api_categoria_excluir(cid):
+    cat = db.query("SELECT nome FROM categorias WHERE id = ?", (cid,), one=True)
+    if not cat:
+        return jsonify({"erro": "categoria não encontrada"}), 404
+    em_uso = db.query("SELECT COUNT(*) AS n FROM prestadores WHERE categoria_id = ?", (cid,), one=True)["n"]
+    if em_uso:
+        return jsonify({"erro": f"{em_uso} prestador(es) ainda usam essa categoria — "
+                                 f"mova-os para outra categoria antes de excluir"}), 409
+    db.execute("DELETE FROM categorias WHERE id = ?", (cid,))
+    return jsonify({"ok": True, "nome": cat["nome"]})
+
+
+@app.route("/api/regioes/<int:rid>", methods=["PUT"])
+@api_admin_required
+def api_regiao_editar(rid):
+    r = db.query("SELECT * FROM regioes WHERE id = ?", (rid,), one=True)
+    if not r:
+        return jsonify({"erro": "região não encontrada"}), 404
+    dados = request.get_json(silent=True) or {}
+    nome = (dados.get("nome") or r["nome"]).strip()
+    uf = (dados.get("uf") or r["uf"]).strip().upper()[:2]
+    db.execute("UPDATE regioes SET nome = ?, uf = ? WHERE id = ?", (nome, uf, rid))
+    return jsonify({"ok": True, "id": rid, "nome": nome, "uf": uf})
+
+
+@app.route("/api/regioes/<int:rid>", methods=["DELETE"])
+@api_admin_required
+def api_regiao_excluir(rid):
+    r = db.query("SELECT nome, uf FROM regioes WHERE id = ?", (rid,), one=True)
+    if not r:
+        return jsonify({"erro": "região não encontrada"}), 404
+    em_uso = db.query("SELECT COUNT(*) AS n FROM prestadores WHERE regiao_id = ?", (rid,), one=True)["n"]
+    if em_uso:
+        return jsonify({"erro": f"{em_uso} prestador(es) ainda usam essa região — "
+                                 f"mova-os para outra região antes de excluir"}), 409
+    db.execute("DELETE FROM regioes WHERE id = ?", (rid,))
+    return jsonify({"ok": True, "nome": f"{r['nome']}/{r['uf']}"})
 
 
 @app.route("/api/prestadores", methods=["GET"])
@@ -771,6 +874,16 @@ def api_prestadores_editar(pid):
         (pid,), one=True,
     )
     return jsonify({"ok": True, "prestador": _prestador_enxuto(atualizado)})
+
+
+@app.route("/api/prestadores/<int:pid>", methods=["DELETE"])
+@api_admin_required
+def api_prestadores_excluir(pid):
+    p = db.query("SELECT nome FROM prestadores WHERE id = ?", (pid,), one=True)
+    if not p:
+        return jsonify({"erro": "prestador não encontrado"}), 404
+    db.execute("DELETE FROM prestadores WHERE id = ?", (pid,))
+    return jsonify({"ok": True, "nome": p["nome"]})
 
 
 @app.route("/api/avaliacoes/pendentes", methods=["GET"])

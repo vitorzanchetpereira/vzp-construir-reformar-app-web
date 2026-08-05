@@ -45,7 +45,7 @@
   <h2 class="secao-titulo">Prestadores &amp; selo Verificado</h2>
   <table class="tabela">
     <thead>
-      <tr><th>Prestador</th><th>Categoria</th><th>Região</th><th>Avaliações</th><th>Selo</th><th></th><th></th></tr>
+      <tr><th>Prestador</th><th>Categoria</th><th>Região</th><th>Avaliações</th><th>Selo</th><th></th><th></th><th></th></tr>
     </thead>
     <tbody>
       {% for p in prestadores %}
@@ -69,6 +69,12 @@
               </button>
             </form>
           </td>
+          <td>
+            <form action="{{ url_for('admin_prestador_excluir', pid=p['id']) }}" method="post">
+              <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+              <button class="btn btn-mini btn-nao" type="submit">Excluir</button>
+            </form>
+          </td>
         </tr>
       {% endfor %}
     </tbody>
@@ -77,12 +83,23 @@
 
 <section>
   <h2 class="secao-titulo">Categorias de serviço</h2>
-  <div class="grid-cats">
+  <div class="cat-lista">
     {% for c in todas_categorias %}
-      <span class="cat-chip">{{ c['icone'] }} {{ c['nome'] }}</span>
+      <div class="cat-card">
+        <form action="{{ url_for('admin_categoria_editar', cid=c['id']) }}" method="post">
+          <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+          <input type="text" name="icone" value="{{ c['icone'] }}" maxlength="4" class="cat-card-icone">
+          <input type="text" name="nome" value="{{ c['nome'] }}" required class="cat-card-nome">
+          <button class="btn btn-mini" type="submit">Salvar</button>
+        </form>
+        <form action="{{ url_for('admin_categoria_excluir', cid=c['id']) }}" method="post">
+          <input type="hidden" name="_csrf" value="{{ csrf_token }}">
+          <button class="btn btn-mini btn-nao" type="submit">Excluir</button>
+        </form>
+      </div>
     {% endfor %}
   </div>
-  <form action="{{ url_for('admin_categoria_criar') }}" method="post" class="form-foto">
+  <form action="{{ url_for('admin_categoria_criar') }}" method="post" class="form-foto" style="margin-top:16px">
     <input type="hidden" name="_csrf" value="{{ csrf_token }}">
     <input type="text" name="icone" placeholder="🔧" maxlength="4" style="max-width:64px;text-align:center">
     <input type="text" name="nome" placeholder="Nome da nova categoria" required style="flex:1;min-width:200px">

@@ -196,6 +196,13 @@ section{margin:38px 0}
 .regiao-nova{display:none}
 .regiao-nova.visivel{display:grid}
 
+.cat-lista{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.cat-card{display:flex;gap:8px;align-items:center;background:var(--branco);border:1px solid var(--linha);
+  border-radius:12px;padding:8px 10px}
+.cat-card form{display:flex;gap:6px;align-items:center;margin:0}
+.cat-card-icone{width:44px;text-align:center;padding:8px 4px;border:1px solid var(--linha);border-radius:8px;font-size:15px}
+.cat-card-nome{width:120px;padding:8px 8px;border:1px solid var(--linha);border-radius:8px;font-size:14px}
+
 /* tabela admin */
 .tabela{width:100%;border-collapse:collapse;background:var(--branco);border:1px solid var(--linha);
   border-radius:var(--raio);overflow:hidden}
