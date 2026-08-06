@@ -996,6 +996,12 @@ def nao_encontrado(e):
                            msg="O que você procura não existe ou foi movido."), 404
 
 
+@app.errorhandler(500)
+def erro_interno(e):
+    return render_template("erro.html", codigo=500,
+                           msg="Algo deu errado do nosso lado. Tente de novo em um instante."), 500
+
+
 # Inicialização executada tanto no dev server quanto sob gunicorn (--preload):
 # cria as tabelas e garante categorias/admin (idempotente).
 import seed  # noqa: E402

@@ -1,9 +1,11 @@
 """
 Upload de imagens (Cloudinary). Sem CLOUDINARY_URL configurada (ex.: dev local
-sem conta Cloudinary), upload_imagem() retorna None sem erro — o formulário
-segue funcionando normalmente, só sem foto.
+sem conta Cloudinary), ou se o Cloudinary falhar por qualquer motivo (rede,
+credencial, formato rejeitado), upload_imagem() retorna None sem quebrar a
+página — o formulário segue funcionando normalmente, só sem foto.
 """
 import os
+import sys
 
 TAMANHO_MAXIMO = 5 * 1024 * 1024  # 5MB
 
@@ -26,7 +28,11 @@ def upload_imagem(file_storage, pasta="construir-reformar"):
     if tamanho > TAMANHO_MAXIMO:
         return None
 
-    resultado = cloudinary.uploader.upload(
-        file_storage, folder=pasta, resource_type="image"
-    )
-    return resultado.get("secure_url")
+    try:
+        resultado = cloudinary.uploader.upload(
+            file_storage, folder=pasta, resource_type="image"
+        )
+        return resultado.get("secure_url")
+    except Exception as e:
+        print(f"[uploads] falha ao enviar imagem pro Cloudinary: {e}", file=sys.stderr)
+        return None
