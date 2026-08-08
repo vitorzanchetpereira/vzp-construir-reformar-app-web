@@ -328,9 +328,11 @@ def prestadores():
     if busca:
         categorias_sinonimo = categorias_por_sinonimo(busca)
         if categorias_sinonimo:
-            marcadores = ",".join(["?"] * len(categorias_sinonimo))
-            sql += f" AND (p.nome LIKE ? OR p.descricao LIKE ? OR c.nome IN ({marcadores}))"
-            params += [f"%{busca}%", f"%{busca}%"] + categorias_sinonimo
+            # LIKE por conter o nome da categoria, não igualdade exata — sobrevive
+            # a categorias renomeadas/reagrupadas (ex.: "Instalações — Eletricista").
+            condicoes_cat = " OR ".join(["c.nome LIKE ?"] * len(categorias_sinonimo))
+            sql += f" AND (p.nome LIKE ? OR p.descricao LIKE ? OR {condicoes_cat})"
+            params += [f"%{busca}%", f"%{busca}%"] + [f"%{c}%" for c in categorias_sinonimo]
         else:
             sql += " AND (p.nome LIKE ? OR p.descricao LIKE ?)"
             params += [f"%{busca}%", f"%{busca}%"]
@@ -343,23 +345,6 @@ def prestadores():
     if verificado == "1":
         sql += " AND p.verificado = 1"
     sql += " GROUP BY p.id, c.id, r.id ORDER BY p.verificado DESC, media DESC, n_avaliacoes DESC, p.nome"
-
-    if request.args.get("_debug") == "1":
-        sql_final = db._prep(sql)
-        linhas_diretas = db.query(sql, params)
-        teste_categoria = None
-        if params:
-            teste_categoria = db.query("SELECT id, nome FROM categorias WHERE nome = ?", (params[-1],))
-        todas_cats = db.query("SELECT id, nome FROM categorias ORDER BY id")
-        return jsonify({
-            "backend": db.BACKEND,
-            "sql": sql_final,
-            "params": params,
-            "n_linhas": len(linhas_diretas),
-            "teste_categoria_exata": [dict(r) for r in teste_categoria] if teste_categoria else None,
-            "param_categoria_repr": repr(params[-1]) if params else None,
-            "todas_categorias_repr": [{"id": c["id"], "nome_repr": repr(c["nome"])} for c in todas_cats],
-        })
 
     rows = db.query(sql, params)
     cat_atual = db.query("SELECT * FROM categorias WHERE slug = ?", (cat_slug,), one=True) if cat_slug else None
@@ -929,9 +914,9 @@ def api_prestadores_listar():
     if busca:
         categorias_sinonimo = categorias_por_sinonimo(busca)
         if categorias_sinonimo:
-            marcadores = ",".join(["?"] * len(categorias_sinonimo))
-            sql += f" AND (p.nome LIKE ? OR p.descricao LIKE ? OR c.nome IN ({marcadores}))"
-            params += [f"%{busca}%", f"%{busca}%"] + categorias_sinonimo
+            condicoes_cat = " OR ".join(["c.nome LIKE ?"] * len(categorias_sinonimo))
+            sql += f" AND (p.nome LIKE ? OR p.descricao LIKE ? OR {condicoes_cat})"
+            params += [f"%{busca}%", f"%{busca}%"] + [f"%{c}%" for c in categorias_sinonimo]
         else:
             sql += " AND (p.nome LIKE ? OR p.descricao LIKE ?)"
             params += [f"%{busca}%", f"%{busca}%"]
