@@ -350,6 +350,7 @@ def prestadores():
         teste_categoria = None
         if params:
             teste_categoria = db.query("SELECT id, nome FROM categorias WHERE nome = ?", (params[-1],))
+        todas_cats = db.query("SELECT id, nome FROM categorias ORDER BY id")
         return jsonify({
             "backend": db.BACKEND,
             "sql": sql_final,
@@ -357,6 +358,7 @@ def prestadores():
             "n_linhas": len(linhas_diretas),
             "teste_categoria_exata": [dict(r) for r in teste_categoria] if teste_categoria else None,
             "param_categoria_repr": repr(params[-1]) if params else None,
+            "todas_categorias_repr": [{"id": c["id"], "nome_repr": repr(c["nome"])} for c in todas_cats],
         })
 
     rows = db.query(sql, params)
