@@ -7,6 +7,7 @@ VZP Engenharia / Base Empreendimentos.
 import os
 import re
 import secrets
+import unicodedata
 from functools import wraps
 from flask import (Flask, render_template, request, redirect, url_for,
                    flash, abort, session, jsonify, g)
@@ -41,6 +42,81 @@ def csrf_protect():
 
 
 # ---------------------------------------------------------------- helpers
+# Quem busca não digita o nome da categoria — digita o problema ("vazamento",
+# "luz", "goteira"). Mapeia termos coloquiais/sinônimos para a categoria certa,
+# pra a busca também considerar quem presta aquele serviço, não só quem tem
+# a palavra exata no nome/descrição.
+SINONIMOS_CATEGORIA = {
+    "Pedreiro / Alvenaria": [
+        "alvenaria", "tijolo", "parede", "muro", "reboco", "laje",
+        "contrapiso", "assentamento", "pedreiro",
+    ],
+    "Eletricista": [
+        "luz", "tomada", "fio", "fiacao", "energia", "disjuntor",
+        "curto circuito", "quadro de luz", "chuveiro eletrico", "lampada",
+        "eletrica", "instalacao eletrica",
+    ],
+    "Encanador / Hidráulica": [
+        "vazamento", "torneira", "cano", "encanamento", "entupimento",
+        "esgoto", "caixa d'agua", "registro", "hidraulica", "agua",
+        "desentupidora", "encanador",
+    ],
+    "Pintor": ["pintura", "tinta", "textura", "verniz", "pintor"],
+    "Marceneiro / Móveis": [
+        "moveis planejados", "armario", "cozinha planejada", "marcenaria",
+        "madeira", "marceneiro",
+    ],
+    "Serralheiro / Estruturas": [
+        "portao", "grade", "solda", "estrutura metalica", "guarda-corpo",
+        "ferro", "serralheiro", "serralheria",
+    ],
+    "Terraplenagem / Máquinas": [
+        "terreno", "aterro", "escavacao", "retroescavadeira", "nivelamento",
+        "maquina", "terraplenagem", "terraplanagem",
+    ],
+    "Locação de Equipamentos": [
+        "aluguel", "betoneira", "andaime", "gerador", "compactador", "locacao",
+    ],
+    "Gesso / Drywall": ["forro", "sanca", "drywall", "gesso"],
+    "Projeto e Engenharia": [
+        "projeto", "planta", "engenheiro", "arquiteto", "laudo", "art",
+        "engenharia", "arquitetura",
+    ],
+    "Materiais de Construção": [
+        "cimento", "areia", "bloco", "material de construcao", "ferragem",
+        "materiais",
+    ],
+    "Limpeza Pós-Obra": ["limpeza", "faxina", "entulho"],
+    "Vidraçaria": ["vidro", "box", "espelho", "vidracaria", "esquadria"],
+    "Impermeabilização": [
+        "infiltracao", "umidade", "impermeabilizante", "manta asfaltica",
+        "impermeabilizacao",
+    ],
+    "Topografia": [
+        "levantamento topografico", "georreferenciamento",
+        "medicao de terreno", "topografia",
+    ],
+}
+
+
+def _sem_acento(texto):
+    texto = unicodedata.normalize("NFKD", texto or "")
+    return "".join(c for c in texto if not unicodedata.combining(c)).lower()
+
+
+def categorias_por_sinonimo(busca):
+    """Se o termo buscado bater com um sinônimo conhecido, devolve os nomes de
+    categoria correspondentes — pra incluir na busca além do nome/descrição."""
+    termo = _sem_acento((busca or "").strip())
+    if not termo:
+        return []
+    encontradas = []
+    for categoria, sinonimos in SINONIMOS_CATEGORIA.items():
+        if any(termo in s or s in termo for s in sinonimos):
+            encontradas.append(categoria)
+    return encontradas
+
+
 def categorias():
     return db.query("SELECT * FROM categorias ORDER BY nome")
 
@@ -250,8 +326,14 @@ def prestadores():
     """
     params = []
     if busca:
-        sql += " AND (p.nome LIKE ? OR p.descricao LIKE ?)"
-        params += [f"%{busca}%", f"%{busca}%"]
+        categorias_sinonimo = categorias_por_sinonimo(busca)
+        if categorias_sinonimo:
+            marcadores = ",".join(["?"] * len(categorias_sinonimo))
+            sql += f" AND (p.nome LIKE ? OR p.descricao LIKE ? OR c.nome IN ({marcadores}))"
+            params += [f"%{busca}%", f"%{busca}%"] + categorias_sinonimo
+        else:
+            sql += " AND (p.nome LIKE ? OR p.descricao LIKE ?)"
+            params += [f"%{busca}%", f"%{busca}%"]
     if cat_slug:
         sql += " AND c.slug = ?"
         params.append(cat_slug)
@@ -828,8 +910,14 @@ def api_prestadores_listar():
     """
     params = []
     if busca:
-        sql += " AND (p.nome LIKE ? OR p.descricao LIKE ?)"
-        params += [f"%{busca}%", f"%{busca}%"]
+        categorias_sinonimo = categorias_por_sinonimo(busca)
+        if categorias_sinonimo:
+            marcadores = ",".join(["?"] * len(categorias_sinonimo))
+            sql += f" AND (p.nome LIKE ? OR p.descricao LIKE ? OR c.nome IN ({marcadores}))"
+            params += [f"%{busca}%", f"%{busca}%"] + categorias_sinonimo
+        else:
+            sql += " AND (p.nome LIKE ? OR p.descricao LIKE ?)"
+            params += [f"%{busca}%", f"%{busca}%"]
     if cat:
         sql += " AND c.nome LIKE ?"
         params.append(f"%{cat}%")
