@@ -215,9 +215,13 @@ section{margin:38px 0}
 .tabela form{margin:0}
 
 @media (max-width:640px){
+  .topo-inner{height:auto;flex-wrap:wrap;padding:10px 0;row-gap:8px}
+  .marca{font-size:17px}
+  .marca-txt small{display:none}
+  .nav{width:100%;flex-wrap:wrap;gap:8px 14px;font-size:13px}
+  .nav .btn{padding:7px 12px;font-size:13px}
   .hero h1{font-size:30px}
   .busca{flex-direction:column}
-  .nav{gap:12px;font-size:14px}
   .grid-2{grid-template-columns:1fr}
   .cta{flex-direction:column;text-align:center}
   .mod-item{flex-direction:column}
