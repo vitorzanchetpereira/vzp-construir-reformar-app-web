@@ -7,7 +7,7 @@ página — o formulário segue funcionando normalmente, só sem foto.
 import os
 import sys
 
-TAMANHO_MAXIMO = 5 * 1024 * 1024  # 5MB
+TAMANHO_MAXIMO = 10 * 1024 * 1024  # 10MB (limite do plano gratuito do Cloudinary)
 
 _CONFIGURADO = bool(os.environ.get("CLOUDINARY_URL"))
 if _CONFIGURADO:

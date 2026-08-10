@@ -390,7 +390,11 @@ def avaliar(pid):
     if nota < 1 or nota > 5:
         flash("Escolha uma nota de 1 a 5.", "erro")
         return redirect(url_for("prestador", pid=pid))
-    foto_url = uploads.upload_imagem(request.files.get("foto"))
+    arquivo_foto = request.files.get("foto")
+    foto_url = uploads.upload_imagem(arquivo_foto)
+    if arquivo_foto and arquivo_foto.filename and not foto_url:
+        flash("A indicação foi enviada, mas a foto não pôde ser enviada "
+              "(confira se é uma imagem de até 10MB).", "erro")
     db.execute(
         "INSERT INTO avaliacoes (prestador_id, usuario_id, autor, nota, comentario, foto_url, status) "
         "VALUES (?,?,?,?,?,?, 'pendente')",
@@ -529,10 +533,14 @@ def _atualizar_dados_prestador(pid, form, arquivo_foto):
     campos = "nome=?, categoria_id=?, regiao_id=?, telefone=?, whatsapp=?, descricao=?"
     valores = [nome, categoria_id, regiao_id, form.get("telefone", "").strip(),
                form.get("whatsapp", "").strip(), form.get("descricao", "").strip()]
-    foto_url = uploads.upload_imagem(arquivo_foto)
-    if foto_url:
-        campos += ", foto_url=?"
-        valores.append(foto_url)
+    if arquivo_foto and arquivo_foto.filename:
+        foto_url = uploads.upload_imagem(arquivo_foto)
+        if foto_url:
+            campos += ", foto_url=?"
+            valores.append(foto_url)
+        else:
+            flash("Os outros dados foram salvos, mas a foto não pôde ser enviada "
+                  "(confira se é uma imagem de até 10MB).", "erro")
     valores.append(pid)
     db.execute(f"UPDATE prestadores SET {campos} WHERE id=?", valores)
     return True
@@ -579,7 +587,7 @@ def painel_fotos_adicionar():
         db.execute("INSERT INTO prestador_fotos (prestador_id, url) VALUES (?,?)", (u["prestador_id"], foto_url))
         flash("Foto adicionada à galeria!", "ok")
     else:
-        flash("Não foi possível enviar a foto. Confira o arquivo (imagem, até 5MB) e tente de novo.", "erro")
+        flash("Não foi possível enviar a foto. Confira o arquivo (imagem, até 10MB) e tente de novo.", "erro")
     return redirect(url_for("painel"))
 
 
