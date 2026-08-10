@@ -30,6 +30,7 @@
         {% endif %}
         <a href="{{ url_for('sair') }}">Sair</a>
       {% else %}
+        <a href="{{ url_for('conta_cadastro') }}">Indicar um prestador</a>
         <a href="{{ url_for('entrar') }}">Entrar</a>
         <a class="btn btn-primary" href="{{ url_for('cadastro') }}">Cadastrar meu negócio</a>
       {% endif %}
