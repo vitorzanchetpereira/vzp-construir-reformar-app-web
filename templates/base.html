@@ -17,10 +17,7 @@
 <body>
 <header class="topo">
   <div class="container topo-inner">
-    <a class="marca" href="{{ url_for('index') }}">
-      <span class="marca-icone">🏗️</span>
-      <span class="marca-txt">Construir &amp; Reformar<small>Mão de obra &amp; material</small></span>
-    </a>
+    <a class="marca" href="{{ url_for('index') }}">Construir <em>&amp;</em> Reformar</a>
     <nav class="nav">
       <a href="{{ url_for('prestadores') }}">Prestadores</a>
       <a href="{{ url_for('sobre') }}">Como funciona</a>
@@ -39,7 +36,7 @@
         <a class="btn btn-primary" href="{{ url_for('cadastro') }}">Cadastrar meu negócio</a>
       {% endif %}
       <div class="tema-menu" id="tema-menu">
-        <button class="tema-botao" id="tema-botao" type="button" aria-label="Escolher tema" aria-haspopup="true" aria-expanded="false">🌓</button>
+        <button class="tema-botao" id="tema-botao" type="button" aria-label="Escolher tema" aria-haspopup="true" aria-expanded="false"></button>
         <div class="tema-opcoes" id="tema-opcoes" role="menu">
           <button type="button" data-tema-opcao="claro" role="menuitem">☀️ Claro</button>
           <button type="button" data-tema-opcao="escuro" role="menuitem">🌙 Escuro</button>

@@ -235,6 +235,22 @@ def tags_do_prestador(slug, quantas=5):
     return c["tags"][:quantas] if c else []
 
 
+_TAGS_POR_LABEL = {c["label"]: c["tags"] for c in CATEGORIAS.values()}
+
+
+def tags_por_nome(nome_categoria, quantas=5):
+    """Mesma coisa que tags_do_prestador, mas casando pelo nome (rotulo) da
+    categoria em vez do slug — o site pode ter categorias com slug gerado
+    antes de uma correcao de acentuacao, que nao bate mais com o slug
+    canonico daqui. Nome (mesmo com prefixo "Grupo - Item") sempre casa,
+    porque procura o rotulo como substring."""
+    nome = (nome_categoria or "")
+    for label, tags in _TAGS_POR_LABEL.items():
+        if label.lower() in nome.lower():
+            return tags[:quantas]
+    return []
+
+
 if __name__ == "__main__":
     import sys
     if len(sys.argv) > 1:

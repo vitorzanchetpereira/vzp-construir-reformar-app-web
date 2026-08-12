@@ -254,7 +254,8 @@ def stats_aprovadas(prestador_id):
 @app.context_processor
 def inject_globals():
     return {"todas_categorias": categorias(), "todas_regioes": regioes(),
-            "usuario": usuario_atual(), "csrf_token": session.get("csrf", "")}
+            "usuario": usuario_atual(), "csrf_token": session.get("csrf", ""),
+            "tags_de": busca_sinonimos.tags_por_nome}
 
 
 # ---------------------------------------------------------------- público
@@ -262,7 +263,7 @@ def inject_globals():
 def index():
     regiao_slug = request.args.get("regiao", "").strip()
     sql = """
-        SELECT p.*, c.nome AS categoria_nome, c.icone AS categoria_icone,
+        SELECT p.*, c.nome AS categoria_nome, c.icone AS categoria_icone, c.slug AS categoria_slug,
                r.nome AS regiao_nome, r.uf AS regiao_uf,
                COUNT(a.id) AS n_avaliacoes,
                COALESCE(ROUND(AVG(a.nota),1),0) AS media

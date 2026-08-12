@@ -1,13 +1,14 @@
 {% extends "base.html" %}
-{% from "_macros.html" import card, estrelas %}
+{% from "_macros.html" import card, estrelas with context %}
 {% block conteudo %}
 
 <section class="hero">
-  <h1>Encontre quem faz sua obra acontecer</h1>
-  <p class="hero-sub">O diretório de prestadores e fornecedores da construção, por serviço e região.
-     Busque, veja indicações de verdade e fale direto com o profissional.</p>
+  <div class="eyebrow">Diretório de obra · Sorriso MT</div>
+  <h1>Encontre quem faz sua obra <em>acontecer</em></h1>
+  <p class="hero-sub">Busque pelo nome que você conhece — mesmo informal, mesmo escrito
+     errado. O sistema entende e leva você ao profissional certo.</p>
   <form class="busca" action="{{ url_for('prestadores') }}" method="get">
-    <input type="text" name="q" placeholder="O que você precisa? Ex.: eletricista, terraplenagem, materiais…">
+    <input type="text" name="q" placeholder="O que você precisa? Ex.: luz, tomada, fio, cano estourado" autocomplete="off">
     <select name="regiao">
       <option value="">Todas as regiões</option>
       {% for r in todas_regioes %}
@@ -16,6 +17,12 @@
     </select>
     <button class="btn btn-primary" type="submit">Buscar</button>
   </form>
+  <div class="hint">
+    <span>Teste:</span>
+    {% for termo in ['luz','tomada','vazamento','eletrecista','placa solar','tirar entulho'] %}
+      <a class="chip" href="{{ url_for('prestadores', q=termo) }}">{{ termo }}</a>
+    {% endfor %}
+  </div>
   <p class="hero-stats">{{ total }} prestadores já cadastrados</p>
 </section>
 

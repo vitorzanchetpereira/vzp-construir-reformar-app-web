@@ -17,7 +17,7 @@
 (function (global) {
   var VARS = [
     "--laranja", "--laranja-esc", "--azul", "--azul-claro",
-    "--tinta", "--cinza", "--cinza-claro", "--linha", "--fundo",
+    "--tinta", "--cinza", "--cinza-claro", "--tenue", "--linha", "--fundo", "--fundo-rgb",
     "--branco", "--superficie-sutil", "--verde", "--verde-zap",
     "--sombra", "--sombra-alta",
     "--chip-azul-bg", "--chip-azul-fg", "--chip-azul-borda",
@@ -30,9 +30,9 @@
 
   var CLARO = [
     "#f2711c", "#d65f11", "#1f3a5f", "#2b5f8f",
-    "#1c2530", "#5b6673", "#8a94a1", "#e7eaef", "#f5f7fa",
-    "#fff", "#f8fafc", "#1f9d55", "#25d366",
-    "0 2px 10px rgba(28,37,48,.06)", "0 8px 26px rgba(28,37,48,.10)",
+    "#15202b", "#6b7684", "#a8b0ba", "#c3cad3", "#e6e9ed", "#fdfcfa", "253,252,250",
+    "#fff", "#f6f4f1", "#1f9d55", "#25d366",
+    "0 1px 3px rgba(31,58,95,.05)", "0 10px 30px rgba(31,58,95,.08)",
     "#e8f4ff", "#2b5f8f", "#cfe6fb",
     "#eef7f0", "#1f9d55", "#cdeed6",
     "#e6f7ee", "#0f7a3d", "#b7e6cb",
@@ -42,9 +42,9 @@
   ];
 
   var ESCURO = [
-    "#ff8a4a", "#ff9d64", "#7fb0e8", "#9cc4f0",
-    "#e9edf2", "#a8b1bd", "#7e8794", "#2a333f", "#0f141b",
-    "#182029", "#1d2632", "#3ecb7c", "#25d366",
+    "#f2914e", "#f7a468", "#a8c4e6", "#bed4ef",
+    "#e7ecf2", "#98a3b2", "#6d7885", "#4a5462", "#262d38", "#0f1319", "15,19,25",
+    "#151a21", "#161b23", "#3ecb7c", "#25d366",
     "0 2px 10px rgba(0,0,0,.35)", "0 8px 26px rgba(0,0,0,.45)",
     "#1c2f42", "#9cc4f0", "#2c4a68",
     "#173627", "#3ecb7c", "#20573c",
