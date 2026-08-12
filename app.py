@@ -15,6 +15,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import api_auth
 import busca_sinonimos
 import db
+import nomes_cards
 import uploads
 
 app = Flask(__name__)
@@ -111,6 +112,22 @@ def resolver_regiao(form):
     if valor.isdigit():
         return int(valor)
     return None
+
+
+def garantir_nome_com_papel(nome, categoria_nome):
+    """O card nunca pode mostrar só o nome da pessoa ("João") — quem busca com
+    urgência procura a empresa ou o serviço, não o fulano. Usa o detector de
+    nomes_cards (mesmo radical de ramo/marca que já filtra "VZP Engenharia",
+    "Eletromais" etc. como nome comercial válido) pra só agir em quem realmente
+    parece só nome de pessoa: "João" -> "Pedreiro João"."""
+    nome = (nome or "").strip()
+    if not nome or not categoria_nome or not nomes_cards._parece_pessoa(nome):
+        return nome
+    papel = categoria_nome.split("•")[-1].strip()
+    papel = papel.split("/")[0].strip()
+    if not papel or _sem_acento(papel) in _sem_acento(nome):
+        return nome
+    return f"{papel} {nome}"
 
 
 def usuario_atual():
@@ -365,6 +382,13 @@ def cadastro():
         if db.query("SELECT 1 FROM usuarios WHERE email = ?", (email,), one=True):
             flash("Já existe uma conta com esse e-mail.", "erro")
             return render_template("cadastro.html", form=f)
+
+        cat = db.query("SELECT nome FROM categorias WHERE id = ?", (categoria_id,), one=True)
+        nome_ajustado = garantir_nome_com_papel(nome, cat["nome"] if cat else "")
+        if nome_ajustado != nome:
+            flash(f'Ajustamos o nome pra "{nome_ajustado}" — o card nunca mostra só o nome '
+                  f"da pessoa, pra quem busca reconhecer o serviço. Pode editar depois no seu painel.", "ok")
+            nome = nome_ajustado
 
         foto_url = uploads.upload_imagem(request.files.get("foto"))
         pid = db.execute(
@@ -895,6 +919,9 @@ def api_prestadores_criar():
         return jsonify({"erro": f"categoria '{categoria_nome}' não existe",
                         "opcoes": [c["nome"] for c in categorias()]}), 400
 
+    nome_original = nome
+    nome = garantir_nome_com_papel(nome, categoria_nome)
+
     cidade, uf = _parse_regiao_texto(regiao_texto)
     regiao_id = obter_ou_criar_regiao(cidade, uf)
     if not regiao_id:
@@ -928,7 +955,11 @@ def api_prestadores_criar():
     )
     if not novo:
         return jsonify({"erro": "falha ao gravar — tente de novo"}), 500
-    return jsonify({"ok": True, "prestador": _prestador_enxuto(novo)})
+    resp = {"ok": True, "prestador": _prestador_enxuto(novo)}
+    if nome != nome_original:
+        resp["aviso"] = (f"nome ajustado de '{nome_original}' para '{nome}' — o card nunca "
+                          f"mostra só o nome da pessoa, sempre a empresa ou a função antes")
+    return jsonify(resp)
 
 
 _CAMPOS_EDITAVEIS = ("nome", "telefone", "whatsapp", "descricao")
