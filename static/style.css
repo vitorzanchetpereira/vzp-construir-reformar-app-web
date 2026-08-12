@@ -103,6 +103,8 @@ h1,h2,h3{line-height:1.2}
 .busca{display:flex;gap:10px;max-width:640px;margin:0 auto;background:var(--branco);
   padding:8px;border-radius:14px;box-shadow:var(--sombra-alta)}
 .busca input{flex:1;border:none;padding:12px 14px;font-size:16px;outline:none;background:transparent;color:var(--tinta)}
+.busca select{border:1px solid var(--linha);border-radius:9px;padding:12px 14px;font-size:15px;
+  font-family:inherit;background:var(--branco);color:var(--tinta)}
 .hero-stats{margin-top:16px;color:var(--cinza-claro);font-size:14px;font-weight:600}
 
 /* seções */
