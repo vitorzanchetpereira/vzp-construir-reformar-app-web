@@ -13,6 +13,7 @@ from flask import (Flask, render_template, request, redirect, url_for,
                    flash, abort, session, jsonify, g)
 from werkzeug.security import generate_password_hash, check_password_hash
 import api_auth
+import busca_sinonimos
 import db
 import uploads
 
@@ -42,79 +43,17 @@ def csrf_protect():
 
 
 # ---------------------------------------------------------------- helpers
-# Quem busca não digita o nome da categoria — digita o problema ("vazamento",
-# "luz", "goteira"). Mapeia termos coloquiais/sinônimos para a categoria certa,
-# pra a busca também considerar quem presta aquele serviço, não só quem tem
-# a palavra exata no nome/descrição.
-SINONIMOS_CATEGORIA = {
-    "Pedreiro / Alvenaria": [
-        "alvenaria", "tijolo", "parede", "muro", "reboco", "laje",
-        "contrapiso", "assentamento", "pedreiro",
-    ],
-    "Eletricista": [
-        "luz", "tomada", "fio", "fiacao", "energia", "disjuntor",
-        "curto circuito", "quadro de luz", "chuveiro eletrico", "lampada",
-        "eletrica", "instalacao eletrica",
-    ],
-    "Encanador / Hidráulica": [
-        "vazamento", "torneira", "cano", "encanamento", "entupimento",
-        "esgoto", "caixa d'agua", "registro", "hidraulica", "agua",
-        "desentupidora", "encanador",
-    ],
-    "Pintor": ["pintura", "tinta", "textura", "verniz", "pintor"],
-    "Marceneiro / Móveis": [
-        "moveis planejados", "armario", "cozinha planejada", "marcenaria",
-        "madeira", "marceneiro",
-    ],
-    "Serralheiro / Estruturas": [
-        "portao", "grade", "solda", "estrutura metalica", "guarda-corpo",
-        "ferro", "serralheiro", "serralheria",
-    ],
-    "Terraplenagem / Máquinas": [
-        "terreno", "aterro", "escavacao", "retroescavadeira", "nivelamento",
-        "maquina", "terraplenagem", "terraplanagem",
-    ],
-    "Locação de Equipamentos": [
-        "aluguel", "betoneira", "andaime", "gerador", "compactador", "locacao",
-    ],
-    "Gesso / Drywall": ["forro", "sanca", "drywall", "gesso"],
-    "Projeto e Engenharia": [
-        "projeto", "planta", "engenheiro", "arquiteto", "laudo", "art",
-        "engenharia", "arquitetura",
-    ],
-    "Materiais de Construção": [
-        "cimento", "areia", "bloco", "material de construcao", "ferragem",
-        "materiais",
-    ],
-    "Limpeza Pós-Obra": ["limpeza", "faxina", "entulho"],
-    "Vidraçaria": ["vidro", "box", "espelho", "vidracaria", "esquadria"],
-    "Impermeabilização": [
-        "infiltracao", "umidade", "impermeabilizante", "manta asfaltica",
-        "impermeabilizacao",
-    ],
-    "Topografia": [
-        "levantamento topografico", "georreferenciamento",
-        "medicao de terreno", "topografia",
-    ],
-}
-
-
 def _sem_acento(texto):
     texto = unicodedata.normalize("NFKD", texto or "")
     return "".join(c for c in texto if not unicodedata.combining(c)).lower()
 
 
 def categorias_por_sinonimo(busca):
-    """Se o termo buscado bater com um sinônimo conhecido, devolve os nomes de
-    categoria correspondentes — pra incluir na busca além do nome/descrição."""
-    termo = _sem_acento((busca or "").strip())
-    if not termo:
-        return []
-    encontradas = []
-    for categoria, sinonimos in SINONIMOS_CATEGORIA.items():
-        if any(termo in s or s in termo for s in sinonimos):
-            encontradas.append(categoria)
-    return encontradas
+    """Quem busca não digita o nome da categoria — digita o problema ("vazamento",
+    "luz", "goteira", até com erro de grafia). Usa o motor de busca_sinonimos
+    (taxonomia curada em categorias-agrupadas.json) pra achar os nomes de
+    categoria correspondentes, e incluir na busca além do nome/descrição."""
+    return [r["label"] for r in busca_sinonimos.buscar(busca)]
 
 
 def categorias():
@@ -126,7 +65,7 @@ def regioes():
 
 
 def _slugify(*partes):
-    texto = " ".join(partes).lower()
+    texto = _sem_acento(" ".join(partes))
     texto = re.sub(r"[^a-z0-9]+", "-", texto).strip("-")
     return texto
 

@@ -1,0 +1,2228 @@
+{
+  "versao": "3.0",
+  "frame": "6 grupos macro, conforme documento de trabalho Construir & Reformar (06/08/2026)",
+  "observacao": "Slugs dos 12 itens ja no ar foram preservados (?categoria=encanador continua valido). 'prefixo' = rotulo pronto para o caminho 1 (renomear no painel, sem programar). 'busca.forte' e 'busca.fraco' alimentam o modulo busca_sinonimos.py. 'material' e 'fornecedores' alimentam o mapeamento de quem vende. 'docs' = habilitacao exigida (Suprimentos/juridico).",
+  "grupos": [
+    {
+      "n": 1,
+      "slug": "estrutura-obra-bruta",
+      "titulo": "Estrutura e Obra Bruta",
+      "prefixo": "Estrutura",
+      "itens": [
+        {
+          "slug": "pedreiro",
+          "label": "Pedreiro / Alvenaria",
+          "novo": false,
+          "material": "Cimento, aço, blocos, formas, vergalhão",
+          "fornecedores": [
+            "Neo Formas (Rodrigo Felício)",
+            "Calfa Ferragens",
+            "Coberturas e Toldos"
+          ],
+          "status": "Confirmado",
+          "docs": [
+            "CNPJ ou MEI",
+            "NR-18",
+            "Comprovação de vínculo da equipe"
+          ],
+          "busca": {
+            "forte": [
+              "pedreiro",
+              "pedrero",
+              "pedreirada",
+              "alvenaria",
+              "reboco",
+              "emboco",
+              "emboço",
+              "chapisco",
+              "contrapiso",
+              "rebocar",
+              "levantar parede",
+              "fazer parede",
+              "construir muro",
+              "assentar tijolo",
+              "obra bruta",
+              "baldrame",
+              "cinta de amarracao",
+              "servente",
+              "ajudante de pedreiro"
+            ],
+            "fraco": [
+              "tijolo",
+              "bloco",
+              "parede",
+              "muro",
+              "massa",
+              "argamassa",
+              "viga",
+              "amarracao"
+            ]
+          },
+          "tags": [
+            "alvenaria",
+            "reboco",
+            "contrapiso",
+            "muro",
+            "estrutural"
+          ]
+        },
+        {
+          "slug": "gesso-drywall",
+          "label": "Gesso / Drywall",
+          "novo": false,
+          "material": "Placas, perfis, massa, fita",
+          "fornecedores": [],
+          "status": "Descoberto",
+          "docs": [
+            "CNPJ ou MEI",
+            "NR-35 para trabalho em altura"
+          ],
+          "busca": {
+            "forte": [
+              "gesso",
+              "gesseiro",
+              "drywall",
+              "dry wall",
+              "forro de gesso",
+              "sanca",
+              "placa de gesso",
+              "rebaixar teto",
+              "rebaixamento",
+              "parede de gesso",
+              "placa st",
+              "placa ru",
+              "roda teto",
+              "moldura de gesso"
+            ],
+            "fraco": [
+              "forro",
+              "teto",
+              "divisoria",
+              "nicho",
+              "luminaria embutida"
+            ]
+          },
+          "tags": [
+            "forro",
+            "drywall",
+            "sanca",
+            "rebaixamento",
+            "divisória"
+          ]
+        },
+        {
+          "slug": "serralheiro",
+          "label": "Serralheiro / Estruturas Metálicas",
+          "novo": false,
+          "material": "Perfis, tubos, chapas, eletrodo",
+          "fornecedores": [
+            "Calfa Ferragens",
+            "Coberturas e Toldos"
+          ],
+          "status": "A confirmar",
+          "docs": [
+            "ART para estrutura metálica",
+            "NR-18 e NR-35",
+            "NR-34 para solda em altura"
+          ],
+          "busca": {
+            "forte": [
+              "serralheiro",
+              "serralheria",
+              "solda",
+              "soldador",
+              "soldar",
+              "portao",
+              "portão",
+              "porteira",
+              "grade",
+              "gradil",
+              "corrimao",
+              "corrimão",
+              "guarda corpo",
+              "escada de ferro",
+              "estrutura metalica",
+              "galpao",
+              "galpão",
+              "telhado metalico",
+              "tesoura metalica",
+              "metalon",
+              "alambrado",
+              "mezanino",
+              "esquadria de ferro"
+            ],
+            "fraco": [
+              "ferro",
+              "viga metalica",
+              "tubo quadrado"
+            ]
+          },
+          "tags": [
+            "solda",
+            "portão",
+            "estrutura metálica",
+            "corrimão",
+            "galpão"
+          ]
+        },
+        {
+          "slug": "terraplenagem",
+          "label": "Terraplenagem / Máquinas",
+          "novo": false,
+          "material": "Serviço + agregados (ver Mineradoras)",
+          "fornecedores": [],
+          "status": "Descoberto",
+          "docs": [
+            "Licença ambiental para corte/aterro/bota-fora",
+            "NR-11 e NR-12 dos operadores",
+            "Seguro de equipamento"
+          ],
+          "busca": {
+            "forte": [
+              "terraplenagem",
+              "terraplanagem",
+              "terraplano",
+              "terraplenar",
+              "escavadeira",
+              "escavadera",
+              "retroescavadeira",
+              "patrol",
+              "motoniveladora",
+              "pa carregadeira",
+              "pá carregadeira",
+              "trator de esteira",
+              "nivelar terreno",
+              "limpar terreno",
+              "tirar terra",
+              "abrir estrada",
+              "cascalhamento",
+              "desmatar",
+              "destocar",
+              "bota fora",
+              "corte e aterro"
+            ],
+            "fraco": [
+              "retro",
+              "trator",
+              "rolo compactador",
+              "aterro",
+              "drenagem",
+              "valeta",
+              "açude",
+              "acude",
+              "tanque"
+            ]
+          },
+          "tags": [
+            "escavadeira",
+            "aterro",
+            "drenagem",
+            "cascalhamento",
+            "nivelamento"
+          ]
+        },
+        {
+          "slug": "impermeabilizacao",
+          "label": "Impermeabilização",
+          "novo": true,
+          "material": "Mantas, resinas, aditivos",
+          "fornecedores": [
+            "Impernop (Joelma)",
+            "Imperservice",
+            "Vedalaje MT (Maurílio)"
+          ],
+          "status": "Confirmado",
+          "docs": [
+            "CNPJ ativo",
+            "Garantia formal de serviço",
+            "FISPQ dos produtos"
+          ],
+          "busca": {
+            "forte": [
+              "impermeabilizacao",
+              "impermeabilização",
+              "impermiabilizacao",
+              "impermeabilizar",
+              "impermeabilizante",
+              "manta asfaltica",
+              "infiltracao",
+              "infiltração",
+              "infiltrando",
+              "vazamento na laje",
+              "umidade na parede",
+              "parede molhada",
+              "mofo na parede",
+              "argamassa polimerica",
+              "cristalizante",
+              "veda calha"
+            ],
+            "fraco": [
+              "manta",
+              "laje",
+              "umidade",
+              "mofo",
+              "goteira",
+              "telhado vazando",
+              "caixa d agua",
+              "caixa dagua",
+              "reservatorio",
+              "resina"
+            ]
+          },
+          "tags": [
+            "manta asfáltica",
+            "infiltração",
+            "laje",
+            "reservatório",
+            "garantia"
+          ]
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "slug": "instalacoes-prediais",
+      "titulo": "Instalações e Sistemas Prediais",
+      "prefixo": "Instalações",
+      "itens": [
+        {
+          "slug": "eletricista",
+          "label": "Eletricista",
+          "novo": false,
+          "material": "Fios, disjuntores, tomadas, quadros",
+          "fornecedores": [
+            "Eletromais",
+            "Eletromais (Ernandes)",
+            "Eletrowatts (Josiel)"
+          ],
+          "status": "Confirmado",
+          "docs": [
+            "NR-10 vigente (bienal)",
+            "ART para entrada de energia e SPDA",
+            "CNPJ ou MEI"
+          ],
+          "busca": {
+            "forte": [
+              "eletricista",
+              "eletrecista",
+              "eletrisista",
+              "eletrista",
+              "eletrica",
+              "elétrica",
+              "tomada",
+              "fiacao",
+              "fiação",
+              "disjuntor",
+              "quadro de luz",
+              "quadro de distribuicao",
+              "padrao de energia",
+              "padrão de energia",
+              "padrao de entrada",
+              "padrão de entrada",
+              "entrada de energia",
+              "ligacao de energia",
+              "ligação de energia",
+              "sem luz",
+              "falta de luz",
+              "curto circuito",
+              "interruptor",
+              "tomou choque",
+              "spda",
+              "para raio",
+              "pararaio",
+              "aterramento",
+              "laudo eletrico",
+              "relogio de luz",
+              "puxar luz",
+              "ligar energia",
+              "aumentar carga",
+              "disjuntor desarmando",
+              "chuveiro eletrico",
+              "dr",
+              "idr"
+            ],
+            "fraco": [
+              "luz",
+              "fio",
+              "fios",
+              "cabo eletrico",
+              "lampada",
+              "lâmpada",
+              "choque",
+              "medidor",
+              "poste",
+              "trifasico",
+              "monofasico"
+            ]
+          },
+          "tags": [
+            "instalação elétrica",
+            "quadro de distribuição",
+            "SPDA",
+            "laudo",
+            "NR-10"
+          ]
+        },
+        {
+          "slug": "encanador",
+          "label": "Encanador / Hidráulica",
+          "novo": false,
+          "material": "Tubos, conexões, registros",
+          "fornecedores": [
+            "Tecnopeters (Carlos Fenerich)"
+          ],
+          "status": "Confirmado",
+          "docs": [
+            "CNPJ ou MEI",
+            "NR-33 para espaço confinado"
+          ],
+          "busca": {
+            "forte": [
+              "encanador",
+              "canador",
+              "bombeiro hidraulico",
+              "hidraulica",
+              "hidráulica",
+              "idraulica",
+              "hidralica",
+              "cano estourado",
+              "vazamento",
+              "vazando",
+              "entupido",
+              "entupiu",
+              "desentupir",
+              "desentupimento",
+              "entupimento",
+              "caixa de gordura",
+              "encanamento",
+              "sifao",
+              "sifão",
+              "fossa",
+              "sumidouro",
+              "rede de esgoto",
+              "sem agua",
+              "registro de agua"
+            ],
+            "fraco": [
+              "cano",
+              "tubo",
+              "agua",
+              "água",
+              "pia",
+              "torneira",
+              "ralo",
+              "esgoto",
+              "descarga",
+              "vaso",
+              "privada",
+              "banheiro",
+              "bomba d agua",
+              "pex",
+              "boiler"
+            ]
+          },
+          "tags": [
+            "hidráulica",
+            "vazamento",
+            "esgoto",
+            "desentupimento",
+            "reparo"
+          ]
+        },
+        {
+          "slug": "sistema-de-gas",
+          "label": "Sistema de Gás",
+          "novo": true,
+          "material": "Tubo de cobre, reguladores, central GLP",
+          "fornecedores": [],
+          "status": "Descoberto",
+          "docs": [
+            "ART/CREA conforme NBR 15526",
+            "Laudo de estanqueidade",
+            "NR-20"
+          ],
+          "busca": {
+            "forte": [
+              "sistema de gas",
+              "sistema de gás",
+              "instalacao de gas",
+              "gas encanado",
+              "tubulacao de gas",
+              "central de gas",
+              "central de glp",
+              "cheiro de gas",
+              "vazamento de gas",
+              "estanqueidade",
+              "teste de estanqueidade",
+              "nbr 15526",
+              "regulador de gas",
+              "valvula de gas",
+              "aquecedor a gas"
+            ],
+            "fraco": [
+              "gn",
+              "glp",
+              "aquecedor",
+              "cozinha industrial",
+              "fogao industrial",
+              "tubo de cobre",
+              "botijao",
+              "botijão",
+              "bujao",
+              "bujão",
+              "gas de cozinha",
+              "gás de cozinha",
+              "p13",
+              "p45",
+              "recarga de gas",
+              "troca de gas"
+            ]
+          },
+          "tags": [
+            "GLP",
+            "gás natural",
+            "central de gás",
+            "estanqueidade",
+            "NBR 15526"
+          ]
+        },
+        {
+          "slug": "sistema-de-ar",
+          "label": "Sistema de Ar (Climatização)",
+          "novo": true,
+          "material": "Equipamentos, tubulação de cobre, fluido",
+          "fornecedores": [],
+          "status": "Descoberto",
+          "docs": [
+            "PMOC com responsável técnico",
+            "NR-13 para vasos de pressão",
+            "Certificado de descarte de fluido"
+          ],
+          "busca": {
+            "forte": [
+              "ar condicionado",
+              "ar-condicionado",
+              "arcondicionado",
+              "split",
+              "climatizacao",
+              "climatização",
+              "nao gela",
+              "não gela",
+              "nao esta gelando",
+              "instalar ar",
+              "higienizacao de ar",
+              "limpeza de ar",
+              "pmoc",
+              "exaustor",
+              "exaustao",
+              "exaustão",
+              "vrf",
+              "chiller",
+              "fancoil",
+              "ar comprimido",
+              "recarga de gas do ar",
+              "coifa",
+              "dutos"
+            ],
+            "fraco": [
+              "ar",
+              "refrigeracao",
+              "refrigeração",
+              "frio",
+              "ventilacao",
+              "ventilação",
+              "compressor",
+              "linha de ar"
+            ]
+          },
+          "tags": [
+            "ar condicionado",
+            "split",
+            "climatização",
+            "PMOC",
+            "exaustão"
+          ]
+        },
+        {
+          "slug": "energia-solar",
+          "label": "Energia Solar",
+          "novo": true,
+          "material": "Painéis, inversores, estruturas de fixação",
+          "fornecedores": [
+            "Eletrosol"
+          ],
+          "status": "A confirmar",
+          "docs": [
+            "ART/CREA de projeto e execução",
+            "NR-10 SEP e NR-35",
+            "Homologação na concessionária",
+            "Garantia de módulos e inversor"
+          ],
+          "busca": {
+            "forte": [
+              "energia solar",
+              "placa solar",
+              "placas solares",
+              "painel solar",
+              "painel fotovoltaico",
+              "fotovoltaico",
+              "fotovoltaica",
+              "inversor solar",
+              "microinversor",
+              "gerar energia",
+              "gerar propria energia",
+              "reduzir conta de luz",
+              "baixar conta de luz",
+              "economizar luz",
+              "geracao distribuida",
+              "geração distribuída",
+              "on grid",
+              "off grid",
+              "homologacao",
+              "homologação",
+              "usina solar",
+              "string box"
+            ],
+            "fraco": [
+              "solar",
+              "placa",
+              "painel",
+              "inversor",
+              "energisa",
+              "estrutura de fixacao"
+            ]
+          },
+          "tags": [
+            "fotovoltaico",
+            "painel solar",
+            "inversor",
+            "homologação",
+            "economia"
+          ]
+        },
+        {
+          "slug": "automacao",
+          "label": "Automação",
+          "novo": true,
+          "material": "CLP, sensores, painéis",
+          "fornecedores": [],
+          "status": "Descoberto",
+          "docs": [
+            "ART quando houver projeto",
+            "NR-10 e NR-12"
+          ],
+          "busca": {
+            "forte": [
+              "automacao",
+              "automação",
+              "automatizar",
+              "automatizado",
+              "clp",
+              "plc",
+              "painel de comando",
+              "comando eletrico",
+              "inversor de frequencia",
+              "scada",
+              "supervisorio",
+              "portao automatico",
+              "portão automático",
+              "motor de portao",
+              "irrigacao automatica",
+              "casa inteligente",
+              "automacao residencial",
+              "automacao predial",
+              "automacao industrial",
+              "soft starter"
+            ],
+            "fraco": [
+              "sensor",
+              "sensores",
+              "rele",
+              "contator"
+            ]
+          },
+          "tags": [
+            "CLP",
+            "painel de comando",
+            "portão automático",
+            "supervisório",
+            "sensores"
+          ]
+        },
+        {
+          "slug": "ti-internet-redes",
+          "label": "Internet e Rede / T.I.",
+          "novo": true,
+          "material": "Cabo, rack, switch, roteador, AP",
+          "fornecedores": [],
+          "status": "Descoberto",
+          "docs": [
+            "CNPJ ativo",
+            "Contrato com SLA definido",
+            "Acordo de confidencialidade / LGPD"
+          ],
+          "busca": {
+            "forte": [
+              "ti",
+              "informatica",
+              "informática",
+              "internet",
+              "wifi",
+              "wi-fi",
+              "wi fi",
+              "cabo de rede",
+              "cabeamento estruturado",
+              "rack",
+              "switch",
+              "roteador",
+              "modem",
+              "servidor",
+              "fibra optica",
+              "provedor",
+              "sem internet",
+              "internet caindo",
+              "suporte tecnico",
+              "nobreak",
+              "ponto de rede",
+              "access point",
+              "link dedicado",
+              "backup"
+            ],
+            "fraco": [
+              "rede",
+              "redes",
+              "computador",
+              "pc",
+              "notebook",
+              "fibra",
+              "impressora",
+              "email",
+              "dominio",
+              "sistema",
+              "ap"
+            ]
+          },
+          "tags": [
+            "rede",
+            "cabeamento estruturado",
+            "wi-fi",
+            "servidor",
+            "suporte"
+          ]
+        }
+      ]
+    },
+    {
+      "n": 3,
+      "slug": "acabamentos",
+      "titulo": "Acabamentos",
+      "prefixo": "Acabamento",
+      "itens": [
+        {
+          "slug": "pintor",
+          "label": "Pintor",
+          "novo": false,
+          "material": "Tintas, massa, solvente, lixa",
+          "fornecedores": [],
+          "status": "Descoberto",
+          "docs": [
+            "CNPJ ou MEI",
+            "NR-35 para fachada",
+            "FISPQ de tintas e solventes"
+          ],
+          "busca": {
+            "forte": [
+              "pintor",
+              "pintura",
+              "pintar",
+              "textura",
+              "grafiato",
+              "massa corrida",
+              "massa acrilica",
+              "verniz",
+              "esmalte sintetico",
+              "latex",
+              "látex",
+              "pintar casa",
+              "pintar parede",
+              "pintar predio",
+              "selador",
+              "massa pva",
+              "pintura eletrostatica",
+              "demarcacao de piso",
+              "lixamento",
+              "epoxi",
+              "epóxi"
+            ],
+            "fraco": [
+              "tinta",
+              "tintas",
+              "esmalte",
+              "lixar",
+              "rolo",
+              "pistola",
+              "fachada",
+              "efeito"
+            ]
+          },
+          "tags": [
+            "pintura",
+            "textura",
+            "grafiato",
+            "massa corrida",
+            "fachada"
+          ]
+        },
+        {
+          "slug": "azulejista",
+          "label": "Azulejista",
+          "novo": true,
+          "material": "Porcelanato, argamassa, rejunte",
+          "fornecedores": [],
+          "status": "Descoberto",
+          "docs": [
+            "CNPJ ou MEI",
+            "NR-18"
+          ],
+          "busca": {
+            "forte": [
+              "azulejista",
+              "azulegista",
+              "azulejo",
+              "azulejos",
+              "porcelanato",
+              "assentar piso",
+              "assentamento",
+              "colocar piso",
+              "trocar piso",
+              "rejunte",
+              "rejuntar",
+              "pastilha",
+              "ladrilho",
+              "nivelamento de piso",
+              "argamassa colante",
+              "ac2",
+              "ac3",
+              "paginacao",
+              "piso vinilico"
+            ],
+            "fraco": [
+              "ceramica",
+              "cerâmica",
+              "piso",
+              "pisos",
+              "revestimento",
+              "assentar",
+              "laminado",
+              "deck",
+              "espacador"
+            ]
+          },
+          "tags": [
+            "porcelanato",
+            "revestimento",
+            "rejunte",
+            "assentamento",
+            "nivelamento"
+          ]
+        },
+        {
+          "slug": "marmoraria",
+          "label": "Marmoraria",
+          "novo": true,
+          "material": "Mármore, granito, quartzo",
+          "fornecedores": [
+            "Marmoraria Parthenon (Flavio)"
+          ],
+          "status": "Confirmado",
+          "docs": [
+            "CNPJ ativo",
+            "PGR com controle de sílica (NR-01/NR-09)",
+            "Corte úmido ou exaustão comprovada"
+          ],
+          "busca": {
+            "forte": [
+              "marmoraria",
+              "marmoreria",
+              "marmorista",
+              "marmore",
+              "mármore",
+              "granito",
+              "quartzo",
+              "silestone",
+              "bancada de granito",
+              "pia de granito",
+              "soleira",
+              "pingadeira",
+              "rodape de granito",
+              "escada de granito",
+              "pedra natural",
+              "cuba esculpida",
+              "nano glass",
+              "corte de pedra"
+            ],
+            "fraco": [
+              "bancada",
+              "tampo",
+              "pedra",
+              "polimento",
+              "acabamento em pedra"
+            ]
+          },
+          "tags": [
+            "granito",
+            "mármore",
+            "quartzo",
+            "bancada",
+            "soleira"
+          ]
+        },
+        {
+          "slug": "marceneiro",
+          "label": "Marceneiro / Móveis",
+          "novo": false,
+          "material": "MDF, ferragens, lâminas",
+          "fornecedores": [],
+          "status": "Descoberto",
+          "docs": [
+            "CNPJ ativo",
+            "DOF quando houver madeira nativa",
+            "Garantia de fábrica"
+          ],
+          "busca": {
+            "forte": [
+              "marceneiro",
+              "marcenaria",
+              "carpinteiro",
+              "movel planejado",
+              "moveis planejados",
+              "planejado",
+              "sob medida",
+              "mdf",
+              "mdp",
+              "guarda roupa",
+              "guarda-roupa",
+              "closet",
+              "cozinha planejada",
+              "painel de tv",
+              "batente",
+              "compensado",
+              "dobradica",
+              "corredica"
+            ],
+            "fraco": [
+              "movel",
+              "moveis",
+              "móveis",
+              "armario",
+              "armário",
+              "porta",
+              "portas",
+              "rodape",
+              "rodapé",
+              "estante",
+              "balcao",
+              "madeira",
+              "ferragem",
+              "cozinha"
+            ]
+          },
+          "tags": [
+            "móveis planejados",
+            "MDF",
+            "closet",
+            "cozinha",
+            "sob medida"
+          ]
+        },
+        {
+          "slug": "vidracaria",
+          "label": "Vidraçaria",
+          "novo": true,
+          "sugestao": "Não constava em nenhuma das duas listas originais — inclusão sugerida.",
+          "material": "Vidro, esquadrias, ferragens",
+          "fornecedores": [
+            "Aplik Vidros (Patrick)",
+            "Idea Vidros e Esquadrias"
+          ],
+          "status": "Confirmado",
+          "docs": [
+            "ART para fachada e pele de vidro",
+            "NR-35",
+            "Certificado NBR do temperado"
+          ],
+          "busca": {
+            "forte": [
+              "vidracaria",
+              "vidraçaria",
+              "vidraceiro",
+              "vidro",
+              "vidros",
+              "box de banheiro",
+              "blindex",
+              "temperado",
+              "janela de vidro",
+              "esquadria",
+              "esquadrias",
+              "espelho",
+              "fechar area",
+              "fechar varanda",
+              "cortina de vidro",
+              "pele de vidro",
+              "fachada de vidro",
+              "porta de vidro",
+              "insulfilm",
+              "pelicula",
+              "vidro quebrado",
+              "trocar vidro",
+              "guarda corpo de vidro"
+            ],
+            "fraco": [
+              "box",
+              "janela",
+              "aluminio",
+              "alumínio",
+              "sacada",
+              "laminado"
+            ]
+          },
+          "tags": [
+            "vidro temperado",
+            "box",
+            "esquadria",
+            "espelho",
+            "fachada"
+          ]
+        }
+      ]
+    },
+    {
+      "n": 4,
+      "slug": "projeto-gestao",
+      "titulo": "Projeto, Gestão e Mão de Obra Especializada",
+      "prefixo": "Projeto",
+      "itens": [
+        {
+          "slug": "projeto-engenharia",
+          "label": "Projeto e Engenharia / Arquitetura e Interiores",
+          "novo": false,
+          "material": "Serviço (sem material)",
+          "fornecedores": [
+            "RM Projetos",
+            "Retha Arquitetura",
+            "Inove Arquitetura",
+            "Sama",
+            "Criar",
+            "Arquiteto Home"
+          ],
+          "status": "A confirmar",
+          "pendencia": "Arquiteto Home está cadastrado em Materiais de Construção.",
+          "docs": [
+            "ART/CREA ou RRT/CAU",
+            "CNPJ ativo",
+            "CND federal, FGTS e CNDT"
+          ],
+          "busca": {
+            "forte": [
+              "engenheiro",
+              "engenharia",
+              "engenheiro civil",
+              "arquiteto",
+              "arquiteta",
+              "arquitetura",
+              "planta baixa",
+              "desenho tecnico",
+              "calculo estrutural",
+              "art",
+              "rrt",
+              "laudo tecnico",
+              "aprovacao na prefeitura",
+              "alvara",
+              "alvará",
+              "habite-se",
+              "habite se",
+              "regularizacao",
+              "regularização",
+              "design de interiores",
+              "designer de interiores",
+              "decorador",
+              "memorial descritivo",
+              "compatibilizacao",
+              "as built",
+              "fazer planta",
+              "legalizar",
+              "projeto eletrico",
+              "projeto hidraulico",
+              "projeto estrutural",
+              "maquete",
+              "render"
+            ],
+            "fraco": [
+              "projeto",
+              "projetos",
+              "planta",
+              "desenho",
+              "laudo",
+              "orcamento",
+              "orçamento",
+              "prefeitura",
+              "decoracao",
+              "3d",
+              "reforma",
+              "estrutural"
+            ]
+          },
+          "tags": [
+            "projeto",
+            "arquitetura",
+            "ART/RRT",
+            "laudo",
+            "aprovação"
+          ]
+        },
+        {
+          "slug": "mestre-de-obra",
+          "label": "Mestre de Obra",
+          "novo": true,
+          "material": "Serviço (sem material)",
+          "fornecedores": [],
+          "status": "Descoberto",
+          "docs": [
+            "CNPJ ou MEI",
+            "NR-18 e NR-35 quando aplicável"
+          ],
+          "busca": {
+            "forte": [
+              "mestre de obra",
+              "mestre obra",
+              "mestre",
+              "encarregado de obra",
+              "encarregado",
+              "apontador",
+              "tomar conta da obra",
+              "cuidar da obra",
+              "chefe de obra",
+              "tocar a obra",
+              "lider de equipe"
+            ],
+            "fraco": [
+              "conferir servico"
+            ]
+          },
+          "tags": [
+            "mestre de obra",
+            "encarregado",
+            "equipe",
+            "acompanhamento"
+          ]
+        },
+        {
+          "slug": "gerenciamento-obra",
+          "label": "Gerenciador de Obra",
+          "novo": true,
+          "material": "Serviço (sem material)",
+          "fornecedores": [],
+          "status": "Descoberto",
+          "docs": [
+            "ART de fiscalização",
+            "CNPJ ativo",
+            "CND federal, FGTS e CNDT"
+          ],
+          "busca": {
+            "forte": [
+              "gerenciamento de obra",
+              "gerenciamento",
+              "gerenciador",
+              "gerente de obra",
+              "fiscalizacao de obra",
+              "fiscal de obra",
+              "medicao de obra",
+              "acompanhamento de obra",
+              "diario de obra",
+              "rdo",
+              "administrar obra",
+              "gestao de obra",
+              "controle de obra",
+              "gerenciar reforma",
+              "planejamento fisico financeiro",
+              "cronograma"
+            ],
+            "fraco": [
+              "fiscalizacao",
+              "fiscalização",
+              "medicao",
+              "medição"
+            ]
+          },
+          "tags": [
+            "gerenciamento",
+            "fiscalização",
+            "medição",
+            "cronograma",
+            "RDO"
+          ]
+        },
+        {
+          "slug": "topografia",
+          "label": "Topografia",
+          "novo": true,
+          "material": "Serviço + insumos de marcação",
+          "fornecedores": [
+            "Data Topografia (Wellington)",
+            "LS Topografia (Lizandro)"
+          ],
+          "status": "Confirmado",
+          "docs": [
+            "ART/CREA",
+            "CNPJ ativo"
+          ],
+          "busca": {
+            "forte": [
+              "topografia",
+              "topografo",
+              "topógrafo",
+              "topografa",
+              "levantamento topografico",
+              "medir terreno",
+              "medicao de terreno",
+              "locacao de obra",
+              "estacao total",
+              "estação total",
+              "teodolito",
+              "georreferenciamento",
+              "aerofotogrametria",
+              "planta topografica",
+              "demarcar terreno",
+              "marcar terreno",
+              "curva de nivel",
+              "memorial georreferenciado",
+              "car",
+              "divisa"
+            ],
+            "fraco": [
+              "levantamento",
+              "nivelamento",
+              "nivel",
+              "gps",
+              "drone",
+              "area do terreno",
+              "metragem"
+            ]
+          },
+          "tags": [
+            "levantamento",
+            "locação de obra",
+            "estação total",
+            "georreferenciamento"
+          ]
+        },
+        {
+          "slug": "analise-de-solo",
+          "label": "Análise de Solo",
+          "novo": true,
+          "material": "Serviço laboratorial",
+          "fornecedores": [],
+          "status": "Descoberto",
+          "docs": [
+            "ART/CREA",
+            "Laboratório com controle de calibração"
+          ],
+          "busca": {
+            "forte": [
+              "analise de solo",
+              "análise de solo",
+              "sondagem",
+              "sondagem spt",
+              "spt",
+              "geotecnia",
+              "geotecnico",
+              "laudo de solo",
+              "ensaio de solo",
+              "resistencia do solo",
+              "testar terreno",
+              "cbr",
+              "proctor",
+              "capacidade de carga",
+              "furo de sondagem",
+              "lencol freatico",
+              "tipo de fundacao",
+              "aterro compactado"
+            ],
+            "fraco": [
+              "solo",
+              "ensaio",
+              "compactacao",
+              "compactação",
+              "densidade",
+              "fundacao",
+              "fundação"
+            ]
+          },
+          "tags": [
+            "sondagem",
+            "SPT",
+            "geotecnia",
+            "laudo de solo",
+            "ensaio"
+          ]
+        },
+        {
+          "slug": "tornearia",
+          "label": "Torneiro / Tornearia",
+          "novo": true,
+          "material": "Peça usinada sob medida",
+          "fornecedores": [],
+          "status": "Descoberto",
+          "docs": [
+            "CNPJ ativo",
+            "NR-12",
+            "Certificado de material para peça crítica"
+          ],
+          "busca": {
+            "forte": [
+              "torneiro",
+              "tornearia",
+              "torno",
+              "torno mecanico",
+              "usinagem",
+              "usinar",
+              "fresa",
+              "fresadora",
+              "cnc",
+              "caldeiraria",
+              "fazer peca",
+              "peca sob medida",
+              "mandrilhar",
+              "retifica",
+              "serra fita",
+              "corte de metal",
+              "chaveta",
+              "rosquear",
+              "engrenagem"
+            ],
+            "fraco": [
+              "peca",
+              "peça",
+              "pecas",
+              "peças",
+              "eixo",
+              "bucha",
+              "rosca",
+              "polia"
+            ]
+          },
+          "tags": [
+            "usinagem",
+            "torno",
+            "CNC",
+            "peça sob medida",
+            "caldeiraria"
+          ]
+        },
+        {
+          "slug": "construtoras",
+          "label": "Construtoras e Empreiteiras",
+          "novo": true,
+          "material": "Serviço (execução completa da obra)",
+          "fornecedores": [],
+          "status": "Descoberto — criar",
+          "docs": [
+            "CND federal, estadual, municipal, FGTS e CNDT",
+            "Certidão de falência",
+            "PGR/PCMSO",
+            "Comprovação de INSS e FGTS da mão de obra"
+          ],
+          "busca": {
+            "forte": [
+              "construtora",
+              "construtoras",
+              "empreiteira",
+              "empreiteiras",
+              "empreiteiro",
+              "construir a casa toda",
+              "tocar a obra inteira",
+              "obra completa",
+              "turn key",
+              "chave na mao",
+              "chave na mão",
+              "execucao completa da obra",
+              "execução completa da obra",
+              "contratar construtora",
+              "contratar empreiteira"
+            ],
+            "fraco": [
+              "empresa de construcao",
+              "empresa de construção",
+              "construcao civil",
+              "construção civil"
+            ]
+          },
+          "tags": [
+            "execução completa",
+            "empreiteira",
+            "obra chave na mão"
+          ]
+        }
+      ]
+    },
+    {
+      "n": 5,
+      "slug": "apoio-logistica-equipamentos",
+      "titulo": "Apoio, Logística e Equipamentos",
+      "prefixo": "Apoio",
+      "itens": [
+        {
+          "slug": "locacao-equipamentos",
+          "label": "Locação de Equipamentos",
+          "novo": false,
+          "material": "Andaimes, ferramentas, equipamentos",
+          "fornecedores": [
+            "Casa do Construtor Vendas",
+            "Andimes e Ferramentas (Jonas)"
+          ],
+          "status": "Confirmado",
+          "docs": [
+            "Contrato com cláusula de responsabilidade e seguro",
+            "Laudo/ART de andaimes e plataformas",
+            "Checklist de entrega"
+          ],
+          "busca": {
+            "forte": [
+              "locacao de equipamentos",
+              "locacao",
+              "locação",
+              "aluguel",
+              "alugar",
+              "andaime",
+              "andaimes",
+              "betoneira",
+              "gerador",
+              "placa vibratoria",
+              "martelete",
+              "rompedor",
+              "plataforma elevatoria",
+              "escora",
+              "bomba de concreto",
+              "alugar ferramenta",
+              "balancim",
+              "bandeja",
+              "cortadora de piso",
+              "vibrador de concreto",
+              "policorte",
+              "guincho",
+              "sapo compactador"
+            ],
+            "fraco": [
+              "ferramenta",
+              "ferramentas",
+              "equipamento",
+              "equipamentos",
+              "container",
+              "compactador",
+              "serra circular",
+              "furadeira",
+              "munck"
+            ]
+          },
+          "tags": [
+            "locação",
+            "andaime",
+            "betoneira",
+            "gerador",
+            "plataforma"
+          ]
+        },
+        {
+          "slug": "manutencao-equipamentos",
+          "label": "Manutenção de Equipamentos",
+          "novo": true,
+          "material": "Peças, óleo, filtros",
+          "fornecedores": [],
+          "status": "Descoberto",
+          "docs": [
+            "NR-12 e NR-13 conforme escopo",
+            "Certificado de destinação de resíduos",
+            "Garantia de serviço e peças"
+          ],
+          "busca": {
+            "forte": [
+              "manutencao de equipamentos",
+              "manutencao",
+              "manutenção",
+              "mecanico",
+              "mecânico",
+              "consertar",
+              "conserto",
+              "arrumar",
+              "reparo",
+              "reparar",
+              "hidraulica de maquina",
+              "mangueira hidraulica",
+              "preventiva",
+              "corretiva",
+              "oficina",
+              "maquina quebrada",
+              "maquina parada",
+              "peca de maquina",
+              "bomba injetora",
+              "troca de oleo",
+              "revisao de maquina",
+              "solda de maquina"
+            ],
+            "fraco": [
+              "quebrou",
+              "diesel",
+              "motor",
+              "turbina",
+              "embreagem",
+              "rolamento"
+            ]
+          },
+          "tags": [
+            "manutenção",
+            "preventiva",
+            "corretiva",
+            "oficina",
+            "peças"
+          ]
+        },
+        {
+          "slug": "operador-de-maquinas",
+          "label": "Operador de Máquinas",
+          "novo": true,
+          "material": "Mão de obra (sem máquina)",
+          "fornecedores": [],
+          "status": "Descoberto",
+          "docs": [
+            "NR-11 e NR-12",
+            "CNH categoria compatível",
+            "ASO vigente",
+            "Vínculo CLT ou MEI comprovado"
+          ],
+          "busca": {
+            "forte": [
+              "operador de maquinas",
+              "operador",
+              "operadora",
+              "maquinista",
+              "operar maquina",
+              "operador de munck",
+              "operador de grua",
+              "mao de obra de operador",
+              "operador de escavadeira"
+            ],
+            "fraco": [
+              "empilhadeira",
+              "guindaste",
+              "escavadeira",
+              "retroescavadeira"
+            ]
+          },
+          "tags": [
+            "operador",
+            "NR-11",
+            "NR-12",
+            "escavadeira",
+            "empilhadeira"
+          ]
+        },
+        {
+          "slug": "frete",
+          "label": "Frete",
+          "novo": true,
+          "material": "Transporte",
+          "fornecedores": [],
+          "status": "Descoberto",
+          "docs": [
+            "RNTRC ativo",
+            "CT-e e MDF-e",
+            "Seguro RCTR-C e RCF-DC",
+            "CRLV e CNH compatível",
+            "AET para excedente"
+          ],
+          "busca": {
+            "forte": [
+              "frete",
+              "fretes",
+              "transporte",
+              "transportadora",
+              "caminhao",
+              "caminhão",
+              "carreta",
+              "prancha",
+              "cacamba",
+              "caçamba",
+              "basculante",
+              "carreto",
+              "mudanca",
+              "mudança",
+              "levar material",
+              "buscar material",
+              "trazer material",
+              "frete de material",
+              "transporte de maquina",
+              "bitrem",
+              "truck",
+              "toco",
+              "carga excedente",
+              "escolta"
+            ],
+            "fraco": [
+              "carga",
+              "entrega",
+              "guincho",
+              "munck",
+              "caminhonete"
+            ]
+          },
+          "tags": [
+            "frete",
+            "caminhão",
+            "prancha",
+            "caçamba",
+            "RNTRC"
+          ]
+        },
+        {
+          "slug": "chapa-carga-descarga",
+          "label": "Chapa (Carga / Descarga)",
+          "novo": true,
+          "material": "Mão de obra",
+          "fornecedores": [],
+          "status": "Descoberto",
+          "docs": [
+            "MEI ou vínculo formal",
+            "ASO vigente",
+            "NR-11",
+            "Ficha de entrega de EPI"
+          ],
+          "busca": {
+            "forte": [
+              "chapa",
+              "chapas",
+              "carga e descarga",
+              "descarregar",
+              "descarregamento",
+              "carregar caminhao",
+              "ajudante de carga",
+              "estiva",
+              "bracal",
+              "braçal",
+              "diarista de carga",
+              "mao de obra de carga",
+              "subir material",
+              "carregar material"
+            ],
+            "fraco": [
+              "carregar",
+              "ajudante",
+              "peao",
+              "ajudante geral"
+            ]
+          },
+          "tags": [
+            "carga e descarga",
+            "ajudante",
+            "mão de obra",
+            "diária"
+          ]
+        },
+        {
+          "slug": "limpeza-pos-obra",
+          "label": "Limpeza Pós-Obra",
+          "novo": false,
+          "material": "Produtos de limpeza, caçamba",
+          "fornecedores": [],
+          "status": "Descoberto",
+          "docs": [
+            "CND federal, FGTS e CNDT",
+            "Vínculo da equipe comprovado",
+            "Destinação de resíduos (PGRCC)"
+          ],
+          "busca": {
+            "forte": [
+              "limpeza pos obra",
+              "pos-obra",
+              "pós-obra",
+              "limpeza fina",
+              "limpeza grossa",
+              "faxina",
+              "faxineira",
+              "limpar depois da obra",
+              "entrega de chave",
+              "retirar entulho",
+              "tirar entulho",
+              "cacamba de entulho",
+              "limpeza de fachada",
+              "remover respingo",
+              "tirar cimento do piso",
+              "limpeza de vidro"
+            ],
+            "fraco": [
+              "limpeza",
+              "limpar",
+              "diarista",
+              "entulho",
+              "lavar piso"
+            ]
+          },
+          "tags": [
+            "limpeza fina",
+            "limpeza grossa",
+            "entrega de chave",
+            "entulho"
+          ]
+        },
+        {
+          "slug": "jardinagem-paisagismo",
+          "label": "Jardineiro / Paisagismo",
+          "novo": true,
+          "material": "Grama, mudas, substrato, irrigação",
+          "fornecedores": [],
+          "status": "Descoberto",
+          "docs": [
+            "NR-12 e NR-31 para roçadeira/motosserra",
+            "Autorização de poda/supressão quando exigida"
+          ],
+          "busca": {
+            "forte": [
+              "jardineiro",
+              "jardinagem",
+              "jardim",
+              "paisagismo",
+              "paisagista",
+              "plantar grama",
+              "colocar grama",
+              "cortar grama",
+              "rocar",
+              "roçar",
+              "rocada",
+              "roçada",
+              "roçadeira",
+              "podar",
+              "poda",
+              "cortar arvore",
+              "derrubar arvore",
+              "muro verde",
+              "jardim vertical",
+              "irrigacao",
+              "irrigação",
+              "terra adubada",
+              "esmeralda",
+              "batatais",
+              "sao carlos"
+            ],
+            "fraco": [
+              "grama",
+              "gramado",
+              "arvore",
+              "árvore",
+              "plantas",
+              "mudas",
+              "adubo",
+              "horta",
+              "vaso",
+              "floreira"
+            ]
+          },
+          "tags": [
+            "jardinagem",
+            "paisagismo",
+            "grama",
+            "poda",
+            "irrigação"
+          ]
+        },
+        {
+          "slug": "manutencao-piscinas",
+          "label": "Manutenção de Piscinas",
+          "novo": true,
+          "material": "Produtos e equipamentos de piscina",
+          "fornecedores": [
+            "Vitrine Piscinas e Locações (Luiz Bedin)"
+          ],
+          "status": "Confirmado",
+          "docs": [
+            "FISPQ dos químicos",
+            "NR-33 para espaço confinado",
+            "Contrato de manutenção recorrente"
+          ],
+          "busca": {
+            "forte": [
+              "piscina",
+              "piscinas",
+              "piscineiro",
+              "limpeza de piscina",
+              "tratamento de piscina",
+              "cloro",
+              "agua verde",
+              "água verde",
+              "bomba de piscina",
+              "aquecimento de piscina",
+              "trocador de calor",
+              "piscina suja",
+              "aspirar piscina",
+              "gerador de cloro",
+              "hidromassagem",
+              "escovar borda",
+              "vinil de piscina"
+            ],
+            "fraco": [
+              "filtro",
+              "ph",
+              "alcalinidade",
+              "spa",
+              "sal"
+            ]
+          },
+          "tags": [
+            "tratamento",
+            "limpeza de piscina",
+            "filtro",
+            "bomba",
+            "aquecimento"
+          ]
+        },
+        {
+          "slug": "gas-revenda",
+          "label": "Gás (Revenda e Abastecimento)",
+          "novo": true,
+          "material": "Botijões e tanques de GLP",
+          "fornecedores": [],
+          "status": "Descoberto — criar",
+          "docs": [
+            "Autorização ANP",
+            "AVCB do depósito",
+            "NR-20",
+            "Seguro de responsabilidade civil"
+          ],
+          "busca": {
+            "forte": [
+              "revenda de gas",
+              "revenda de glp",
+              "distribuidora de gas",
+              "posto de gas",
+              "troca de botijao",
+              "troca de botijão",
+              "entrega de gas",
+              "entrega de gás",
+              "gas em casa",
+              "recarga de botijao",
+              "recarga de botijão",
+              "revendedor de gas"
+            ],
+            "fraco": [
+              "botijao",
+              "botijão",
+              "glp",
+              "gas de cozinha",
+              "gás de cozinha",
+              "p13",
+              "p45",
+              "bujao",
+              "bujão"
+            ]
+          },
+          "tags": [
+            "GLP",
+            "revenda",
+            "botijão",
+            "entrega"
+          ]
+        },
+        {
+          "slug": "materiais-construcao",
+          "label": "Materiais de Construção",
+          "novo": false,
+          "transversal": true,
+          "material": "Transversal — atende todos os grupos",
+          "fornecedores": [
+            "Dezenas de cadastros genéricos (Amadeu, Danilo, David, Fabio, Jorge, Luiza, Wagner e outros)"
+          ],
+          "status": "Sobrecarregada",
+          "pendencia": "Definir o que cada fornecedor vende para reclassificar. É a categoria que mais justifica a segmentação.",
+          "docs": [
+            "Regularidade fiscal estadual (SEFAZ/MT)",
+            "Emissão de NF-e e NFS-e",
+            "Política de troca e prazo por escrito"
+          ],
+          "busca": {
+            "forte": [
+              "material de construcao",
+              "material de construção",
+              "materiais de construcao",
+              "deposito",
+              "depósito",
+              "loja de material",
+              "casa de material",
+              "loja de construcao",
+              "comprar material",
+              "onde comprar",
+              "orcamento de material",
+              "entrega de material",
+              "lista de material",
+              "vergalhao",
+              "vergalhão"
+            ],
+            "fraco": [
+              "material",
+              "materiais",
+              "cimento",
+              "aco",
+              "aço",
+              "ferro",
+              "telha",
+              "cal",
+              "arame",
+              "prego",
+              "parafuso",
+              "tubo",
+              "bloco",
+              "tijolo",
+              "areia",
+              "brita",
+              "argamassa"
+            ]
+          },
+          "tags": [
+            "cimento",
+            "aço",
+            "blocos",
+            "acabamento",
+            "entrega no canteiro"
+          ]
+        }
+      ]
+    },
+    {
+      "n": 6,
+      "slug": "seguranca-capacitacao",
+      "titulo": "Segurança e Capacitação",
+      "prefixo": "Segurança",
+      "nota": "Grupo descoberto — nenhum fornecedor identificável hoje.",
+      "itens": [
+        {
+          "slug": "seguranca-do-trabalho",
+          "label": "Segurança do Trabalho / EPI",
+          "novo": true,
+          "material": "EPIs, EPCs, sinalização, uniformes",
+          "fornecedores": [],
+          "status": "Descoberto — criar",
+          "docs": [
+            "CA vigente por item de EPI",
+            "NF-e com o CA descrito",
+            "Ficha de entrega de EPI (rastreabilidade)",
+            "PGR e PCMSO assinados",
+            "Eventos S-2210/S-2240 no eSocial"
+          ],
+          "busca": {
+            "forte": [
+              "seguranca do trabalho",
+              "segurança do trabalho",
+              "tecnico de seguranca",
+              "técnico de segurança",
+              "tst",
+              "engenheiro de seguranca",
+              "epi",
+              "epis",
+              "epc",
+              "capacete",
+              "botina",
+              "talabarte",
+              "cinturao",
+              "cinturão",
+              "protetor auricular",
+              "abafador",
+              "respirador",
+              "pgr",
+              "pcmso",
+              "ltcat",
+              "ppp",
+              "aso",
+              "cipa",
+              "sesmt",
+              "cat",
+              "insalubridade",
+              "periculosidade",
+              "ministerio do trabalho",
+              "ca",
+              "certificado de aprovacao",
+              "ficha de epi",
+              "esocial",
+              "s-2210",
+              "s-2240",
+              "acidente de trabalho",
+              "fita zebrada",
+              "placa de sinalizacao"
+            ],
+            "fraco": [
+              "bota",
+              "luva",
+              "luvas",
+              "oculos",
+              "óculos",
+              "cinto",
+              "mascara",
+              "máscara",
+              "uniforme",
+              "colete",
+              "sinalizacao",
+              "sinalização",
+              "cone",
+              "nr",
+              "fiscalizacao do ministerio"
+            ]
+          },
+          "tags": [
+            "EPI",
+            "PGR",
+            "PCMSO",
+            "laudo",
+            "CA vigente"
+          ]
+        },
+        {
+          "slug": "seguranca-eletronica",
+          "label": "Sistema de Segurança (Eletrônica)",
+          "novo": true,
+          "material": "Câmeras, DVR, alarme, cerca, controle de acesso",
+          "fornecedores": [],
+          "status": "Descoberto — criar",
+          "docs": [
+            "CNPJ ativo",
+            "Adequação à LGPD para imagens",
+            "Contrato de monitoramento"
+          ],
+          "busca": {
+            "forte": [
+              "sistema de seguranca",
+              "camera",
+              "cameras",
+              "câmera",
+              "câmeras",
+              "cftv",
+              "dvr",
+              "nvr",
+              "monitoramento",
+              "monitoramento 24h",
+              "alarme",
+              "sensor de presenca",
+              "cerca eletrica",
+              "concertina",
+              "controle de acesso",
+              "catraca",
+              "interfone",
+              "porteiro eletronico",
+              "fechadura eletronica",
+              "fechadura digital",
+              "biometria",
+              "vigilancia",
+              "vigilância",
+              "seguranca da obra",
+              "roubo de material",
+              "roubaram",
+              "portaria remota",
+              "central de alarme",
+              "sirene"
+            ],
+            "fraco": [
+              "furto",
+              "roubo",
+              "cerca"
+            ]
+          },
+          "tags": [
+            "CFTV",
+            "alarme",
+            "cerca elétrica",
+            "controle de acesso",
+            "monitoramento"
+          ]
+        },
+        {
+          "slug": "treinamentos",
+          "label": "Treinamentos",
+          "novo": true,
+          "material": "Serviço de capacitação",
+          "fornecedores": [],
+          "status": "Descoberto — criar",
+          "docs": [
+            "Instrutor com registro e habilitação",
+            "Certificado com carga horária, conteúdo e validade",
+            "Lista de presença e avaliação",
+            "Evento S-2221 no eSocial"
+          ],
+          "busca": {
+            "forte": [
+              "treinamento",
+              "treinamentos",
+              "curso",
+              "cursos",
+              "capacitacao",
+              "capacitação",
+              "certificacao",
+              "nr-10",
+              "nr10",
+              "nr 10",
+              "nr-11",
+              "nr11",
+              "nr-12",
+              "nr12",
+              "nr-18",
+              "nr18",
+              "nr-33",
+              "nr33",
+              "nr-35",
+              "nr35",
+              "nr-06",
+              "nr6",
+              "nr-05",
+              "trabalho em altura",
+              "espaco confinado",
+              "espaço confinado",
+              "brigada",
+              "brigada de incendio",
+              "primeiros socorros",
+              "reciclagem",
+              "integracao",
+              "integração",
+              "dds",
+              "curso de altura",
+              "habilitacao",
+              "habilitação",
+              "instrutor",
+              "carga horaria",
+              "treinamento de maquina",
+              "s-2221"
+            ],
+            "fraco": [
+              "certificado",
+              "altura",
+              "nrs"
+            ]
+          },
+          "tags": [
+            "NRs",
+            "trabalho em altura",
+            "espaço confinado",
+            "brigada",
+            "certificado"
+          ]
+        },
+        {
+          "slug": "mineradoras",
+          "label": "Mineradoras (Agregados)",
+          "novo": true,
+          "material": "Areia, brita, cascalho, saibro",
+          "fornecedores": [],
+          "status": "Descoberto — criar",
+          "docs": [
+            "Título/portaria da ANM",
+            "Licença ambiental estadual vigente",
+            "CFEM em dia",
+            "NF-e com CFOP correto",
+            "Laudo granulométrico"
+          ],
+          "busca": {
+            "forte": [
+              "mineradora",
+              "mineradoras",
+              "mineracao",
+              "mineração",
+              "pedreira",
+              "areia lavada",
+              "areia media",
+              "areia fina",
+              "brita 0",
+              "brita 1",
+              "brita 2",
+              "cascalho",
+              "saibro",
+              "seixo",
+              "po de pedra",
+              "pó de pedra",
+              "rachao",
+              "rachão",
+              "bica corrida",
+              "usina de concreto",
+              "concreto usinado",
+              "caminhao betoneira",
+              "usina de asfalto",
+              "cbuq",
+              "agregado",
+              "agregados",
+              "caminhao de areia",
+              "caminhao de brita",
+              "anm",
+              "cfem",
+              "granulometria"
+            ],
+            "fraco": [
+              "areia",
+              "brita",
+              "pedra",
+              "concreto",
+              "asfalto",
+              "usina"
+            ]
+          },
+          "tags": [
+            "areia",
+            "brita",
+            "cascalho",
+            "agregados",
+            "ANM/CFEM"
+          ]
+        },
+        {
+          "slug": "estagio-jovem-aprendiz",
+          "label": "Estágio e Jovem Aprendiz",
+          "novo": true,
+          "material": "Contratação de pessoal (não é fornecedor de obra)",
+          "fornecedores": [],
+          "status": "Descoberto — criar",
+          "docs": [
+            "Termo de compromisso e plano de atividades (Lei 11.788/2008)",
+            "Seguro contra acidentes pessoais",
+            "Convênio com agente de integração",
+            "Controle de cota legal"
+          ],
+          "busca": {
+            "forte": [
+              "estagio",
+              "estágio",
+              "estagiario",
+              "estagiário",
+              "estagiaria",
+              "estagiária",
+              "jovem aprendiz",
+              "aprendiz",
+              "lei 11788",
+              "lei 11.788",
+              "termo de compromisso",
+              "agente de integracao",
+              "agente de integração",
+              "contratar estagiario",
+              "contratar estagiário",
+              "contratar aprendiz",
+              "cota de aprendiz"
+            ],
+            "fraco": [
+              "bolsa auxilio",
+              "bolsa auxílio",
+              "cota legal"
+            ]
+          },
+          "tags": [
+            "estágio",
+            "jovem aprendiz",
+            "Lei 11.788",
+            "cota legal"
+          ]
+        }
+      ]
+    }
+  ],
+  "itens_sem_grupo": [],
+  "busca_nota": "Campo 'busca' alimenta o matcher (busca_sinonimos.py): forte=identifica a categoria, fraco=coloquial/material e pode servir mais de uma categoria; inclui erros de grafia de proposito. Campo 'tags' e o que se EXIBE no card do prestador — curado, sem erro de grafia. Nao confundir os dois: busca e para casar, tags e para mostrar."
+}
