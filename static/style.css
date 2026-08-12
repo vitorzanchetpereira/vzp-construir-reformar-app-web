@@ -252,6 +252,8 @@ section{margin:38px 0}
 .galeria-item{display:flex;flex-direction:column;gap:6px}
 .galeria-item form{margin:0}
 .form-foto{display:flex;gap:10px;align-items:center;margin-top:16px;flex-wrap:wrap}
+.form-foto input[type=text]{padding:9px 11px;border:1px solid var(--linha);border-radius:8px;
+  font-size:14px;font-family:inherit;background:var(--branco);color:var(--tinta)}
 .avaliacao-foto{display:block;max-width:220px;border-radius:10px;margin:8px 0}
 
 .regiao-nova{display:none}
