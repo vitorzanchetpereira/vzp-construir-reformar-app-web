@@ -21,12 +21,21 @@
 
 <section>
   <h2 class="secao-titulo">Categorias</h2>
-  <div class="grid-cats">
-    {% for c in categorias %}
-      <a class="cat-chip" href="{{ url_for('prestadores', categoria=c['slug']) }}">
-        <span class="cat-icone">{{ c['icone'] }}</span>
-        <span>{{ c['nome'] }}</span>
-      </a>
+  <div class="gwrap">
+    {% for g in grupos_categorias %}
+      <details class="gitem" {% if loop.index <= 2 %}open{% endif %}>
+        <summary class="gbtn">
+          <span class="gn">{{ '%02d'|format(loop.index) }}</span>
+          <span class="gname">{{ g.titulo }}</span>
+          <span class="gcount">{{ g.itens|length }} itens</span>
+          <span class="gicon">+</span>
+        </summary>
+        <div class="glist">
+          {% for c in g.itens %}
+            <a class="gcat" href="{{ url_for('prestadores', categoria=c['slug']) }}">{{ c['icone'] }} {{ c['item_nome'] }}</a>
+          {% endfor %}
+        </div>
+      </details>
     {% endfor %}
   </div>
 </section>
