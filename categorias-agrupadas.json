@@ -5,6 +5,175 @@
   "grupos": [
     {
       "n": 1,
+      "slug": "servicos-preliminares",
+      "titulo": "Serviços Preliminares",
+      "prefixo": "Preliminares",
+      "nota": "Fase antes da obra bruta: reconhecimento do terreno e preparo do canteiro.",
+      "itens": [
+        {
+          "slug": "topografia",
+          "label": "Topografia",
+          "novo": true,
+          "material": "Serviço + insumos de marcação",
+          "fornecedores": [
+            "Data Topografia (Wellington)",
+            "LS Topografia (Lizandro)"
+          ],
+          "status": "Confirmado",
+          "docs": [
+            "ART/CREA",
+            "CNPJ ativo"
+          ],
+          "busca": {
+            "forte": [
+              "topografia",
+              "topografo",
+              "topógrafo",
+              "topografa",
+              "levantamento topografico",
+              "medir terreno",
+              "medicao de terreno",
+              "locacao de obra",
+              "estacao total",
+              "estação total",
+              "teodolito",
+              "georreferenciamento",
+              "aerofotogrametria",
+              "planta topografica",
+              "demarcar terreno",
+              "marcar terreno",
+              "curva de nivel",
+              "memorial georreferenciado",
+              "car",
+              "divisa"
+            ],
+            "fraco": [
+              "levantamento",
+              "nivelamento",
+              "nivel",
+              "gps",
+              "drone",
+              "area do terreno",
+              "metragem"
+            ]
+          },
+          "tags": [
+            "levantamento",
+            "locação de obra",
+            "estação total",
+            "georreferenciamento"
+          ]
+        },
+        {
+          "slug": "analise-de-solo",
+          "label": "Análise de Solo",
+          "novo": true,
+          "material": "Serviço laboratorial",
+          "fornecedores": [],
+          "status": "Descoberto",
+          "docs": [
+            "ART/CREA",
+            "Laboratório com controle de calibração"
+          ],
+          "busca": {
+            "forte": [
+              "analise de solo",
+              "análise de solo",
+              "sondagem",
+              "sondagem spt",
+              "spt",
+              "geotecnia",
+              "geotecnico",
+              "laudo de solo",
+              "ensaio de solo",
+              "resistencia do solo",
+              "testar terreno",
+              "cbr",
+              "proctor",
+              "capacidade de carga",
+              "furo de sondagem",
+              "lencol freatico",
+              "tipo de fundacao",
+              "aterro compactado"
+            ],
+            "fraco": [
+              "solo",
+              "ensaio",
+              "compactacao",
+              "compactação",
+              "densidade",
+              "fundacao",
+              "fundação"
+            ]
+          },
+          "tags": [
+            "sondagem",
+            "SPT",
+            "geotecnia",
+            "laudo de solo",
+            "ensaio"
+          ]
+        },
+        {
+          "slug": "terraplenagem",
+          "label": "Terraplenagem / Máquinas",
+          "novo": false,
+          "material": "Serviço + agregados (ver Mineradoras)",
+          "fornecedores": [],
+          "status": "Descoberto",
+          "docs": [
+            "Licença ambiental para corte/aterro/bota-fora",
+            "NR-11 e NR-12 dos operadores",
+            "Seguro de equipamento"
+          ],
+          "busca": {
+            "forte": [
+              "terraplenagem",
+              "terraplanagem",
+              "terraplano",
+              "terraplenar",
+              "escavadeira",
+              "escavadera",
+              "retroescavadeira",
+              "patrol",
+              "motoniveladora",
+              "pa carregadeira",
+              "pá carregadeira",
+              "trator de esteira",
+              "nivelar terreno",
+              "limpar terreno",
+              "tirar terra",
+              "abrir estrada",
+              "cascalhamento",
+              "desmatar",
+              "destocar",
+              "bota fora",
+              "corte e aterro"
+            ],
+            "fraco": [
+              "retro",
+              "trator",
+              "rolo compactador",
+              "aterro",
+              "drenagem",
+              "valeta",
+              "açude",
+              "acude",
+              "tanque"
+            ]
+          },
+          "tags": [
+            "escavadeira",
+            "aterro",
+            "drenagem",
+            "cascalhamento",
+            "nivelamento"
+          ]
+        }
+      ]
+    },
+    {
+      "n": 2,
       "slug": "estrutura-obra-bruta",
       "titulo": "Estrutura e Obra Bruta",
       "prefixo": "Estrutura",
@@ -166,62 +335,6 @@
           ]
         },
         {
-          "slug": "terraplenagem",
-          "label": "Terraplenagem / Máquinas",
-          "novo": false,
-          "material": "Serviço + agregados (ver Mineradoras)",
-          "fornecedores": [],
-          "status": "Descoberto",
-          "docs": [
-            "Licença ambiental para corte/aterro/bota-fora",
-            "NR-11 e NR-12 dos operadores",
-            "Seguro de equipamento"
-          ],
-          "busca": {
-            "forte": [
-              "terraplenagem",
-              "terraplanagem",
-              "terraplano",
-              "terraplenar",
-              "escavadeira",
-              "escavadera",
-              "retroescavadeira",
-              "patrol",
-              "motoniveladora",
-              "pa carregadeira",
-              "pá carregadeira",
-              "trator de esteira",
-              "nivelar terreno",
-              "limpar terreno",
-              "tirar terra",
-              "abrir estrada",
-              "cascalhamento",
-              "desmatar",
-              "destocar",
-              "bota fora",
-              "corte e aterro"
-            ],
-            "fraco": [
-              "retro",
-              "trator",
-              "rolo compactador",
-              "aterro",
-              "drenagem",
-              "valeta",
-              "açude",
-              "acude",
-              "tanque"
-            ]
-          },
-          "tags": [
-            "escavadeira",
-            "aterro",
-            "drenagem",
-            "cascalhamento",
-            "nivelamento"
-          ]
-        },
-        {
           "slug": "impermeabilizacao",
           "label": "Impermeabilização",
           "novo": true,
@@ -276,11 +389,47 @@
             "reservatório",
             "garantia"
           ]
+        },
+        {
+          "slug": "mestre-de-obra",
+          "label": "Mestre de Obra",
+          "novo": true,
+          "material": "Serviço (sem material)",
+          "fornecedores": [],
+          "status": "Descoberto",
+          "docs": [
+            "CNPJ ou MEI",
+            "NR-18 e NR-35 quando aplicável"
+          ],
+          "busca": {
+            "forte": [
+              "mestre de obra",
+              "mestre obra",
+              "mestre",
+              "encarregado de obra",
+              "encarregado",
+              "apontador",
+              "tomar conta da obra",
+              "cuidar da obra",
+              "chefe de obra",
+              "tocar a obra",
+              "lider de equipe"
+            ],
+            "fraco": [
+              "conferir servico"
+            ]
+          },
+          "tags": [
+            "mestre de obra",
+            "encarregado",
+            "equipe",
+            "acompanhamento"
+          ]
         }
       ]
     },
     {
-      "n": 2,
+      "n": 3,
       "slug": "instalacoes-prediais",
       "titulo": "Instalações e Sistemas Prediais",
       "prefixo": "Instalações",
@@ -713,7 +862,7 @@
       ]
     },
     {
-      "n": 3,
+      "n": 4,
       "slug": "acabamentos",
       "titulo": "Acabamentos",
       "prefixo": "Acabamento",
@@ -997,7 +1146,7 @@
       ]
     },
     {
-      "n": 4,
+      "n": 5,
       "slug": "projeto-gestao",
       "titulo": "Projeto, Gestão e Mão de Obra Especializada",
       "prefixo": "Projeto",
@@ -1081,42 +1230,6 @@
           ]
         },
         {
-          "slug": "mestre-de-obra",
-          "label": "Mestre de Obra",
-          "novo": true,
-          "material": "Serviço (sem material)",
-          "fornecedores": [],
-          "status": "Descoberto",
-          "docs": [
-            "CNPJ ou MEI",
-            "NR-18 e NR-35 quando aplicável"
-          ],
-          "busca": {
-            "forte": [
-              "mestre de obra",
-              "mestre obra",
-              "mestre",
-              "encarregado de obra",
-              "encarregado",
-              "apontador",
-              "tomar conta da obra",
-              "cuidar da obra",
-              "chefe de obra",
-              "tocar a obra",
-              "lider de equipe"
-            ],
-            "fraco": [
-              "conferir servico"
-            ]
-          },
-          "tags": [
-            "mestre de obra",
-            "encarregado",
-            "equipe",
-            "acompanhamento"
-          ]
-        },
-        {
           "slug": "gerenciamento-obra",
           "label": "Gerenciador de Obra",
           "novo": true,
@@ -1160,163 +1273,6 @@
             "medição",
             "cronograma",
             "RDO"
-          ]
-        },
-        {
-          "slug": "topografia",
-          "label": "Topografia",
-          "novo": true,
-          "material": "Serviço + insumos de marcação",
-          "fornecedores": [
-            "Data Topografia (Wellington)",
-            "LS Topografia (Lizandro)"
-          ],
-          "status": "Confirmado",
-          "docs": [
-            "ART/CREA",
-            "CNPJ ativo"
-          ],
-          "busca": {
-            "forte": [
-              "topografia",
-              "topografo",
-              "topógrafo",
-              "topografa",
-              "levantamento topografico",
-              "medir terreno",
-              "medicao de terreno",
-              "locacao de obra",
-              "estacao total",
-              "estação total",
-              "teodolito",
-              "georreferenciamento",
-              "aerofotogrametria",
-              "planta topografica",
-              "demarcar terreno",
-              "marcar terreno",
-              "curva de nivel",
-              "memorial georreferenciado",
-              "car",
-              "divisa"
-            ],
-            "fraco": [
-              "levantamento",
-              "nivelamento",
-              "nivel",
-              "gps",
-              "drone",
-              "area do terreno",
-              "metragem"
-            ]
-          },
-          "tags": [
-            "levantamento",
-            "locação de obra",
-            "estação total",
-            "georreferenciamento"
-          ]
-        },
-        {
-          "slug": "analise-de-solo",
-          "label": "Análise de Solo",
-          "novo": true,
-          "material": "Serviço laboratorial",
-          "fornecedores": [],
-          "status": "Descoberto",
-          "docs": [
-            "ART/CREA",
-            "Laboratório com controle de calibração"
-          ],
-          "busca": {
-            "forte": [
-              "analise de solo",
-              "análise de solo",
-              "sondagem",
-              "sondagem spt",
-              "spt",
-              "geotecnia",
-              "geotecnico",
-              "laudo de solo",
-              "ensaio de solo",
-              "resistencia do solo",
-              "testar terreno",
-              "cbr",
-              "proctor",
-              "capacidade de carga",
-              "furo de sondagem",
-              "lencol freatico",
-              "tipo de fundacao",
-              "aterro compactado"
-            ],
-            "fraco": [
-              "solo",
-              "ensaio",
-              "compactacao",
-              "compactação",
-              "densidade",
-              "fundacao",
-              "fundação"
-            ]
-          },
-          "tags": [
-            "sondagem",
-            "SPT",
-            "geotecnia",
-            "laudo de solo",
-            "ensaio"
-          ]
-        },
-        {
-          "slug": "tornearia",
-          "label": "Torneiro / Tornearia",
-          "novo": true,
-          "material": "Peça usinada sob medida",
-          "fornecedores": [],
-          "status": "Descoberto",
-          "docs": [
-            "CNPJ ativo",
-            "NR-12",
-            "Certificado de material para peça crítica"
-          ],
-          "busca": {
-            "forte": [
-              "torneiro",
-              "tornearia",
-              "torno",
-              "torno mecanico",
-              "usinagem",
-              "usinar",
-              "fresa",
-              "fresadora",
-              "cnc",
-              "caldeiraria",
-              "fazer peca",
-              "peca sob medida",
-              "mandrilhar",
-              "retifica",
-              "serra fita",
-              "corte de metal",
-              "chaveta",
-              "rosquear",
-              "engrenagem"
-            ],
-            "fraco": [
-              "peca",
-              "peça",
-              "pecas",
-              "peças",
-              "eixo",
-              "bucha",
-              "rosca",
-              "polia"
-            ]
-          },
-          "tags": [
-            "usinagem",
-            "torno",
-            "CNC",
-            "peça sob medida",
-            "caldeiraria"
           ]
         },
         {
@@ -1366,7 +1322,7 @@
       ]
     },
     {
-      "n": 5,
+      "n": 6,
       "slug": "apoio-logistica-equipamentos",
       "titulo": "Apoio, Logística e Equipamentos",
       "prefixo": "Apoio",
@@ -1891,11 +1847,64 @@
             "acabamento",
             "entrega no canteiro"
           ]
+        },
+        {
+          "slug": "tornearia",
+          "label": "Torneiro / Tornearia",
+          "novo": true,
+          "material": "Peça usinada sob medida",
+          "fornecedores": [],
+          "status": "Descoberto",
+          "docs": [
+            "CNPJ ativo",
+            "NR-12",
+            "Certificado de material para peça crítica"
+          ],
+          "busca": {
+            "forte": [
+              "torneiro",
+              "tornearia",
+              "torno",
+              "torno mecanico",
+              "usinagem",
+              "usinar",
+              "fresa",
+              "fresadora",
+              "cnc",
+              "caldeiraria",
+              "fazer peca",
+              "peca sob medida",
+              "mandrilhar",
+              "retifica",
+              "serra fita",
+              "corte de metal",
+              "chaveta",
+              "rosquear",
+              "engrenagem"
+            ],
+            "fraco": [
+              "peca",
+              "peça",
+              "pecas",
+              "peças",
+              "eixo",
+              "bucha",
+              "rosca",
+              "polia"
+            ]
+          },
+          "tags": [
+            "usinagem",
+            "torno",
+            "CNC",
+            "peça sob medida",
+            "caldeiraria"
+          ]
         }
       ]
     },
     {
-      "n": 6,
+      "n": 7,
       "slug": "seguranca-capacitacao",
       "titulo": "Segurança e Capacitação",
       "prefixo": "Segurança",
