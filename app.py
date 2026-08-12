@@ -121,7 +121,11 @@ def garantir_nome_com_papel(nome, categoria_nome):
     "Eletromais" etc. como nome comercial válido) pra só agir em quem realmente
     parece só nome de pessoa: "João" -> "Pedreiro João"."""
     nome = (nome or "").strip()
-    if not nome or not categoria_nome or not nomes_cards._parece_pessoa(nome):
+    if not nome or not categoria_nome:
+        return nome
+    if any(c in nome for c in "-–—()&") or nome.split()[0].isupper():
+        return nome  # já tem cara de nome comercial/sigla — não força
+    if not nomes_cards._parece_pessoa(nome):
         return nome
     papel = categoria_nome.split("•")[-1].strip()
     papel = papel.split("/")[0].strip()

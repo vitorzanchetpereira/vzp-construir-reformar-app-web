@@ -19,7 +19,7 @@
           <div class="avaliacao-head">
             <strong>{{ a['autor'] }}</strong>
             {{ estrelas(a['nota']) }}
-            <a class="link" href="{{ url_for('prestador', pid=a['pid']) }}" target="_blank">→ {{ a['prestador_nome'] }}</a>
+            <a class="link" href="{{ url_for('prestador', pid=a['pid']) }}">→ {{ a['prestador_nome'] }}</a>
           </div>
           {% if a['comentario'] %}<p>{{ a['comentario'] }}</p>{% endif %}
           <span class="avaliacao-data">{{ a['criado_em']|data(16) }}</span>
@@ -50,7 +50,7 @@
     <tbody>
       {% for p in prestadores %}
         <tr>
-          <td><a class="link" href="{{ url_for('prestador', pid=p['id']) }}" target="_blank">{{ p['nome'] }}</a></td>
+          <td><a class="link" href="{{ url_for('prestador', pid=p['id']) }}">{{ p['nome'] }}</a></td>
           <td>{{ p['categoria_nome'] }}</td>
           <td>{% if p['regiao_nome'] %}{{ p['regiao_nome'] }}/{{ p['regiao_uf'] }}{% else %}—{% endif %}</td>
           <td>{{ p['n_aprov'] }}</td>

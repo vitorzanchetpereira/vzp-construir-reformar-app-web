@@ -9,6 +9,7 @@
   <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
   <link rel="icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="{{ url_for('static', filename='tema.js') }}"></script>
 </head>
 <body>
 <header class="topo">
@@ -34,6 +35,14 @@
         <a href="{{ url_for('entrar') }}">Entrar</a>
         <a class="btn btn-primary" href="{{ url_for('cadastro') }}">Cadastrar meu negócio</a>
       {% endif %}
+      <div class="tema-menu" id="tema-menu">
+        <button class="tema-botao" id="tema-botao" type="button" aria-label="Escolher tema" aria-haspopup="true" aria-expanded="false">🌓</button>
+        <div class="tema-opcoes" id="tema-opcoes" role="menu">
+          <button type="button" data-tema-opcao="claro" role="menuitem">☀️ Claro</button>
+          <button type="button" data-tema-opcao="escuro" role="menuitem">🌙 Escuro</button>
+          <button type="button" data-tema-opcao="sistema" role="menuitem">🖥️ Sistema</button>
+        </div>
+      </div>
     </nav>
   </div>
 </header>
