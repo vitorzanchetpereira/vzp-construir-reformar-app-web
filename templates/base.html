@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block titulo %}Construir &amp; Reformar{% endblock %}</title>
-  <meta name="theme-color" content="#f2711c">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fdfcfa">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f1319">
   <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
   <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
   <link rel="icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
