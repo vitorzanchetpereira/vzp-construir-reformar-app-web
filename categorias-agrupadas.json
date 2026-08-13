@@ -152,6 +152,8 @@
             ],
             "fraco": [
               "retro",
+              "terreno",
+              "terra",
               "trator",
               "rolo compactador",
               "aterro",
@@ -218,6 +220,7 @@
             ],
             "fraco": [
               "tijolo",
+              "tijolos",
               "bloco",
               "parede",
               "muro",
@@ -492,6 +495,7 @@
             ],
             "fraco": [
               "luz",
+              "energia",
               "fio",
               "fios",
               "cabo eletrico",
@@ -611,6 +615,8 @@
             "fraco": [
               "gn",
               "glp",
+              "gas",
+              "gás",
               "aquecedor",
               "cozinha industrial",
               "fogao industrial",
@@ -1261,6 +1267,7 @@
               "cronograma"
             ],
             "fraco": [
+              "fiscal",
               "fiscalizacao",
               "fiscalização",
               "medicao",

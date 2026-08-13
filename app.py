@@ -273,43 +273,56 @@ def prestadores():
     regiao_slug = request.args.get("regiao", "").strip()
     verificado = request.args.get("verificado", "")
 
-    sql = """
-        SELECT p.*, c.nome AS categoria_nome, c.icone AS categoria_icone, c.slug AS categoria_slug,
-               r.nome AS regiao_nome, r.uf AS regiao_uf, r.slug AS regiao_slug,
-               COUNT(a.id) AS n_avaliacoes,
-               COALESCE(ROUND(AVG(a.nota),1),0) AS media
-        FROM prestadores p
-        JOIN categorias c ON c.id = p.categoria_id
-        LEFT JOIN regioes r ON r.id = p.regiao_id
-        LEFT JOIN avaliacoes a ON a.prestador_id = p.id AND a.status = 'aprovada'
-        WHERE 1=1
-    """
-    params = []
-    if busca:
-        categorias_sinonimo = categorias_por_sinonimo(busca)
-        if categorias_sinonimo:
-            # LIKE por conter o nome da categoria, não igualdade exata — sobrevive
-            # a categorias renomeadas/reagrupadas (ex.: "Instalações — Eletricista").
-            condicoes_cat = " OR ".join(["c.nome LIKE ?"] * len(categorias_sinonimo))
-            sql += f" AND (p.nome LIKE ? OR p.descricao LIKE ? OR {condicoes_cat})"
-            params += [f"%{busca}%", f"%{busca}%"] + [f"%{c}%" for c in categorias_sinonimo]
-        else:
-            sql += " AND (p.nome LIKE ? OR p.descricao LIKE ?)"
-            params += [f"%{busca}%", f"%{busca}%"]
-    if cat_slug:
-        sql += " AND c.slug = ?"
-        params.append(cat_slug)
-    if regiao_slug:
-        sql += " AND r.slug = ?"
-        params.append(regiao_slug)
-    if verificado == "1":
-        sql += " AND p.verificado = 1"
-    sql += " GROUP BY p.id, c.id, r.id ORDER BY p.verificado DESC, media DESC, n_avaliacoes DESC, p.nome"
+    def _montar_sql(usar_busca):
+        sql = """
+            SELECT p.*, c.nome AS categoria_nome, c.icone AS categoria_icone, c.slug AS categoria_slug,
+                   r.nome AS regiao_nome, r.uf AS regiao_uf, r.slug AS regiao_slug,
+                   COUNT(a.id) AS n_avaliacoes,
+                   COALESCE(ROUND(AVG(a.nota),1),0) AS media
+            FROM prestadores p
+            JOIN categorias c ON c.id = p.categoria_id
+            LEFT JOIN regioes r ON r.id = p.regiao_id
+            LEFT JOIN avaliacoes a ON a.prestador_id = p.id AND a.status = 'aprovada'
+            WHERE 1=1
+        """
+        params = []
+        if usar_busca and busca:
+            categorias_sinonimo = categorias_por_sinonimo(busca)
+            if categorias_sinonimo:
+                # LIKE por conter o nome da categoria, não igualdade exata — sobrevive
+                # a categorias renomeadas/reagrupadas (ex.: "Instalações — Eletricista").
+                condicoes_cat = " OR ".join(["c.nome LIKE ?"] * len(categorias_sinonimo))
+                sql += f" AND (p.nome LIKE ? OR p.descricao LIKE ? OR {condicoes_cat})"
+                params += [f"%{busca}%", f"%{busca}%"] + [f"%{c}%" for c in categorias_sinonimo]
+            else:
+                sql += " AND (p.nome LIKE ? OR p.descricao LIKE ?)"
+                params += [f"%{busca}%", f"%{busca}%"]
+        if cat_slug:
+            sql += " AND c.slug = ?"
+            params.append(cat_slug)
+        if regiao_slug:
+            sql += " AND r.slug = ?"
+            params.append(regiao_slug)
+        if verificado == "1":
+            sql += " AND p.verificado = 1"
+        sql += " GROUP BY p.id, c.id, r.id ORDER BY p.verificado DESC, media DESC, n_avaliacoes DESC, p.nome"
+        return sql, params
 
+    sql, params = _montar_sql(usar_busca=True)
     rows = db.query(sql, params)
+
+    # busca generica (nao bate com nenhuma categoria nem aparece em nome/descricao)
+    # nunca deve deixar a tela vazia - mostra tudo (respeitando categoria/regiao/
+    # verificado que a pessoa ja tiver escolhido) com um aviso, em vez de nada.
+    busca_sem_resultado = bool(busca) and not rows
+    if busca_sem_resultado:
+        sql, params = _montar_sql(usar_busca=False)
+        rows = db.query(sql, params)
+
     cat_atual = db.query("SELECT * FROM categorias WHERE slug = ?", (cat_slug,), one=True) if cat_slug else None
     regiao_atual = db.query("SELECT * FROM regioes WHERE slug = ?", (regiao_slug,), one=True) if regiao_slug else None
     return render_template("prestadores.html", prestadores=rows, busca=busca,
+                           busca_sem_resultado=busca_sem_resultado,
                            cat_slug=cat_slug, cat_atual=cat_atual, verificado=verificado,
                            regiao_slug=regiao_slug, regiao_atual=regiao_atual)
 

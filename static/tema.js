@@ -54,6 +54,18 @@
     "#232c37", "#8f98a5", "#2a333f",
   ];
 
+  var IDX_BRANCO = VARS.indexOf("--branco");
+
+  function corDaBarra(tema) {
+    // a cor da barra do navegador/app precisa sempre bater com o fundo do
+    // header (--branco) que está de fato na tela, nunca so a preferencia do
+    // sistema — senao a barra fica de um jeito e a pagina de outro.
+    if (tema === "sistema") {
+      tema = matchMedia("(prefers-color-scheme: dark)").matches ? "escuro" : "claro";
+    }
+    return (tema === "escuro" ? ESCURO : CLARO)[IDX_BRANCO];
+  }
+
   function aplicarTema(tema) {
     var raiz = document.documentElement.style;
     if (tema === "claro" || tema === "escuro") {
@@ -68,6 +80,8 @@
       });
       document.documentElement.removeAttribute("data-tema");
     }
+    var meta = document.getElementById("meta-tema-cor");
+    if (meta) meta.setAttribute("content", corDaBarra(tema));
   }
 
   function escolherTema(tema) {
@@ -84,4 +98,11 @@
   } };
 
   aplicarTema(global.Tema.obterAtual());
+
+  // se estiver em "sistema" e o SO trocar de claro/escuro com a pagina
+  // aberta, a cor da barra precisa seguir - as variaveis de CSS ja seguem
+  // sozinhas via @media, só a cor da barra precisa desse empurrão.
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function () {
+    if (global.Tema.obterAtual() === "sistema") aplicarTema("sistema");
+  });
 })(window);

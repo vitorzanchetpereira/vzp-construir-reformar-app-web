@@ -33,7 +33,11 @@
   </form>
 
   {% if prestadores %}
-    <p class="contagem">{{ prestadores|length }} prestador(es) encontrado(s)</p>
+    {% if busca_sem_resultado %}
+      <p class="contagem">Não achamos nada pra “{{ busca }}” — aqui estão todos os prestadores{% if cat_atual %} de {{ cat_atual['nome'] }}{% endif %}{% if regiao_atual %} em {{ regiao_atual['nome'] }}/{{ regiao_atual['uf'] }}{% endif %}:</p>
+    {% else %}
+      <p class="contagem">{{ prestadores|length }} prestador(es) encontrado(s)</p>
+    {% endif %}
     <div class="grid-cards">
       {% for p in prestadores %}{{ card(p) }}{% endfor %}
     </div>
