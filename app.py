@@ -61,26 +61,6 @@ def categorias():
     return db.query("SELECT * FROM categorias ORDER BY nome")
 
 
-ORDEM_GRUPOS_CATEGORIA = ["Preliminares", "Estrutura", "Instalações", "Acabamento",
-                          "Projeto", "Apoio", "Segurança"]
-
-
-def categorias_agrupadas():
-    """Agrupa as categorias pelo prefixo de grupo no nome ("Grupo • Item").
-    Categoria sem prefixo (ex.: "Materiais de Construção", transversal de
-    propósito) cai num grupo "Outros" ao final."""
-    grupos = {}
-    for c in categorias():
-        nome = c["nome"]
-        if " • " in nome:
-            grupo, item = nome.split(" • ", 1)
-        else:
-            grupo, item = "Outros", nome
-        grupos.setdefault(grupo, []).append({**dict(c), "item_nome": item})
-    ordem = ORDEM_GRUPOS_CATEGORIA + [g for g in grupos if g not in ORDEM_GRUPOS_CATEGORIA]
-    return [{"titulo": g, "itens": grupos[g]} for g in ordem if g in grupos]
-
-
 def regioes():
     return db.query("SELECT * FROM regioes ORDER BY nome")
 
@@ -254,8 +234,7 @@ def stats_aprovadas(prestador_id):
 @app.context_processor
 def inject_globals():
     return {"todas_categorias": categorias(), "todas_regioes": regioes(),
-            "usuario": usuario_atual(), "csrf_token": session.get("csrf", ""),
-            "tags_de": busca_sinonimos.tags_por_nome}
+            "usuario": usuario_atual(), "csrf_token": session.get("csrf", "")}
 
 
 # ---------------------------------------------------------------- público
@@ -263,7 +242,7 @@ def inject_globals():
 def index():
     regiao_slug = request.args.get("regiao", "").strip()
     sql = """
-        SELECT p.*, c.nome AS categoria_nome, c.icone AS categoria_icone, c.slug AS categoria_slug,
+        SELECT p.*, c.nome AS categoria_nome, c.icone AS categoria_icone,
                r.nome AS regiao_nome, r.uf AS regiao_uf,
                COUNT(a.id) AS n_avaliacoes,
                COALESCE(ROUND(AVG(a.nota),1),0) AS media
@@ -283,7 +262,7 @@ def index():
     """
     rows = db.query(sql, params)
     total = db.query("SELECT COUNT(*) AS n FROM prestadores", one=True)["n"]
-    return render_template("index.html", grupos_categorias=categorias_agrupadas(), destaques=rows, total=total,
+    return render_template("index.html", categorias=categorias(), destaques=rows, total=total,
                            regiao_slug=regiao_slug)
 
 

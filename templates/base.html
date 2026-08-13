@@ -4,21 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block titulo %}Construir &amp; Reformar{% endblock %}</title>
-  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fdfcfa">
-  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f1319">
+  <meta name="theme-color" content="#f2711c">
   <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
   <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
   <link rel="icon" href="{{ url_for('static', filename='icons/icon-192.png') }}">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Syne:wght@600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   <script src="{{ url_for('static', filename='tema.js') }}"></script>
 </head>
 <body>
 <header class="topo">
   <div class="container topo-inner">
-    <a class="marca" href="{{ url_for('index') }}">Construir <em>&amp;</em> Reformar</a>
+    <a class="marca" href="{{ url_for('index') }}">
+      <span class="marca-icone">🏗️</span>
+      <span class="marca-txt">Construir &amp; Reformar<small>Mão de obra &amp; material</small></span>
+    </a>
     <nav class="nav">
       <a href="{{ url_for('prestadores') }}">Prestadores</a>
       <a href="{{ url_for('sobre') }}">Como funciona</a>
@@ -37,7 +36,7 @@
         <a class="btn btn-primary" href="{{ url_for('cadastro') }}">Cadastrar meu negócio</a>
       {% endif %}
       <div class="tema-menu" id="tema-menu">
-        <button class="tema-botao" id="tema-botao" type="button" aria-label="Escolher tema" aria-haspopup="true" aria-expanded="false"></button>
+        <button class="tema-botao" id="tema-botao" type="button" aria-label="Escolher tema" aria-haspopup="true" aria-expanded="false">🌓</button>
         <div class="tema-opcoes" id="tema-opcoes" role="menu">
           <button type="button" data-tema-opcao="claro" role="menuitem">☀️ Claro</button>
           <button type="button" data-tema-opcao="escuro" role="menuitem">🌙 Escuro</button>

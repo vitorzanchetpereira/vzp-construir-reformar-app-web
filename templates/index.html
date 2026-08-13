@@ -1,14 +1,13 @@
 {% extends "base.html" %}
-{% from "_macros.html" import card, estrelas with context %}
+{% from "_macros.html" import card, estrelas %}
 {% block conteudo %}
 
 <section class="hero">
-  <div class="eyebrow">Diretório de obra · Sorriso MT</div>
-  <h1>Encontre quem faz sua obra <em>acontecer</em></h1>
-  <p class="hero-sub">Busque pelo nome que você conhece — mesmo informal, mesmo escrito
-     errado. O sistema entende e leva você ao profissional certo.</p>
+  <h1>Encontre quem faz sua obra acontecer</h1>
+  <p class="hero-sub">O diretório de prestadores e fornecedores da construção, por serviço e região.
+     Busque, veja indicações de verdade e fale direto com o profissional.</p>
   <form class="busca" action="{{ url_for('prestadores') }}" method="get">
-    <input type="text" name="q" placeholder="O que você precisa? Ex.: luz, tomada, fio, cano estourado" autocomplete="off">
+    <input type="text" name="q" placeholder="O que você precisa? Ex.: eletricista, terraplenagem, materiais…">
     <select name="regiao">
       <option value="">Todas as regiões</option>
       {% for r in todas_regioes %}
@@ -17,32 +16,17 @@
     </select>
     <button class="btn btn-primary" type="submit">Buscar</button>
   </form>
-  <div class="hint">
-    <span>Teste:</span>
-    {% for termo in ['luz','tomada','vazamento','eletrecista','placa solar','tirar entulho'] %}
-      <a class="chip" href="{{ url_for('prestadores', q=termo) }}">{{ termo }}</a>
-    {% endfor %}
-  </div>
   <p class="hero-stats">{{ total }} prestadores já cadastrados</p>
 </section>
 
 <section>
   <h2 class="secao-titulo">Categorias</h2>
-  <div class="gwrap">
-    {% for g in grupos_categorias %}
-      <details class="gitem" {% if loop.index <= 2 %}open{% endif %}>
-        <summary class="gbtn">
-          <span class="gn">{{ '%02d'|format(loop.index) }}</span>
-          <span class="gname">{{ g.titulo }}</span>
-          <span class="gcount">{{ g.itens|length }} itens</span>
-          <span class="gicon">+</span>
-        </summary>
-        <div class="glist">
-          {% for c in g.itens %}
-            <a class="gcat" href="{{ url_for('prestadores', categoria=c['slug']) }}">{{ c['icone'] }} {{ c['item_nome'] }}</a>
-          {% endfor %}
-        </div>
-      </details>
+  <div class="grid-cats">
+    {% for c in categorias %}
+      <a class="cat-chip" href="{{ url_for('prestadores', categoria=c['slug']) }}">
+        <span class="cat-icone">{{ c['icone'] }}</span>
+        <span>{{ c['nome'] }}</span>
+      </a>
     {% endfor %}
   </div>
 </section>

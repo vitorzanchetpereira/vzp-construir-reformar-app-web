@@ -20,12 +20,6 @@
     <h3 class="card-nome">{{ p['nome'] }}</h3>
     <p class="card-cat">{{ p['categoria_nome'] }}{% if p['regiao_nome'] %} · {{ p['regiao_nome'] }}/{{ p['regiao_uf'] }}{% endif %}</p>
     <p class="card-desc">{{ (p['descricao'] or '')[:90] }}{% if (p['descricao'] or '')|length > 90 %}…{% endif %}</p>
-    {% set tags = tags_de(p['categoria_nome']) %}
-    {% if tags %}
-      <div class="tags">
-        {% for t in tags %}<span class="tag">{{ t }}</span>{% endfor %}
-      </div>
-    {% endif %}
     <div class="card-rodape">
       {{ estrelas(p['media']) }}
       <span class="card-nota">{{ p['media'] }} ({{ p['n_avaliacoes'] }})</span>
