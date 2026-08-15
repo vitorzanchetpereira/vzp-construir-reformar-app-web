@@ -288,15 +288,19 @@ def prestadores():
         params = []
         if usar_busca and busca:
             categorias_sinonimo = categorias_por_sinonimo(busca)
+            busca_lower = busca.lower()
             if categorias_sinonimo:
                 # LIKE por conter o nome da categoria, não igualdade exata — sobrevive
                 # a categorias renomeadas/reagrupadas (ex.: "Instalações — Eletricista").
-                condicoes_cat = " OR ".join(["c.nome LIKE ?"] * len(categorias_sinonimo))
-                sql += f" AND (p.nome LIKE ? OR p.descricao LIKE ? OR {condicoes_cat})"
-                params += [f"%{busca}%", f"%{busca}%"] + [f"%{c}%" for c in categorias_sinonimo]
+                # LOWER() dos dois lados: no Postgres (produção) LIKE é sensível a
+                # maiúsculas/minúsculas, no SQLite (local) não — sem isso, buscar
+                # "bruna" nunca acha "Bruna - Criar" em produção.
+                condicoes_cat = " OR ".join(["LOWER(c.nome) LIKE ?"] * len(categorias_sinonimo))
+                sql += f" AND (LOWER(p.nome) LIKE ? OR LOWER(p.descricao) LIKE ? OR {condicoes_cat})"
+                params += [f"%{busca_lower}%", f"%{busca_lower}%"] + [f"%{c.lower()}%" for c in categorias_sinonimo]
             else:
-                sql += " AND (p.nome LIKE ? OR p.descricao LIKE ?)"
-                params += [f"%{busca}%", f"%{busca}%"]
+                sql += " AND (LOWER(p.nome) LIKE ? OR LOWER(p.descricao) LIKE ?)"
+                params += [f"%{busca_lower}%", f"%{busca_lower}%"]
         if cat_slug:
             sql += " AND c.slug = ?"
             params.append(cat_slug)
@@ -901,19 +905,20 @@ def api_prestadores_listar():
     params = []
     if busca:
         categorias_sinonimo = categorias_por_sinonimo(busca)
+        busca_lower = busca.lower()
         if categorias_sinonimo:
-            condicoes_cat = " OR ".join(["c.nome LIKE ?"] * len(categorias_sinonimo))
-            sql += f" AND (p.nome LIKE ? OR p.descricao LIKE ? OR {condicoes_cat})"
-            params += [f"%{busca}%", f"%{busca}%"] + [f"%{c}%" for c in categorias_sinonimo]
+            condicoes_cat = " OR ".join(["LOWER(c.nome) LIKE ?"] * len(categorias_sinonimo))
+            sql += f" AND (LOWER(p.nome) LIKE ? OR LOWER(p.descricao) LIKE ? OR {condicoes_cat})"
+            params += [f"%{busca_lower}%", f"%{busca_lower}%"] + [f"%{c.lower()}%" for c in categorias_sinonimo]
         else:
-            sql += " AND (p.nome LIKE ? OR p.descricao LIKE ?)"
-            params += [f"%{busca}%", f"%{busca}%"]
+            sql += " AND (LOWER(p.nome) LIKE ? OR LOWER(p.descricao) LIKE ?)"
+            params += [f"%{busca_lower}%", f"%{busca_lower}%"]
     if cat:
-        sql += " AND c.nome LIKE ?"
-        params.append(f"%{cat}%")
+        sql += " AND LOWER(c.nome) LIKE ?"
+        params.append(f"%{cat.lower()}%")
     if reg:
-        sql += " AND (r.nome LIKE ? OR r.uf LIKE ?)"
-        params += [f"%{reg}%", f"%{reg}%"]
+        sql += " AND (LOWER(r.nome) LIKE ? OR LOWER(r.uf) LIKE ?)"
+        params += [f"%{reg.lower()}%", f"%{reg.lower()}%"]
     sql += " GROUP BY p.id, c.id, r.id ORDER BY p.nome LIMIT ?"
     params.append(limite)
     rows = db.query(sql, params)
