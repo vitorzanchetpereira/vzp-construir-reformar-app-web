@@ -285,6 +285,9 @@ section{margin:38px 0}
   .hero h1{font-size:30px}
   .busca{flex-direction:column}
   .grid-2{grid-template-columns:1fr}
+  .grid-cats{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+  .cat-chip{padding:11px 10px;font-size:14px}
+  .cat-icone{font-size:19px}
   .cta{flex-direction:column;text-align:center}
   .mod-item{flex-direction:column}
   .mod-acoes{flex-direction:row}
