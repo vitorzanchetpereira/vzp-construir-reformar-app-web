@@ -16,7 +16,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-# O mesmo comando do Procfile, que o Render usa. --preload carrega o app antes
+# O mesmo comando do Procfile. --preload carrega o app antes
 # de abrir as conexões, então erro de import aparece no arranque e não na
 # primeira visita.
 ENV PORT=8080
