@@ -1,0 +1,1662 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Construir &amp; Reformar — A solução certa para sua obra ou reparo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+// antes de pintar: respeita o sistema, e a escolha manual tem prioridade.
+// sessionStorage e nao localStorage — o protótipo nao guarda estado entre sessoes.
+(function(){
+  var g;try{g=sessionStorage.getItem('tema')}catch(e){}
+  if(!g)g=matchMedia('(prefers-color-scheme: dark)').matches?'escuro':'claro';
+  document.documentElement.setAttribute('data-tema',g);
+})();
+function tema(){
+  var h=document.documentElement,
+      n=h.getAttribute('data-tema')==='escuro'?'claro':'escuro';
+  h.setAttribute('data-tema',n);
+  try{sessionStorage.setItem('tema',n)}catch(e){}
+}
+</script>
+<style>
+  :root{
+    --azul:#1f3a5f; --azul-h:#16293f; --sobre-azul:#ffffff;
+    --laranja:#f2711c; --laranja-h:#d95f10;
+    /* laranja de acao: mesma familia da marca, escurecido o suficiente para
+       texto branco passar de 4.5:1 (WCAG AA) em botao preenchido */
+    --laranja-btn:#c0570c; --laranja-btn-h:#a84606; --sobre-laranja:#ffffff;
+    /* --laranja-txt: o mesmo laranja, mas na versao que sustenta leitura.
+       O laranja da marca segue intacto em preenchimentos, bordas e texturas. */
+    --laranja-txt:#b04a07;
+    --tijolo-txt:#a34e2b;   /* tijolo legivel para texto (slogan) */
+    --verde-w:#178540; --verde-w-h:#12702f; --sobre-verde:#ffffff;
+    --tinta:#1c2531; --cinza:#616c7a; --fraco:#646e7c; --tenue:#666f7d;
+    --linha:#e4e0d8;
+    /* fundo de tela externo: papel / tijolo aquarelado (diretriz 2) */
+    --fora:#f3f0eb; --fora-rgb:243,240,235;
+    --papel:#fdfcfa; --papel-rgb:253,252,250;
+    --papel2:#f7f4ef; --superficie:#ffffff;
+    /* tom quente de tijolo, usado nas texturas e no slogan */
+    --tijolo:#c96a3f; --tijolo-rgb:201,106,63;
+    --ok:#256444; --alerta:#b04a2f; --risco:#dcc0b4;
+    --sombra:31,58,95;
+    /* bloco de codigo: cores proprias, senao fica ilegivel no escuro */
+    --cod-fundo:#1c2531; --cod-txt:#dfe6ee; --cod-com:#7f8c9b;
+    --cod-key:#f2a76c; --cod-str:#9fd0a5;
+    /* triade tipografica (diretriz 3) */
+    --titulo:'Outfit',system-ui,sans-serif;
+    --corpo:'Plus Jakarta Sans',-apple-system,'Segoe UI',Roboto,sans-serif;
+    --acao:'Space Grotesk',system-ui,sans-serif;
+    /* apelidos: as regras antigas continuam validas, so mudam de fonte */
+    --serif:var(--titulo);
+    --display:var(--acao);
+    /* cantos suaves e ritmo de sombra (diretriz 4) */
+    --raio:8px; --raio-p:6px; --raio-g:14px;
+  }
+  /* modo noturno: so os tokens mudam. Nenhuma regra de layout e duplicada. */
+  html[data-tema="escuro"]{
+    --azul:#a8c4e6; --azul-h:#bed4ef; --sobre-azul:#0f1319;
+    --laranja:#f2914e; --laranja-h:#f7a468;
+    /* no escuro o preenchido clareia e o texto do botao vira tinta escura */
+    --laranja-btn:#f2914e; --laranja-btn-h:#f7a468; --sobre-laranja:#1a0f06;
+    /* no escuro o laranja claro ja tem contraste sobrando: texto = a propria marca */
+    --laranja-txt:#f2914e;
+    --tijolo-txt:#e2905f;
+    --verde-w:#3fc06f; --verde-w-h:#5ccd86; --sobre-verde:#06210f;
+    --tinta:#e7ecf2; --cinza:#98a3b2; --fraco:#8a95a3; --tenue:#7c8794;
+    --linha:#2a3140;
+    --fora:#0a0d12; --fora-rgb:10,13,18;
+    --papel:#111620; --papel-rgb:17,22,32;
+    --papel2:#171d28; --superficie:#161c26;
+    --tijolo:#e2905f; --tijolo-rgb:226,144,95;
+    --ok:#6cb98d; --alerta:#e08a6a; --risco:#7a5a4c;
+    --sombra:0,0,0;
+    --cod-fundo:#080b0f; --cod-txt:#cfd8e3; --cod-com:#6b7684;
+    --cod-key:#f2a76c; --cod-str:#9fd0a5;
+  }
+  /* ---------- texturas: tijolo, cobogo e arabesco ----------
+     Sao variaveis porque o modo escuro precisa das mesmas formas em outro tom.
+     Nenhuma imagem externa: tudo SVG inline, sem requisicao de rede. */
+  :root{
+    --px-tijolo:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='40'%3E%3Cg fill='none' stroke='%23c96a3f' stroke-width='1'%3E%3Cpath d='M0 .5h72M0 20.5h72M0 39.5h72'/%3E%3Cpath d='M.5 0v20M36.5 0v20M18.5 20v20M54.5 20v20'/%3E%3C/g%3E%3C/svg%3E");
+    --px-cobogo:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Cg fill='none' stroke-width='1.1'%3E%3Ccircle cx='0' cy='22' r='11' stroke='%231f3a5f'/%3E%3Ccircle cx='44' cy='22' r='11' stroke='%231f3a5f'/%3E%3Ccircle cx='22' cy='0' r='11' stroke='%23f2711c'/%3E%3Ccircle cx='22' cy='44' r='11' stroke='%23f2711c'/%3E%3Ccircle cx='22' cy='22' r='4.5' stroke='%231f3a5f'/%3E%3C/g%3E%3C/svg%3E");
+    --px-banda:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='14'%3E%3Cg fill='none' stroke-width='1.6'%3E%3Cpath d='M1 14a13 13 0 0 1 26 0' stroke='%231f3a5f'/%3E%3Cpath d='M29 14a13 13 0 0 1 26 0' stroke='%23f2711c'/%3E%3Cpath d='M0 13.2h56' stroke='%231f3a5f' stroke-opacity='.35'/%3E%3C/g%3E%3C/svg%3E");
+    --px-arabesco:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cg fill='none' stroke-width='1.3'%3E%3Cpath d='M0 40q40 0 40-40' stroke='%231f3a5f'/%3E%3Cpath d='M0 74q74 0 74-74' stroke='%23f2711c'/%3E%3Cpath d='M0 108q108 0 108-108' stroke='%231f3a5f' stroke-opacity='.55'/%3E%3Cpath d='M0 142q142 0 142-142' stroke='%23f2711c' stroke-opacity='.35'/%3E%3Ccircle cx='40' cy='40' r='5.5' stroke='%23f2711c'/%3E%3Ccircle cx='74' cy='74' r='3.5' stroke='%231f3a5f'/%3E%3C/g%3E%3C/svg%3E");
+    --tx-tijolo:.5; --tx-cobogo:.32; --tx-banda:.6; --tx-arabesco:.5;
+  }
+  html[data-tema="escuro"]{
+    --px-tijolo:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='40'%3E%3Cg fill='none' stroke='%23e2905f' stroke-width='1'%3E%3Cpath d='M0 .5h72M0 20.5h72M0 39.5h72'/%3E%3Cpath d='M.5 0v20M36.5 0v20M18.5 20v20M54.5 20v20'/%3E%3C/g%3E%3C/svg%3E");
+    --px-cobogo:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Cg fill='none' stroke-width='1.1'%3E%3Ccircle cx='0' cy='22' r='11' stroke='%23a8c4e6'/%3E%3Ccircle cx='44' cy='22' r='11' stroke='%23a8c4e6'/%3E%3Ccircle cx='22' cy='0' r='11' stroke='%23f2914e'/%3E%3Ccircle cx='22' cy='44' r='11' stroke='%23f2914e'/%3E%3Ccircle cx='22' cy='22' r='4.5' stroke='%23a8c4e6'/%3E%3C/g%3E%3C/svg%3E");
+    --px-banda:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='14'%3E%3Cg fill='none' stroke-width='1.6'%3E%3Cpath d='M1 14a13 13 0 0 1 26 0' stroke='%23a8c4e6'/%3E%3Cpath d='M29 14a13 13 0 0 1 26 0' stroke='%23f2914e'/%3E%3Cpath d='M0 13.2h56' stroke='%23a8c4e6' stroke-opacity='.35'/%3E%3C/g%3E%3C/svg%3E");
+    --px-arabesco:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cg fill='none' stroke-width='1.3'%3E%3Cpath d='M0 40q40 0 40-40' stroke='%23a8c4e6'/%3E%3Cpath d='M0 74q74 0 74-74' stroke='%23f2914e'/%3E%3Cpath d='M0 108q108 0 108-108' stroke='%23a8c4e6' stroke-opacity='.55'/%3E%3Cpath d='M0 142q142 0 142-142' stroke='%23f2914e' stroke-opacity='.35'/%3E%3Ccircle cx='40' cy='40' r='5.5' stroke='%23f2914e'/%3E%3Ccircle cx='74' cy='74' r='3.5' stroke='%23a8c4e6'/%3E%3C/g%3E%3C/svg%3E");
+    --tx-tijolo:.34; --tx-cobogo:.22; --tx-banda:.5; --tx-arabesco:.38;
+  }
+
+  html{color-scheme:light}
+  html[data-tema="escuro"]{color-scheme:dark}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  /* fundo de tela externo: papel/tijolo aquarelado por baixo de toda a pagina.
+     A dimensao lateral sobrante e preenchida por ele, e nao pelo conteudo — assim
+     a estrutura das informacoes nao muda de proporcao em tela ultrawide. */
+  body{font-family:var(--corpo);background:var(--fora);color:var(--tinta);
+    font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;font-weight:300}
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:var(--px-cobogo);background-size:44px 44px;
+    opacity:calc(var(--tx-cobogo) * .55)}
+  body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:radial-gradient(120% 70% at 50% 0%,rgba(var(--tijolo-rgb),.10),transparent 60%),
+      radial-gradient(90% 60% at 50% 100%,rgba(var(--sombra),.07),transparent 62%)}
+
+  /* ---------- canvas central: 1120px, proporcao fixa ---------- */
+  .canvas{position:relative;z-index:1;max-width:1120px;margin:0 auto;
+    background:var(--papel);border-left:1px solid var(--linha);
+    border-right:1px solid var(--linha);
+    box-shadow:0 0 0 1px rgba(var(--sombra),.03),0 18px 60px -30px rgba(var(--sombra),.22)}
+  /* moldura de azulejo no topo: a banda de arabescos azul e laranja */
+  .canvas::before{content:"";position:absolute;top:0;left:0;right:0;height:14px;
+    background-image:var(--px-banda);background-size:56px 14px;background-repeat:repeat-x;
+    opacity:var(--tx-banda);z-index:60;pointer-events:none}
+  /* arabescos nas extremidades superiores, sutis */
+  .arab{position:absolute;top:14px;width:150px;height:150px;z-index:2;
+    pointer-events:none;background-image:var(--px-arabesco);
+    background-repeat:no-repeat;opacity:var(--tx-arabesco)}
+  .arab.e{left:0}
+  .arab.d{right:0;transform:scaleX(-1)}
+  /* faixas de cobogo nas laterais externas do canvas, como grade de protecao */
+  .grade{position:fixed;top:0;bottom:0;width:clamp(0px,calc((100vw - 1122px) / 2),120px);
+    z-index:1;pointer-events:none;background-image:var(--px-cobogo);
+    background-size:44px 44px;opacity:var(--tx-cobogo)}
+  .grade.e{left:0;mask-image:linear-gradient(to left,#000,transparent 78%)}
+  .grade.d{right:0;mask-image:linear-gradient(to right,#000,transparent 78%)}
+  @media(max-width:1160px){.grade{display:none}}
+
+  .wrap{max-width:1080px;margin:0 auto;padding:0 40px}
+
+  /* ---------- nav ---------- */
+  nav{position:sticky;top:0;z-index:50;background:rgba(var(--papel-rgb),.95);
+    backdrop-filter:blur(12px);border-bottom:1px solid var(--linha)}
+  .nav-in{max-width:1080px;margin:0 auto;padding:18px 40px;display:flex;
+    align-items:center;justify-content:space-between;gap:24px}
+  .logo{font-family:var(--titulo);font-size:25px;font-weight:600;color:var(--azul);
+    letter-spacing:-.01em;line-height:1;white-space:nowrap;flex:none}
+  .logo em{font-style:normal;color:var(--laranja-txt)}
+  .navlinks{display:flex;gap:26px;align-items:center;margin-left:auto}
+  .navlinks a{font-family:var(--acao);font-size:12px;font-weight:500;
+    letter-spacing:.02em;color:var(--cinza);white-space:nowrap;
+    text-decoration:none;transition:color .2s}
+  .navlinks a:hover{color:var(--laranja-txt)}
+
+  /* ---------- botoes: aconchegantes, preenchidos, limite visual (diretriz 4) ----------
+     Padding confortavel, cantos de 8px, hover que eleva 1px e clique que reduz 2%.
+     Nada de caixa-alta agressiva nem entreletra larga: o texto e lido, nao decifrado. */
+  .btn{font-family:var(--acao);font-size:13.5px;font-weight:600;letter-spacing:.01em;
+    background:var(--laranja-btn);color:var(--sobre-laranja);border:1px solid transparent;
+    padding:10px 20px;border-radius:var(--raio);cursor:pointer;text-decoration:none;
+    display:inline-flex;align-items:center;justify-content:center;gap:7px;
+    max-width:280px;line-height:1.3;
+    box-shadow:0 1px 2px rgba(var(--sombra),.10);
+    transition:background .2s,transform .14s ease,box-shadow .2s}
+  /* .navlinks a vence .btn na cor por especificidade: reafirmar aqui */
+  .navlinks a.btn{color:var(--sobre-laranja);white-space:nowrap;flex:none}
+  .btn:hover,.navlinks a.btn:hover{background:var(--laranja-btn-h);color:var(--sobre-laranja);
+    transform:translateY(-1px);box-shadow:0 5px 14px -4px rgba(var(--tijolo-rgb),.45)}
+  .btn:active,.navlinks a.btn:active{transform:translateY(0) scale(.98);
+    box-shadow:0 1px 2px rgba(var(--sombra),.12)}
+  .btn:focus-visible{outline:2px solid var(--azul);outline-offset:2px}
+  /* variante secundaria: contorno azul, mesmo comportamento */
+  .btn.sec{background:var(--superficie);color:var(--azul);border-color:var(--linha)}
+  .btn.sec:hover{background:var(--papel2);color:var(--azul);border-color:var(--azul);
+    box-shadow:0 5px 14px -4px rgba(var(--sombra),.20)}
+  /* alternador de tema: um circulo que se enche. Sem icone, sem emoji. */
+  .tema{width:30px;height:30px;border-radius:50%;border:1px solid var(--linha);
+    background:var(--superficie);cursor:pointer;padding:0;position:relative;
+    transition:border-color .2s,background .2s;flex:0 0 auto}
+  .tema:hover{border-color:var(--azul)}
+  .tema::after{content:"";position:absolute;inset:7px;border-radius:50%;
+    background:var(--azul);transition:clip-path .3s ease,background .2s;
+    clip-path:inset(0 0 0 50%)}
+  html[data-tema="escuro"] .tema::after{clip-path:inset(0 50% 0 0)}
+  /* faixa intermediaria: aproxima os links para nada transbordar o canvas */
+  @media(max-width:1080px){
+    .nav-in{padding:18px 24px;gap:14px}
+    .navlinks{gap:16px}
+    .navlinks a.btn{padding:10px 14px}
+  }
+  /* "Buscar" e redundante (o campo esta no hero) e "App" cede lugar ao CTA */
+  @media(max-width:960px){
+    .navlinks a[href="#busca"]:not(.btn),.navlinks a[href="#app"]{display:none}
+  }
+  @media(max-width:900px){
+    .navlinks a[href="#proposito"]{display:none}
+  }
+  @media(max-width:820px){.navlinks{display:none}}
+
+  /* ---------- hero: fundo de tijolo natural em aquarela ---------- */
+  header{padding:76px 0 66px;text-align:center;position:relative;
+    border-bottom:1px solid var(--linha)}
+  header::before{content:"";position:absolute;inset:0;z-index:-1;
+    background-image:var(--px-tijolo);background-size:72px 40px;
+    opacity:var(--tx-tijolo);
+    mask-image:radial-gradient(78% 52% at 50% 30%,#000,rgba(0,0,0,.28) 62%,transparent 82%)}
+  header::after{content:"";position:absolute;inset:0;z-index:-2;
+    background:linear-gradient(185deg,rgba(var(--tijolo-rgb),.09) 0%,
+      rgba(var(--sombra),.04) 100%)}
+  header>*{position:relative}
+  .eyebrow{font-family:var(--acao);font-size:12px;font-weight:500;
+    letter-spacing:.06em;color:var(--tijolo-txt);margin-bottom:22px;
+    display:inline-flex;align-items:center;gap:9px;
+    background:rgba(var(--papel-rgb),.72);border:1px solid var(--linha);
+    padding:6px 14px;border-radius:999px}
+  h1{font-family:var(--titulo);font-weight:600;font-size:clamp(33px,4.6vw,52px);
+    line-height:1.12;letter-spacing:-.022em;color:var(--azul);margin-bottom:20px;
+    max-width:820px;margin-inline:auto}
+  h1 em{font-style:normal;color:var(--laranja-txt)}
+  .lede{font-size:17px;font-weight:300;color:var(--cinza);max-width:620px;
+    margin:0 auto 34px;line-height:1.7}
+
+  /* ---------- busca ---------- */
+  .searchbox{max-width:660px;margin:0 auto}
+  .sfield{display:flex;gap:0;border:1.5px solid var(--linha);background:var(--superficie);
+    border-radius:var(--raio-g);overflow:hidden;
+    box-shadow:0 2px 10px -4px rgba(var(--sombra),.14);transition:border-color .2s,box-shadow .2s}
+  .sfield:focus-within{border-color:var(--azul);box-shadow:0 8px 26px -10px rgba(var(--sombra),.28)}
+  #q{flex:1;border:none;outline:none;padding:17px 22px;font-family:var(--corpo);
+    font-size:16px;font-weight:400;color:var(--tinta);background:transparent}
+  #q::placeholder{color:var(--fraco);font-weight:300}
+  .sbtn{font-family:var(--acao);font-size:14px;font-weight:600;letter-spacing:.01em;
+    background:var(--azul);color:var(--sobre-azul);border:none;padding:0 28px;margin:6px;
+    border-radius:var(--raio);cursor:pointer;white-space:nowrap;flex-shrink:0;
+    transition:background .2s,transform .14s ease}
+  .sbtn:hover{background:var(--azul-h)}
+  .sbtn:active{transform:scale(.98)}
+  @media(max-width:560px){
+    .sfield{flex-direction:column}
+    #q{padding:17px 18px;text-align:center}
+    .sbtn{padding:16px 20px;width:100%;border-top:1px solid var(--linha)}
+    .wrap{padding:0 20px}
+    .nav-in{padding:16px 20px}
+    header{padding:56px 0 64px}
+    section{padding:60px 0}
+    .glist{padding:0 20px 20px;grid-template-columns:1fr}
+    .tri-row{padding:26px 22px}
+    .demo-serif{font-size:32px}
+    /* no celular a textura fica so atras do titulo, para o texto respirar */
+    header::before{mask-image:radial-gradient(120% 30% at 50% 16%,#000,transparent 78%)}
+  }
+  .hint{margin-top:18px;font-size:13px;color:var(--cinza);display:flex;
+    flex-wrap:wrap;gap:8px;justify-content:center;align-items:center}
+  .hint span{font-family:var(--acao);font-size:12px;font-weight:500;
+    letter-spacing:.01em;color:var(--fraco)}
+  .chip{font-family:var(--acao);font-size:13px;font-weight:500;background:var(--superficie);
+    border:1px solid var(--linha);color:var(--cinza);padding:7px 14px;
+    border-radius:999px;cursor:pointer;transition:all .18s ease}
+  .chip:hover{background:var(--azul);color:#fff;border-color:var(--azul);
+    transform:translateY(-1px)}
+  .chip:active{transform:translateY(0) scale(.98)}
+
+  /* ---------- resultados ---------- */
+  #res{max-width:660px;margin:30px auto 0;text-align:left}
+  #res:not(:empty){margin-bottom:20px;background:var(--superficie);
+    border:1px solid var(--linha);border-radius:var(--raio-g);padding:8px 20px 14px;
+    box-shadow:0 3px 14px -8px rgba(var(--sombra),.20)}
+  .rhead{font-family:var(--acao);font-size:12px;font-weight:500;
+    letter-spacing:.01em;color:var(--cinza);padding:12px 0;
+    border-bottom:1px solid var(--linha);margin-bottom:4px}
+  .hit{display:flex;align-items:baseline;gap:14px;padding:14px 2px;
+    border-bottom:1px solid var(--linha);animation:up .3s ease both}
+  .hit:last-child{border-bottom:none}
+  @keyframes up{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+  .hit-n{font-family:var(--acao);font-size:12px;font-weight:600;color:var(--laranja-txt);
+    min-width:24px}
+  .hit-b{flex:1}
+  .hit-cat{font-family:var(--titulo);font-size:16px;font-weight:600;color:var(--azul);
+    letter-spacing:-.01em}
+  .hit-g{font-size:12.5px;color:var(--cinza);margin-top:3px}
+  .hit-via{font-size:11.5px;color:var(--fraco);margin-top:5px;font-style:italic}
+  .hit-sc{font-family:var(--acao);font-size:11px;font-weight:600;color:var(--tenue)}
+  .none{padding:22px 2px;color:var(--cinza);font-size:15px}
+  .none b{font-family:var(--titulo);font-weight:600;color:var(--azul)}
+
+  /* ---------- secoes ---------- */
+  section{padding:72px 0;border-top:1px solid var(--linha);scroll-margin-top:78px}
+  #busca{scroll-margin-top:100px}
+  .shead{margin-bottom:38px}
+  .snum{font-family:var(--acao);font-size:12px;font-weight:600;letter-spacing:.04em;
+    color:var(--laranja-txt);margin-bottom:12px}
+  h2{font-family:var(--titulo);font-weight:600;font-size:clamp(26px,3.2vw,36px);
+    line-height:1.18;letter-spacing:-.02em;color:var(--azul);margin-bottom:12px}
+  h2 em{font-style:normal;color:var(--laranja-txt)}
+  h3{font-family:var(--titulo);font-weight:600;color:var(--azul);letter-spacing:-.01em}
+  .sub{font-size:15.5px;color:var(--cinza);max-width:660px;font-weight:300}
+  .sub b{font-weight:600;color:var(--tinta)}
+
+  /* ---------- tipografia demo ---------- */
+  .tri{display:grid;gap:1px;background:var(--linha);border:1px solid var(--linha);
+    border-radius:var(--raio-g);overflow:hidden}
+  .tri-row{background:var(--superficie);padding:32px}
+  .tri-tag{font-family:var(--acao);font-size:12px;font-weight:600;
+    letter-spacing:.02em;color:var(--laranja-txt);margin-bottom:7px}
+  .tri-meta{font-size:12.5px;color:var(--cinza);margin-bottom:18px;font-weight:300}
+  .demo-serif{font-family:var(--titulo);font-weight:600;font-size:34px;line-height:1.15;
+    color:var(--azul);letter-spacing:-.022em}
+  .demo-serif em{font-style:normal;color:var(--laranja-txt)}
+  .demo-disp{font-family:var(--acao);font-weight:600;font-size:16px;
+    letter-spacing:.01em;color:var(--azul)}
+  .demo-body{font-family:var(--corpo);font-weight:300;font-size:15px;color:var(--tinta);
+    max-width:620px;line-height:1.75}
+
+  /* ---------- cards de prestador: solidos, com grade de protecao azul ----------
+     Diretriz 5: titulo Marca (Responsavel), slogan, voucher opcional, avaliacao
+     por 5 metricas, escopo/CNAE, endereco e todos os canais de contato. */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px}
+  .card{background:var(--superficie);border:1px solid var(--linha);
+    border-top:3px solid var(--azul);padding:0;border-radius:var(--raio-g);
+    display:flex;flex-direction:column;overflow:hidden;
+    box-shadow:0 2px 10px -6px rgba(var(--sombra),.20);
+    transition:transform .2s ease,box-shadow .2s ease,border-color .2s}
+  .card:hover{transform:translateY(-2px);
+    box-shadow:0 14px 32px -16px rgba(var(--sombra),.30)}
+  .card-top{display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:12px 20px;background:var(--papel2);border-bottom:1px solid var(--linha)}
+  .card-g{font-family:var(--acao);font-size:11px;font-weight:600;letter-spacing:.02em;
+    color:var(--laranja-txt);line-height:1.3}
+  .selo{font-family:var(--acao);font-size:10.5px;font-weight:600;letter-spacing:.02em;
+    color:var(--ok);background:rgba(47,125,85,.09);border:1px solid rgba(47,125,85,.34);
+    padding:3px 9px;border-radius:999px;white-space:nowrap;flex:0 0 auto}
+  .card-body{padding:18px 20px 20px;display:flex;flex-direction:column;flex:1}
+  .card-t{font-family:var(--titulo);font-size:19px;font-weight:600;color:var(--azul);
+    margin-bottom:3px;letter-spacing:-.015em;line-height:1.25}
+  .card-t span{color:var(--cinza);font-weight:400}
+  .card-s{font-size:13px;color:var(--cinza);font-weight:400}
+  /* slogan pessoal do prestador (2o apontamento) */
+  .card-slogan{font-size:13.5px;font-style:italic;font-weight:400;color:var(--tijolo-txt);
+    line-height:1.55;margin:12px 0 0;padding:9px 13px;
+    background:rgba(var(--tijolo-rgb),.06);border-left:2px solid rgba(var(--tijolo-rgb),.42);
+    border-radius:0 var(--raio-p) var(--raio-p) 0}
+  /* voucher opcional e sutil (diretriz 7) */
+  .card-voucher{display:flex;align-items:center;gap:8px;margin-top:12px;
+    font-family:var(--acao);font-size:12px;font-weight:500;color:var(--tijolo-txt);
+    background:rgba(var(--tijolo-rgb),.07);border:1px dashed rgba(var(--tijolo-rgb),.48);
+    padding:8px 12px;border-radius:var(--raio-p);line-height:1.4}
+  .card-voucher b{font-weight:600}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+  .tag{font-family:var(--corpo);font-size:11.5px;background:var(--papel2);color:var(--cinza);
+    padding:4px 10px;border-radius:999px;border:1px solid var(--linha)}
+
+  /* avaliacao humanizada: media + 5 metricas (diretriz 6) */
+  .aval{margin-top:16px;border:1px solid var(--linha);border-radius:var(--raio-p);
+    background:var(--papel2);overflow:hidden}
+  .aval-top{display:flex;align-items:center;gap:11px;padding:10px 13px;
+    border-bottom:1px solid var(--linha);background:var(--superficie)}
+  .aval-media{font-family:var(--titulo);font-size:22px;font-weight:600;color:var(--azul);
+    line-height:1}
+  .aval-media em{font-style:normal;font-size:12px;font-weight:400;color:var(--fraco)}
+  .aval-est{font-size:12px;color:var(--laranja-txt);letter-spacing:.08em;line-height:1}
+  .aval-n{font-family:var(--acao);font-size:11px;font-weight:500;color:var(--cinza);
+    margin-left:auto;text-align:right;line-height:1.35}
+  .aval-lista{padding:10px 13px 11px;display:grid;gap:7px}
+  .aval-l{display:grid;grid-template-columns:1fr 52px 30px;align-items:center;gap:9px}
+  .aval-rot{font-size:11.5px;color:var(--cinza);font-weight:400;line-height:1.3}
+  .aval-bar{height:5px;border-radius:3px;background:var(--linha);overflow:hidden}
+  .aval-bar i{display:block;height:100%;border-radius:3px;background:var(--azul);
+    transition:width .5s ease}
+  .aval-v{font-family:var(--acao);font-size:11.5px;font-weight:600;color:var(--tinta);
+    text-align:right}
+  .aval-ind{padding:0 13px 11px;font-size:11.5px;color:var(--cinza);line-height:1.4}
+  .aval-ind b{font-family:var(--acao);font-weight:600;color:var(--ok)}
+
+  /* escopo tecnico / CNAE e endereco */
+  .card-espec{font-size:12px;color:var(--cinza);margin-top:14px;line-height:1.55;
+    background:var(--papel2);padding:9px 13px;border-radius:var(--raio-p);
+    border-left:3px solid var(--laranja)}
+  .card-espec b{font-family:var(--acao);font-size:10.5px;font-weight:600;
+    letter-spacing:.03em;color:var(--tinta);display:block;margin-bottom:2px}
+  .card-end{font-size:12px;color:var(--cinza);margin-top:9px;line-height:1.5;
+    display:flex;gap:7px;align-items:flex-start}
+  .card-end svg{flex:0 0 auto;margin-top:2px}
+
+  /* contatos: whatsapp em destaque, presenca digital em linha */
+  .linha-azul{border:none;border-top:1px solid var(--linha);margin:15px 0 13px}
+  .card-contatos{display:flex;flex-direction:column;gap:10px;margin-top:auto}
+  .btn-whats{font-family:var(--acao);font-size:13.5px;font-weight:600;letter-spacing:.01em;
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    background:var(--verde-w);color:var(--sobre-verde);padding:11px 18px;border-radius:var(--raio);
+    text-decoration:none;border:1px solid transparent;
+    box-shadow:0 1px 2px rgba(var(--sombra),.10);
+    transition:background .2s,transform .14s ease,box-shadow .2s}
+  .btn-whats:hover{background:var(--verde-w-h);color:var(--sobre-verde);transform:translateY(-1px);
+    box-shadow:0 5px 14px -4px rgba(31,170,84,.42)}
+  .btn-whats:active{transform:translateY(0) scale(.98);
+    box-shadow:0 1px 2px rgba(var(--sombra),.12)}
+  .redes{display:flex;gap:7px;flex-wrap:wrap}
+  .rede{font-family:var(--acao);font-size:12px;font-weight:500;color:var(--azul);
+    text-decoration:none;border:1px solid var(--linha);background:var(--superficie);
+    padding:6px 11px;border-radius:var(--raio-p);display:inline-flex;align-items:center;
+    gap:6px;transition:all .18s ease}
+  .rede:hover{border-color:var(--azul);background:var(--papel2);transform:translateY(-1px)}
+  .rede:active{transform:translateY(0) scale(.98)}
+  .rede svg{flex:0 0 auto}
+  /* card de vaga aberta: mesma moldura, tom de convite */
+  .card.vaga{border-top-color:var(--tenue);background:var(--papel2)}
+  .card.vaga .card-t{color:var(--cinza)}
+  .vaga-txt{font-size:13px;color:var(--cinza);line-height:1.6;margin-top:10px;font-weight:300}
+
+  /* ---------- antes / depois do nome ---------- */
+  /* grid unico: cada par ocupa a mesma linha, entao "como esta" e "como fica"
+     ficam sempre alinhados mesmo com alturas de texto diferentes */
+  .ab{display:grid;grid-template-columns:1fr 1fr;column-gap:0;
+    border:1px solid var(--linha);background:var(--superficie);border-radius:var(--raio-g);
+    overflow:hidden;margin-bottom:26px}
+  .abh{font-family:var(--acao);font-size:12px;font-weight:600;
+    letter-spacing:.02em;padding:18px 26px 13px;
+    background:var(--papel2);border-bottom:1px solid var(--linha)}
+  .abh.ruim{color:var(--alerta)}
+  .abh.bom{color:var(--ok);border-left:1px solid var(--linha)}
+  .abc{padding:16px 26px;border-bottom:1px solid var(--linha);
+    display:flex;flex-direction:column;justify-content:center}
+  .abc.dir{border-left:1px solid var(--linha)}
+  .ab>.abc:nth-last-child(1),.ab>.abc:nth-last-child(2){border-bottom:none}
+  .abt{font-family:var(--titulo);font-size:16px;font-weight:600;
+    color:var(--azul);letter-spacing:-.012em;line-height:1.35}
+  .abc.esq .abt{color:var(--fraco);text-decoration:line-through;
+    text-decoration-color:var(--risco);text-decoration-thickness:1px}
+  .falta{font-family:var(--corpo);font-size:12px;font-weight:600;
+    color:var(--laranja-txt);letter-spacing:0;text-transform:none}
+  .abm{font-size:12px;color:var(--cinza);margin-top:5px;font-weight:300;line-height:1.5}
+  @media(max-width:720px){
+    .ab{grid-template-columns:1fr}
+    .abh.bom,.abc.dir{border-left:none}
+    .abc.esq{padding-bottom:6px;border-bottom:none}
+    .abc.dir{padding-top:6px}
+  }
+  .regra{background:var(--papel2);border:1px solid var(--linha);
+    border-left:3px solid var(--laranja);padding:22px 26px;border-radius:var(--raio);
+    margin-bottom:34px}
+  .regra-f{font-family:var(--acao);font-size:15px;font-weight:600;
+    color:var(--azul);margin-bottom:11px;letter-spacing:-.01em}
+  .regra-p{font-size:13px;color:var(--cinza);font-weight:300;line-height:1.6;margin:0}
+  .regra-p b{color:var(--tinta);font-weight:600}
+
+  /* ---------- grupos ---------- */
+  .gwrap{border:1px solid var(--linha);border-radius:var(--raio-g);overflow:hidden;
+    background:var(--superficie)}
+  .gitem{border-bottom:1px solid var(--linha)}
+  .gitem:last-child{border-bottom:none}
+  .gbtn{width:100%;background:none;border:none;padding:20px 22px;display:flex;
+    align-items:center;gap:18px;cursor:pointer;text-align:left;font-family:inherit;
+    transition:background .18s}
+  .gbtn:hover{background:var(--papel2)}
+  .gbtn:hover .gname{color:var(--laranja-txt)}
+  .gbtn:active{transform:scale(.995)}
+  .gn{font-family:var(--acao);font-size:12px;font-weight:600;color:var(--laranja-txt);
+    letter-spacing:.02em;min-width:28px}
+  .gname{flex:1;font-family:var(--titulo);font-size:19px;font-weight:600;color:var(--azul);
+    letter-spacing:-.015em;transition:color .2s;line-height:1.3}
+  .gcount{font-family:var(--acao);font-size:11.5px;font-weight:500;color:var(--cinza)}
+  .gicon{font-family:var(--acao);font-size:19px;color:var(--laranja-txt);
+    transition:transform .25s;font-weight:400;line-height:1}
+  .gitem.open .gicon{transform:rotate(45deg)}
+  .gbody{max-height:0;overflow:hidden;transition:max-height .35s ease}
+  .gitem.open .gbody{max-height:1400px}
+  .glist{padding:0 22px 22px 68px;display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:0 26px}
+  .gcat{padding:8px 0;border-bottom:1px solid var(--papel2);font-size:14px;
+    display:flex;align-items:center;gap:9px;font-weight:400;color:var(--tinta)}
+  .novo{font-family:var(--acao);font-size:9.5px;font-weight:600;letter-spacing:.05em;
+    background:var(--laranja-btn);color:var(--sobre-laranja);padding:2px 7px;border-radius:999px}
+
+  /* ---------- filtros do diretorio (inclui o de ofertas, diretriz 7) ---------- */
+  .fbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:24px;
+    padding-bottom:20px;border-bottom:1px solid var(--linha)}
+  .fbar-rot{font-family:var(--acao);font-size:12px;font-weight:500;color:var(--cinza);
+    margin-right:2px}
+  .fb{font-family:var(--acao);font-size:12.5px;font-weight:500;color:var(--cinza);
+    background:var(--superficie);border:1px solid var(--linha);padding:7px 14px;
+    border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;
+    transition:all .18s ease}
+  .fb:hover{border-color:var(--azul);color:var(--azul);transform:translateY(-1px)}
+  .fb:active{transform:translateY(0) scale(.98)}
+  .fb.on{background:var(--azul);border-color:var(--azul);color:var(--sobre-azul)}
+  .fb.oferta.on{background:var(--laranja-btn);border-color:var(--laranja-btn);
+    color:var(--sobre-laranja)}
+  .fb-c{font-size:11px;opacity:.72}
+  .fvazio{padding:40px 4px;text-align:center;color:var(--cinza);font-size:14px;
+    font-weight:300;line-height:1.65}
+  .fvazio b{display:block;font-family:var(--titulo);font-size:18px;font-weight:600;
+    color:var(--azul);margin-bottom:6px}
+
+  /* ---------- como funciona: 3 passos (diretriz 8) ---------- */
+  .passos{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .passo{background:var(--superficie);border:1px solid var(--linha);
+    border-radius:var(--raio-g);padding:26px 24px;position:relative;
+    transition:transform .2s ease,box-shadow .2s ease}
+  .passo:hover{transform:translateY(-2px);box-shadow:0 14px 30px -18px rgba(var(--sombra),.28)}
+  .passo-n{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;
+    justify-content:center;font-family:var(--acao);font-size:15px;font-weight:600;
+    color:var(--azul);background:rgba(var(--tijolo-rgb),.10);
+    border:1px solid rgba(var(--tijolo-rgb),.32);margin-bottom:16px}
+  .passo h3{font-size:18px;margin-bottom:8px;line-height:1.3}
+  .passo p{font-size:13.5px;color:var(--cinza);line-height:1.65;font-weight:300}
+  .passo p b{font-weight:600;color:var(--tinta)}
+  @media(max-width:820px){.passos{grid-template-columns:1fr}}
+
+  /* ---------- nosso proposito: storytelling ---------- */
+  .prop{display:grid;gap:16px}
+  .prop-hero{background:var(--papel2);border:1px solid var(--linha);
+    border-left:3px solid var(--laranja);border-radius:var(--raio-g);
+    padding:30px 32px;position:relative;overflow:hidden}
+  .prop-hero::before{content:"";position:absolute;left:0;right:0;top:0;height:190px;
+    background-image:var(--px-tijolo);background-size:72px 40px;
+    opacity:calc(var(--tx-tijolo) * .55);
+    mask-image:linear-gradient(160deg,#000,rgba(0,0,0,.35) 42%,transparent 78%)}
+  .prop-hero>*{position:relative}
+  .prop-q{font-family:var(--titulo);font-size:clamp(19px,2.2vw,24px);font-weight:600;
+    color:var(--azul);line-height:1.4;letter-spacing:-.018em;margin-bottom:14px}
+  .prop-q em{font-style:normal;color:var(--laranja-txt)}
+  .prop-p{font-size:14.5px;color:var(--cinza);line-height:1.75;font-weight:400;
+    max-width:660px}
+  .prop-p+.prop-p{margin-top:11px}
+  .prop-p b{font-weight:600;color:var(--tinta)}
+  .prop-duo{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:820px){.prop-duo{grid-template-columns:1fr}}
+  .prop-c{background:var(--superficie);border:1px solid var(--linha);
+    border-radius:var(--raio-g);padding:24px 26px}
+  .prop-rot{font-family:var(--acao);font-size:11.5px;font-weight:600;letter-spacing:.03em;
+    color:var(--tijolo-txt);margin-bottom:10px}
+  .prop-c h3{font-size:17px;margin-bottom:9px;line-height:1.3}
+  .prop-l{display:grid;gap:9px;margin-top:13px}
+  .prop-i{display:grid;grid-template-columns:20px 1fr;gap:10px;font-size:13.5px;
+    color:var(--cinza);line-height:1.6;font-weight:300}
+  .prop-i b{font-family:var(--acao);font-weight:600;color:var(--azul);font-size:12px}
+  .prop-i i{font-style:normal;color:var(--laranja-txt);font-weight:600;text-align:center}
+  /* faixa de numeros do MT */
+  .prop-num{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+    background:var(--linha);border:1px solid var(--linha);border-radius:var(--raio-g);
+    overflow:hidden}
+  .prop-num div{background:var(--superficie);padding:20px 18px;text-align:center}
+  .prop-num b{display:block;font-family:var(--titulo);font-size:26px;font-weight:600;
+    color:var(--azul);line-height:1;letter-spacing:-.02em}
+  .prop-num span{display:block;font-family:var(--acao);font-size:11.5px;font-weight:500;
+    color:var(--cinza);margin-top:7px;line-height:1.4}
+  @media(max-width:720px){.prop-num{grid-template-columns:1fr 1fr}}
+
+  /* ---------- codigo ---------- */
+  pre{background:var(--cod-fundo);color:var(--cod-txt);padding:26px;
+    border-radius:var(--raio);overflow-x:auto;
+    font-family:'SF Mono',Consolas,monospace;font-size:12.5px;line-height:1.75}
+  pre .c{color:var(--cod-com)}.k{color:var(--cod-key)}.s{color:var(--cod-str)}
+
+  /* ================= 05 — aplicativo ================= */
+  .ap{display:grid;grid-template-columns:360px 1fr;gap:56px;align-items:start}
+  .ap-col{position:sticky;top:96px}
+
+  /* aparelho */
+  .fone{width:360px;background:var(--tinta);border-radius:44px;padding:11px;
+    box-shadow:0 26px 54px -18px rgba(var(--sombra),.42),0 0 0 1px rgba(var(--sombra),.10)}
+  html[data-tema="escuro"] .fone{background:#000;box-shadow:0 26px 54px -18px #000,0 0 0 1px var(--linha)}
+  .tela{background:var(--papel);border-radius:34px;overflow:hidden;position:relative;
+    height:680px;display:flex;flex-direction:column}
+  .status{height:26px;flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;
+    padding:0 20px;font-family:var(--acao);font-size:10px;font-weight:500;
+    letter-spacing:.02em;color:var(--fraco);background:var(--papel)}
+  .pilula{position:absolute;top:9px;left:50%;transform:translateX(-50%);
+    width:74px;height:17px;border-radius:9px;background:var(--tinta);z-index:6}
+  html[data-tema="escuro"] .pilula{background:#000}
+
+  /* topo do app */
+  .apbar{flex:0 0 auto;padding:12px 18px 11px;border-bottom:1px solid var(--linha);
+    background:var(--superficie)}
+  .apbar-k{font-family:var(--acao);font-size:10px;font-weight:600;letter-spacing:.03em;
+    color:var(--laranja-txt)}
+  .apbar-t{font-family:var(--titulo);font-size:19px;font-weight:600;color:var(--azul);
+    line-height:1.2;margin-top:2px;letter-spacing:-.018em}
+  .apbar-s{font-size:10.5px;color:var(--cinza);margin-top:3px;line-height:1.4;font-weight:300}
+
+  /* corpo rolavel */
+  .apbody{flex:1 1 auto;overflow-y:auto;padding:14px 16px 16px;scrollbar-width:thin}
+  .apbody::-webkit-scrollbar{width:4px}
+  .apbody::-webkit-scrollbar-thumb{background:var(--tenue);border-radius:2px}
+
+  /* barra de abas */
+  .aptabs{flex:0 0 auto;display:flex;border-top:1px solid var(--linha);
+    background:var(--superficie)}
+  .aptab{flex:1 1 0;min-width:0;border:none;background:none;cursor:pointer;
+    padding:9px 1px 11px;font-family:var(--acao);font-size:8.5px;font-weight:500;
+    letter-spacing:.01em;color:var(--fraco);
+    transition:color .2s;position:relative;overflow:hidden;text-overflow:ellipsis;
+    white-space:nowrap}
+  .aptab:active{transform:scale(.97)}
+  .aptab:hover{color:var(--cinza)}
+  .aptab.on{color:var(--azul)}
+  .aptab.on::before{content:"";position:absolute;top:0;left:22%;right:22%;height:2px;
+    background:var(--laranja)}
+  .aptab i{display:block;font-style:normal;font-family:var(--corpo);font-size:14px;
+    font-weight:400;margin-bottom:3px;line-height:1}
+
+  /* linha padrao dentro do app */
+  .row{display:flex;gap:10px;align-items:flex-start;padding:11px 12px;
+    border:1px solid var(--linha);border-radius:var(--raio-p);background:var(--superficie);
+    margin-bottom:7px}
+  .row-b{flex:1 1 auto;min-width:0}
+  .row-t{font-family:var(--titulo);font-size:12.5px;font-weight:600;color:var(--azul);
+    line-height:1.3;letter-spacing:-.012em}
+  .row-s{font-size:10.5px;color:var(--cinza);margin-top:2px;line-height:1.45;font-weight:300}
+  .row-r{flex:0 0 auto;text-align:right;font-family:var(--acao);font-size:10.5px;
+    font-weight:600;color:var(--tinta);letter-spacing:.01em}
+  .row-r em{display:block;font-style:normal;font-size:9px;font-weight:500;
+    color:var(--fraco);letter-spacing:.02em;margin-top:2px}
+
+  /* etiquetas */
+  .et{display:inline-block;font-family:var(--acao);font-size:9px;font-weight:500;
+    letter-spacing:.02em;padding:2px 7px;border-radius:999px;
+    border:1px solid var(--linha);color:var(--cinza);background:var(--papel2)}
+  .et.ok{color:var(--ok);border-color:var(--ok)}
+  .et.al{color:var(--alerta);border-color:var(--alerta)}
+  .et.lj{color:var(--laranja-txt);border-color:var(--laranja)}
+  .et.az{color:var(--azul);border-color:var(--azul)}
+
+  /* filtros em pilula */
+  .filtros{display:flex;gap:5px;margin-bottom:11px;flex-wrap:wrap}
+  .filtro{font-family:var(--acao);font-size:10px;font-weight:500;letter-spacing:.01em;
+    padding:6px 11px;border-radius:999px;cursor:pointer;
+    border:1px solid var(--linha);background:var(--superficie);color:var(--cinza);
+    transition:all .18s ease}
+  .filtro:hover{border-color:var(--azul);color:var(--azul)}
+  .filtro:active{transform:scale(.97)}
+  .filtro.on{background:var(--azul);border-color:var(--azul);color:#fff}
+  html[data-tema="escuro"] .filtro.on{color:var(--sobre-azul)}
+
+  /* rotulo de secao no app */
+  .apsec{font-family:var(--acao);font-size:9.5px;font-weight:600;letter-spacing:.04em;
+    color:var(--fraco);margin:14px 0 7px;
+    display:flex;align-items:center;gap:8px}
+  .apsec::after{content:"";flex:1;height:1px;background:var(--linha)}
+  .apsec:first-child{margin-top:0}
+
+  /* botoes do app */
+  .apb{font-family:var(--acao);font-size:11.5px;font-weight:600;letter-spacing:.01em;
+    padding:10px 12px;border-radius:var(--raio-p);cursor:pointer;
+    border:1px solid var(--azul);background:var(--azul);color:#fff;
+    transition:opacity .18s,transform .14s ease;width:100%}
+  /* :not() para o override do escuro nao vencer as variantes de contorno */
+  html[data-tema="escuro"] .apb:not(.g):not(.al){color:var(--sobre-azul)}
+  .apb:hover{opacity:.88}
+  .apb:active{transform:scale(.98)}
+  .apb.g{background:none;color:var(--azul)}
+  .apb.al{background:none;border-color:var(--alerta);color:var(--alerta)}
+  .apduo{display:flex;gap:7px;margin-top:9px}
+
+  /* vazio */
+  .apvazio{text-align:center;padding:46px 20px;color:var(--fraco);font-size:11px;
+    font-weight:300;line-height:1.6}
+  .apvazio b{display:block;font-family:var(--titulo);font-size:16px;font-weight:600;
+    color:var(--azul);margin-bottom:5px;letter-spacing:-.015em}
+
+  /* ---- coluna direita: as frentes ---- */
+  .frentes{display:flex;flex-direction:column;gap:2px}
+  .frente{display:grid;grid-template-columns:34px 1fr;gap:14px;text-align:left;
+    padding:17px 18px;border:1px solid transparent;border-radius:var(--raio-p);cursor:pointer;
+    background:none;transition:background .18s,border-color .18s,transform .14s ease;width:100%;
+    border-bottom:1px solid var(--linha)}
+  .frente:hover{background:var(--papel2)}
+  .frente:active{transform:scale(.995)}
+  .frente.on{background:var(--superficie);border-color:var(--linha);
+    box-shadow:0 2px 14px -6px rgba(var(--sombra),.16)}
+  .frente.on .fr-n{color:var(--laranja-txt)}
+  .fr-n{font-family:var(--acao);font-size:12px;font-weight:600;color:var(--tenue);
+    letter-spacing:.01em;padding-top:3px;transition:color .18s}
+  .frente>span{display:block;min-width:0}
+  .fr-t{display:block;font-family:var(--titulo);font-size:16px;font-weight:600;
+    color:var(--azul);letter-spacing:-.015em;line-height:1.3}
+  .fr-d{display:block;font-size:12.5px;color:var(--cinza);margin-top:5px;line-height:1.55;font-weight:300}
+  .fr-g{display:block;font-size:12px;color:var(--tinta);margin-top:9px;line-height:1.55;font-weight:300;
+    padding-left:11px;border-left:2px solid var(--laranja)}
+  .fr-g b{font-family:var(--acao);font-size:10.5px;font-weight:600;letter-spacing:.03em;
+    color:var(--laranja-txt);display:block;margin-bottom:2px}
+
+  @media(max-width:940px){
+    .ap{grid-template-columns:1fr;gap:40px;justify-items:center}
+    .ap-col{position:static}
+    .frentes{width:100%}
+  }
+  @media(max-width:420px){
+    .fone{width:100%;padding:9px;border-radius:34px}
+    .tela{border-radius:26px;height:620px}
+  }
+
+  footer{padding:52px 0 60px;border-top:1px solid var(--linha);text-align:center;
+    position:relative}
+  /* moldura de azulejo tambem no fecho da pagina, espelhada */
+  footer::before{content:"";position:absolute;top:0;left:0;right:0;height:14px;
+    background-image:var(--px-banda);background-size:56px 14px;background-repeat:repeat-x;
+    opacity:calc(var(--tx-banda) * .7);transform:scaleY(-1)}
+  .fnote{font-size:13px;color:var(--cinza);font-weight:300;line-height:1.75}
+  .fnote b{font-family:var(--titulo);font-size:18px;font-weight:600;color:var(--azul);
+    letter-spacing:-.015em}
+
+  /* respeita quem pediu menos movimento no sistema */
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<!-- faixas de cobogo que preenchem a sobra lateral em telas largas -->
+<div class="grade e" aria-hidden="true"></div>
+<div class="grade d" aria-hidden="true"></div>
+
+<!-- canvas central de 1120px: a estrutura das informacoes nao muda de proporcao -->
+<div class="canvas">
+<span class="arab e" aria-hidden="true"></span>
+<span class="arab d" aria-hidden="true"></span>
+
+<nav><div class="nav-in">
+  <div class="logo">Construir <em>&amp;</em> Reformar</div>
+  <div class="navlinks">
+    <a href="#busca">Buscar</a><a href="#grupos">Categorias</a>
+    <a href="#cards">Prestadores</a><a href="#como">Como funciona</a>
+    <a href="#proposito">Propósito</a><a href="#app">App</a>
+    <a class="btn" href="#busca">Cadastrar meu negócio</a>
+  </div>
+  <button class="tema" id="tema" onclick="tema()" aria-label="Alternar modo claro e escuro"
+          title="Modo claro / escuro"></button>
+</div></nav>
+
+<header class="wrap">
+  <div class="eyebrow">Diretório de obra · Mato Grosso</div>
+  <h1>A solução certa para a sua obra ou reparo,<br><em>com segurança</em></h1>
+  <p class="lede">Digite o que você precisa do jeito que você fala — mesmo informal,
+  mesmo escrito errado. O sistema entende e leva você ao profissional certo,
+  com contato direto e ficha completa.</p>
+
+  <div class="searchbox" id="busca">
+    <div class="sfield">
+      <input id="q" type="text" placeholder="Digite o que precisa. Ex.: luz, cano, não gela"
+             autocomplete="off">
+      <button class="sbtn" onclick="go()">Buscar</button>
+    </div>
+    <div class="hint">
+      <span>Experimente:</span>
+      <button class="chip" onclick="setq('luz')">luz</button>
+      <button class="chip" onclick="setq('tomada')">tomada</button>
+      <button class="chip" onclick="setq('fio')">fio</button>
+      <button class="chip" onclick="setq('eletrecista')">eletrecista</button>
+      <button class="chip" onclick="setq('não gela')">não gela</button>
+      <button class="chip" onclick="setq('caixa d agua vazando')">caixa d'agua vazando</button>
+      <button class="chip" onclick="setq('azulegista')">azulegista</button>
+      <button class="chip" onclick="setq('tirar entulho')">tirar entulho</button>
+      <button class="chip" onclick="setq('placa solar')">placa solar</button>
+      <button class="chip" onclick="setq('nr 35')">nr 35</button>
+    </div>
+    <div id="res"></div>
+  </div>
+</header>
+
+<section class="wrap" id="tipo">
+  <div class="shead">
+    <div class="snum">01 — Identidade</div>
+    <h2>A nova tríade <em>tipográfica</em></h2>
+    <p class="sub">Outfit para os títulos, Plus Jakarta Sans para ler, Space Grotesk para
+    guiar a ação. Leve, harmônica e respeitosa — sem serifa editorial e sem caixa alta
+    espaçada, que afastavam quem chega com pressa. Todas gratuitas no Google Fonts.</p>
+  </div>
+  <div class="tri">
+    <div class="tri-row">
+      <div class="tri-tag">Títulos e marca · Outfit</div>
+      <div class="tri-meta">Geométrica humanista, peso 600. Amigável, moderna e com
+      presença, sem o distanciamento de uma serifa de luxo.</div>
+      <div class="demo-serif">Quem faz, quem entrega,<br>quem <em>responde</em>.</div>
+    </div>
+    <div class="tri-row">
+      <div class="tri-tag">Botões, badges e ações · Space Grotesk</div>
+      <div class="tri-meta">Geométrica suave, caixa mista, entreletra quase neutra.
+      Guia a navegação com clareza — o rótulo é lido, não decifrado.</div>
+      <div class="demo-disp">Cadastrar meu negócio</div>
+      <div style="height:14px"></div>
+      <div class="demo-disp" style="font-size:13px;color:var(--cinza);font-weight:500">
+        Buscar · Categorias · Prestadores · Como funciona</div>
+      <div style="height:18px"></div>
+      <div style="display:flex;gap:9px;flex-wrap:wrap;align-items:center">
+        <button class="btn" type="button">Ver ficha completa</button>
+        <button class="btn sec" type="button">Falar no WhatsApp</button>
+      </div>
+      <div class="tri-meta" style="margin:14px 0 0">Toque nos botões: elevam 1&nbsp;px no
+      hover e reduzem 2% no clique. Resposta tátil, sem sobressalto.</div>
+    </div>
+    <div class="tri-row">
+      <div class="tri-tag">Corpo, dados e escopo · Plus Jakarta Sans</div>
+      <div class="tri-meta">Neutra e cristalina em bloco de texto, tabela e ficha técnica.
+      Única fonte mantida do conjunto anterior, porque já cumpria bem esse papel.</div>
+      <p class="demo-body">Instalações elétricas prediais, quadros de distribuição e laudos.
+      Atendimento 24h para emergências. Equipe com NR-10 vigente e ART emitida para
+      entrada de energia e SPDA. Cobertura em Sorriso e região, com deslocamento
+      incluído até 40 km.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap" id="grupos">
+  <div class="shead">
+    <div class="snum">02 — Taxonomia</div>
+    <h2>Seis grupos, <em>36</em> categorias</h2>
+    <p class="sub">Ordem cronológica da obra, não alfabética. Clique para abrir.</p>
+  </div>
+  <div class="gwrap" id="gwrap"></div>
+</section>
+
+<section class="wrap" id="cards">
+  <div class="shead">
+    <div class="snum">03 — Prestadores</div>
+    <h2>A ficha <em>completa</em>, em dois segundos</h2>
+    <p class="sub">Título no padrão <b>Marca (Responsável)</b>, slogan do próprio prestador,
+    avaliação por cinco métricas, escopo técnico com CNAE, endereço e todos os canais de
+    contato. As tags exibidas são curadas — os termos com erro de grafia ficam só no
+    backend, nunca na tela.</p>
+  </div>
+
+  <!-- filtros: categoria por grupo + o de ofertas, sutil e opcional -->
+  <div class="fbar" id="fbar"></div>
+  <div class="grid" id="cards-grid"></div>
+  <div id="cards-vazio"></div>
+
+  <div class="shead" style="margin-top:78px">
+    <div class="snum">03.1 — Nome no card</div>
+    <h2>Marca na frente, <em>pessoa</em> depois</h2>
+    <p class="sub">Quem chega com a obra parada não conhece a Luiza — conhece o serviço.
+    A regra é <b>Marca (Responsável)</b>, e a região sai do título porque a segunda
+    linha do card já a imprime.</p>
+  </div>
+  <div class="ab" id="ab"></div>
+  <div class="regra">
+    <div class="regra-f">[Marca ou foco do serviço] &nbsp;(&nbsp;[Responsável]&nbsp;)</div>
+    <p class="regra-p">O parêntese é <b>opcional</b>: entra quando a marca se repete entre dois
+    cadastros ou quando a pessoa é conhecida na cidade. <b>Nunca</b> colocar a região no
+    título — a linha de baixo do card já mostra “Categoria · Sorriso/MT”, e repetir só
+    encurta o espaço do nome.</p>
+  </div>
+</section>
+
+<section class="wrap" id="como">
+  <div class="shead">
+    <div class="snum">04 — Como funciona</div>
+    <h2>Três passos, <em>sem cadastro</em> para buscar</h2>
+    <p class="sub">Quem procura não precisa aprender nada antes de usar. Quem oferece
+    serviço preenche a ficha uma vez e passa a ser encontrado pelas palavras que o
+    cliente realmente digita.</p>
+  </div>
+  <div class="passos">
+    <div class="passo">
+      <div class="passo-n">1</div>
+      <h3>Diga o que precisa</h3>
+      <p>Escreva do seu jeito: <b>“sem luz”</b>, <b>“cano estourado”</b>, <b>“não gela”</b>.
+      Não precisa saber o nome técnico da categoria, nem acertar a grafia.</p>
+    </div>
+    <div class="passo">
+      <div class="passo-n">2</div>
+      <h3>Compare as fichas</h3>
+      <p>Cada prestador aparece com <b>avaliação em cinco métricas</b>, escopo técnico,
+      endereço e ofertas quando houver. Tudo aberto, sem cadastro para consultar.</p>
+    </div>
+    <div class="passo">
+      <div class="passo-n">3</div>
+      <h3>Fale direto</h3>
+      <p>WhatsApp, telefone, e-mail, site e redes <b>no próprio card</b>. A plataforma
+      não fica no meio da conversa nem cobra comissão pelo contato.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap" id="proposito">
+  <div class="shead">
+    <div class="snum">05 — Nosso propósito</div>
+    <h2>Nasceu de uma <em>obra parada</em></h2>
+    <p class="sub">Por que construímos esta ferramenta, e para quem.</p>
+  </div>
+
+  <div class="prop">
+    <div class="prop-hero">
+      <p class="prop-q">Uma infiltração no domingo. Um encarregado ligando para sete números
+      e <em>ninguém atende</em>. A obra para — e a conta continua correndo.</p>
+      <p class="prop-p">Essa cena não é exceção no Mato Grosso: é a rotina de quem constrói.
+      O bom profissional existe, tem ferramenta, tem certificação em dia e está a poucos
+      quilômetros. Só não é <b>encontrável</b>. Ele está num grupo de WhatsApp que alguém
+      esqueceu de arquivar, num cartão de visita perdido, na indicação de um vizinho que
+      mudou de cidade.</p>
+      <p class="prop-p">Do outro lado, a dona de casa que nunca mexeu com obra não sabe se
+      o problema dela é de eletricista ou de climatização — e desiste de procurar antes de
+      encontrar. O mestre de obras experiente perde meio dia caçando quem tem retroescavadeira
+      livre. O engenheiro precisa saber se a certidão do fornecedor está válida <b>antes</b>
+      de emitir o pedido.</p>
+      <p class="prop-p">São três dores diferentes com a mesma origem: a informação existe,
+      mas está espalhada. Reunir tudo em um só lugar, na linguagem de quem procura, é o
+      trabalho desta plataforma.</p>
+    </div>
+
+    <div class="prop-duo">
+      <div class="prop-c">
+        <div class="prop-rot">Para quem construímos</div>
+        <h3>Todo mundo em casa, no mesmo lugar</h3>
+        <div class="prop-l">
+          <div class="prop-i"><i>·</i><span><b>Quem mora e precisa de reparo</b> — escreve
+          como fala e chega no profissional certo, sem jargão.</span></div>
+          <div class="prop-i"><i>·</i><span><b>Quem trabalha na obra</b> — pedreiro,
+          eletricista, encanador e mestre com ficha própria e contato direto.</span></div>
+          <div class="prop-i"><i>·</i><span><b>Quem fornece e entrega</b> — material,
+          locação, frete e agregados encontrados por região.</span></div>
+          <div class="prop-i"><i>·</i><span><b>Quem projeta e fiscaliza</b> — engenharia,
+          arquitetura, topografia e segurança do trabalho com escopo e CNAE visíveis.</span></div>
+        </div>
+      </div>
+      <div class="prop-c">
+        <div class="prop-rot">Onde estamos e para onde vamos</div>
+        <h3>Começa no MT, e o céu é o limite</h3>
+        <div class="prop-l">
+          <div class="prop-i"><i>·</i><span><b>Foco em Mato Grosso.</b> Densidade antes de
+          extensão: um diretório raso em mil cidades não resolve a obra de ninguém.</span></div>
+          <div class="prop-i"><i>·</i><span><b>Sorriso como base.</b> Onde a rede já existe
+          e a indicação pode ser conferida no boca a boca.</span></div>
+          <div class="prop-i"><i>·</i><span><b>Indústrias e projetistas de fora.</b> Quando
+          a solução não existe na região, indicamos quem atende de outro estado — sem
+          fingir cobertura local.</span></div>
+          <div class="prop-i"><i>·</i><span><b>Expansão por cidade vizinha</b>, no ritmo em
+          que houver prestador de verdade cadastrado em cada categoria.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="prop-num">
+      <div><b>6</b><span>grupos na ordem<br>da obra</span></div>
+      <div><b>36</b><span>categorias<br>mapeadas</span></div>
+      <div><b>1.054</b><span>termos informais<br>reconhecidos</span></div>
+      <div><b>MT</b><span>foco atual,<br>com apoio nacional</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="shead">
+    <div class="snum">06 — Implementação</div>
+    <h2>O CSS <em>pronto</em></h2>
+    <p class="sub">A camada visual troca em static/style.css. O motor de busca
+    (<b>busca_sinonimos.py</b>), o padrão de nome (<b>nomes_cards.py</b>) e a taxonomia
+    (<b>categorias-agrupadas.json</b>) não mudam uma linha. Reversível.</p>
+  </div>
+<pre><span class="c">/* 1. no topo do arquivo — a nova triade */</span>
+<span class="k">@import</span> <span class="s">url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&amp;family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&amp;family=Space+Grotesk:wght@400;500;600;700&amp;display=swap"</span>);
+
+<span class="c">/* 2. tokens: fontes, tom de papel/tijolo e cantos suaves */</span>
+<span class="k">:root</span> {
+  <span class="k">--titulo</span>: <span class="s">'Outfit'</span>, system-ui, sans-serif;
+  <span class="k">--corpo</span>:  <span class="s">'Plus Jakarta Sans'</span>, -apple-system, <span class="s">'Segoe UI'</span>, Roboto, sans-serif;
+  <span class="k">--acao</span>:   <span class="s">'Space Grotesk'</span>, system-ui, sans-serif;
+  <span class="k">--fora</span>:   <span class="s">#f3f0eb</span>;   <span class="c">/* fundo de tela: papel / tijolo aquarelado */</span>
+  <span class="k">--tijolo</span>: <span class="s">#c96a3f</span>;   <span class="c">/* tom quente do slogan e das texturas */</span>
+  <span class="k">--raio</span>:   8px;
+}
+
+<span class="c">/* 3. aplicacao (as cores institucionais ficam como estao) */</span>
+<span class="k">body</span> { <span class="k">font-family</span>: <span class="k">var</span>(--corpo); <span class="k">background</span>: <span class="k">var</span>(--fora); <span class="k">font-weight</span>: 300; }
+<span class="k">h1</span>, <span class="k">h2</span>, <span class="k">h3</span>, <span class="k">.logo</span>, <span class="k">.card-titulo</span> {
+  <span class="k">font-family</span>: <span class="k">var</span>(--titulo); <span class="k">font-weight</span>: 600; <span class="k">letter-spacing</span>: -.02em;
+}
+<span class="k">.btn</span>, <span class="k">nav a</span>, <span class="k">.tag</span>, <span class="k">.filtro</span>, <span class="k">.selo</span> {
+  <span class="k">font-family</span>: <span class="k">var</span>(--acao); <span class="k">font-weight</span>: 600; <span class="k">text-transform</span>: none;
+}
+
+<span class="c">/* 4. canvas central: a estrutura nao se deforma em tela ultrawide */</span>
+<span class="k">.canvas</span> { <span class="k">max-width</span>: 1120px; <span class="k">margin</span>: 0 auto; <span class="k">background</span>: <span class="k">var</span>(--papel); }
+
+<span class="c">/* 5. botoes aconchegantes: preenchimento, limite e clique tatil */</span>
+<span class="k">.btn</span> {
+  <span class="k">padding</span>: 10px 20px; <span class="k">border-radius</span>: <span class="k">var</span>(--raio); <span class="k">max-width</span>: 280px;
+  <span class="k">transition</span>: background .2s, transform .14s ease, box-shadow .2s;
+}
+<span class="k">.btn:hover</span>  { <span class="k">transform</span>: <span class="k">translateY</span>(-1px); }
+<span class="k">.btn:active</span> { <span class="k">transform</span>: <span class="k">translateY</span>(0) <span class="k">scale</span>(.98); }</pre>
+</section>
+
+<section class="wrap" id="app" style="margin-top:20px">
+  <div class="shead">
+    <div class="snum">07 — Aplicativo</div>
+    <h2>Sete frentes, <em>um</em> aparelho</h2>
+    <p class="sub">O diretório atende quem procura. O aplicativo atende quem <b>compra</b>:
+    quem precisa saber se o fornecedor está com a documentação em dia, se o pedido foi
+    aprovado e se o material chegou no prazo. Toque em qualquer frente ou na barra do
+    aparelho — a tela responde. Fornecedores reais dos cadastros; distâncias, valores e
+    notas são ilustrativos, e nada é gravado.</p>
+  </div>
+
+  <div class="ap">
+    <div class="ap-col">
+      <div class="fone">
+        <div class="tela">
+          <div class="pilula"></div>
+          <div class="status"><span>09:41</span><span>C&amp;R</span></div>
+          <div class="apbar">
+            <div class="apbar-k" id="ap-k"></div>
+            <div class="apbar-t" id="ap-t"></div>
+            <div class="apbar-s" id="ap-s"></div>
+          </div>
+          <div class="apbody" id="ap-body"></div>
+          <div class="aptabs" id="ap-tabs"></div>
+        </div>
+      </div>
+    </div>
+    <div class="frentes" id="frentes"></div>
+  </div>
+</section>
+
+<footer class="wrap">
+  <p class="fnote"><b>Construir &amp; Reformar</b><br>
+  Prévia da reformulação visual · uma iniciativa VZP Engenharia / Base Empreendimentos<br>
+  Foco atual em Mato Grosso, com indicação de indústrias e projetistas de fora<br>
+  <span style="color:var(--fraco)">Protótipo de layout. Avaliações, vouchers e contatos
+  são ilustrativos e nada é gravado.</span></p>
+</footer>
+
+</div><!-- /canvas -->
+
+<script src="dados.js"></script>
+<script>
+function setq(t){document.getElementById('q').value=t;go()}
+document.getElementById('q').addEventListener('input',go);
+document.getElementById('q').addEventListener('keydown',e=>{if(e.key==='Enter')go()});
+
+function go(){
+  const q=document.getElementById('q').value, box=document.getElementById('res');
+  if(!q.trim()){box.innerHTML='';return}
+  const r=buscar(q);
+  if(!r.length){
+    const s=sugerir(q);
+    box.innerHTML='<div class="none">Nada encontrado para <b>'+esc(q)+'</b>.'+
+      (s.length?' Você quis dizer <b>'+s.map(x=>esc(x.label)).join('</b> ou <b>')+'</b>?':
+       ' Tente uma palavra mais simples, como "luz" ou "cano".')+'</div>';
+    return}
+  box.innerHTML='<div class="rhead">'+r.length+(r.length>1?' categorias':' categoria')+' encontrada'+(r.length>1?'s':'')+'</div>'+
+    r.map((h,i)=>'<div class="hit" style="animation-delay:'+(i*.04)+'s">'+
+      '<div class="hit-n">'+String(i+1).padStart(2,'0')+'</div>'+
+      '<div class="hit-b"><div class="hit-cat">'+esc(h.label)+'</div>'+
+      '<div class="hit-g">Grupo '+h.grupo_n+' · '+esc(h.grupo)+'</div>'+
+      '<div class="hit-via">casou por: '+h.via.slice(0,4).map(esc).join(', ')+'</div></div>'+
+      '<div class="hit-sc">'+h.score+'</div></div>').join('');
+}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+
+// grupos
+document.getElementById('gwrap').innerHTML=DADOS.grupos.map((g,i)=>
+  '<div class="gitem'+(i<2?' open':'')+'">'+
+  '<button class="gbtn" onclick="this.parentNode.classList.toggle(\'open\')">'+
+  '<span class="gn">0'+g.n+'</span><span class="gname">'+esc(g.titulo)+'</span>'+
+  '<span class="gcount">'+g.itens.length+' itens</span><span class="gicon">+</span></button>'+
+  '<div class="gbody"><div class="glist">'+g.itens.map(c=>'<div class="gcat">'+esc(c.label)+
+  (c.novo?' <span class="novo">NOVO</span>':'')+'</div>').join('')+'</div></div></div>').join('');
+
+// ==================== 03 — cards de prestador ====================
+// Ficha completa conforme a diretriz 5: titulo Marca (Responsavel), slogan proprio,
+// voucher opcional, avaliacao por 5 metricas, escopo/CNAE, endereco e contatos.
+// Dados ilustrativos de layout — nada aqui e cadastro real nem e gravado.
+
+// as 5 metricas, na ordem definida pelo Vitor
+const METRICAS=['Atendimento','Qualidade e quantidade','Inspeção e segurança',
+                'Resolveu a demanda','Indicaria'];
+
+const PREST=[
+ {slug:'eletricista', marca:'Eletro Ativa', resp:'Luiza', cidade:'Sorriso/MT',
+  slogan:'Sua casa segura, do quadro à última tomada.',
+  escopo:'Manutenção e instalação elétrica residencial e predial, quadros de distribuição, laudos e SPDA.',
+  cnae:'4321-5/00', end:'Av. Blumenau, 1200 — Centro, Sorriso/MT',
+  notas:[5.0,4.8,5.0,5.0,4.9], n:38, indica:99, verif:true,
+  voucher:'1ª visita técnica sem taxa de deslocamento em Sorriso',
+  whats:'5566999990001', email:'contato@eletroativa.com.br',
+  insta:'eletroativa', linkedin:'eletro-ativa', site:'eletroativa.com.br'},
+
+ {slug:'projeto-engenharia', marca:'VZP Engenharia', resp:'Vitor', cidade:'Sorriso/MT',
+  slogan:'Engenharia com precisão técnica e prazo respeitado.',
+  escopo:'Projetos, orçamentos, gerenciamento e medição de obra. Fiscalização com ART e laudos técnicos.',
+  cnae:'7112-0/00', end:'Rua Curitiba, 845 — Jardim Amazonas, Sorriso/MT',
+  notas:[4.9,5.0,5.0,4.9,5.0], n:24, indica:100, verif:true,
+  voucher:null,
+  whats:'5566999990002', email:'projetos@vzpengenharia.com.br',
+  insta:'vzpengenharia', linkedin:'vzp-engenharia', site:'vzpengenharia.com.br'},
+
+ {slug:'marmoraria', marca:'Marmoraria Parthenon', resp:'Flavio', cidade:'Sorriso/MT',
+  slogan:'Pedra bem cortada é acabamento que dura a vida inteira.',
+  escopo:'Corte e instalação de pedras decorativas: bancadas, soleiras, pisos e escadas em granito, mármore e quartzo.',
+  cnae:'2391-5/03', end:'Rod. MT-242, km 12 — Distrito Industrial, Sorriso/MT',
+  notas:[4.8,5.0,4.9,4.7,4.8], n:19, indica:96, verif:true,
+  voucher:'10% na soleira ao fechar bancada de cozinha',
+  whats:'5566999990003', email:'orcamento@parthenonmt.com.br',
+  insta:'marmorariaparthenon', linkedin:null, site:'parthenonmt.com.br'},
+
+ {slug:'terraplenagem', marca:'Terraplanagem Boa Terra', resp:'Dornia', cidade:'Sorriso/MT',
+  slogan:'Terreno pronto no prazo, sem surpresa na medição.',
+  escopo:'Escavadeira, retroescavadeira e caminhão basculante. Limpeza de terreno, drenagem e compactação.',
+  cnae:'4313-4/00', end:'Estrada da Perdiz, s/n — Zona Rural, Sorriso/MT',
+  notas:[4.6,4.7,4.8,4.9,4.7], n:31, indica:94, verif:true,
+  voucher:null,
+  whats:'5566999990004', email:'boaterra@terraplanagem.com.br',
+  insta:'boaterraterraplanagem', linkedin:null, site:null},
+
+ {slug:'impermeabilizacao', marca:'Vedalaje MT', resp:'Maurílio', cidade:'Sorriso/MT',
+  slogan:'Infiltração resolvida na origem, não na pintura.',
+  escopo:'Impermeabilização de lajes, caixas d\u2019água, box, piscinas e baldrames. Manta asfáltica e sistemas cimentícios.',
+  cnae:'4330-4/99', end:'Rua dos Ipês, 320 — Bela Vista, Sorriso/MT',
+  notas:[4.7,4.5,4.8,4.6,4.6], n:14, indica:93, verif:true,
+  voucher:'Laudo de vistoria de infiltração sem custo',
+  whats:'5566999990005', email:'atendimento@vedalajemt.com.br',
+  insta:'vedalajemt', linkedin:null, site:null},
+
+ {slug:'materiais-construcao', marca:'Calfa Ferragens', resp:null, cidade:'Sorriso/MT',
+  slogan:'O que a obra precisa hoje, entregue hoje.',
+  escopo:'Comércio varejista de ferragens, ferramentas, vergalhão, arame e materiais de construção. Entrega própria.',
+  cnae:'4744-0/01', end:'Av. Natalino João Brescansin, 2410 — Centro, Sorriso/MT',
+  notas:[4.5,4.6,4.3,4.7,4.5], n:52, indica:91, verif:true,
+  voucher:'Frete grátis em compras acima de R$ 800 na cidade',
+  whats:'5566999990006', email:'vendas@calfaferragens.com.br',
+  insta:'calfaferragens', linkedin:null, site:'calfaferragens.com.br'},
+
+ {slug:'topografia', marca:'Data Topografia', resp:'Wellington', cidade:'Sorriso/MT',
+  slogan:'Marco no lugar certo evita retrabalho na obra toda.',
+  escopo:'Levantamento topográfico, locação de obra, georreferenciamento e as-built com estação total e GNSS.',
+  cnae:'7119-7/02', end:'Rua Aracaju, 158 — Centro, Sorriso/MT',
+  notas:[5.0,4.9,5.0,5.0,5.0], n:11, indica:100, verif:true,
+  voucher:null,
+  whats:'5566999990007', email:'contato@datatopografia.com.br',
+  insta:'datatopografia', linkedin:'data-topografia', site:'datatopografia.com.br'},
+
+ {slug:'sistema-de-ar', marca:'Clima Norte', resp:'Patrícia', cidade:'Sorriso/MT',
+  slogan:'Ambiente na temperatura certa, conta de luz sob controle.',
+  escopo:'Instalação e manutenção de split, multi-split e ar comprimido. Limpeza técnica e carga de gás.',
+  cnae:'4322-3/02', end:'Rua Palmas, 77 — Jardim Paraíso, Sorriso/MT',
+  notas:[4.8,4.6,4.7,4.8,4.7], n:27, indica:95, verif:true,
+  voucher:'Limpeza técnica com 15% na 2ª unidade',
+  whats:'5566999990008', email:'clima@climanorte.com.br',
+  insta:'climanortemt', linkedin:null, site:null},
+
+ {slug:'seguranca-do-trabalho', vaga:true, cidade:'Mato Grosso',
+  vagaTxt:'Nenhum prestador cadastrado nesta categoria ainda. Se você emite PGR, PCMSO e laudos, esta vaga é sua — o cadastro é gratuito.'},
+
+ {slug:'mineradoras', vaga:true, cidade:'Mato Grosso',
+  vagaTxt:'Areia, brita e cascalho: categoria descoberta na região. Quem entrega caminhão em Sorriso pode ocupar este espaço.'},
+];
+
+// ---- icones: SVG inline, sem dependencia externa ----
+const IC={
+ whats:'<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.2 14.1c-.2.6-1.2 1.2-1.7 1.2-.5.1-1 .1-1.6-.1a11 11 0 0 1-5.9-5.2c-.4-.7-.6-1.4-.5-2 .1-.6.7-1.4 1.2-1.5.2-.1.5-.1.7 0 .2 0 .4.1.5.4l.7 1.6c.1.2 0 .5-.1.6l-.4.5c-.1.2-.2.4 0 .6a8 8 0 0 0 2.9 2.6c.2.1.4.1.6-.1l.6-.7c.2-.2.4-.2.6-.1l1.6.8c.3.1.4.3.4.5 0 .2 0 .4-.1.6Z"/></svg>',
+ pin:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg>',
+ mail:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>',
+ insta:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none"/></svg>',
+ in:'<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.5 9h3v11h-3zM6 4a1.8 1.8 0 1 0 0 3.6A1.8 1.8 0 0 0 6 4Zm4.5 5h2.9v1.5c.5-.9 1.7-1.7 3.3-1.7 2.6 0 3.8 1.6 3.8 4.6V20h-3v-6c0-1.6-.6-2.4-1.8-2.4-1.1 0-1.9.7-2.2 1.7V20h-3Z"/></svg>',
+ site:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3.4 9h17.2M3.4 15h17.2M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18Z"/></svg>',
+ tag:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12.6 3H20a1 1 0 0 1 1 1v7.4a2 2 0 0 1-.6 1.4l-7.6 7.6a2 2 0 0 1-2.8 0l-6-6a2 2 0 0 1 0-2.8l7.6-7.6a2 2 0 0 1 1.4-.6Z"/><circle cx="16.6" cy="7.4" r="1.4" fill="currentColor" stroke="none"/></svg>',
+ ok:'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" aria-hidden="true"><path d="m4 12.5 5.2 5.2L20 6.8"/></svg>',
+};
+
+function media(n){return n.reduce((a,b)=>a+b,0)/n.length}
+function estrelasM(m){ // 5 casas visuais a partir da media
+  const c=Math.round(m);
+  return '★★★★★'.slice(0,c)+'☆☆☆☆☆'.slice(0,5-c);
+}
+
+function cardHTML(p){
+  const c=CATS[p.slug]; if(!c)return'';
+  const grupo='<div class="card-g">Grupo '+c.grupo_n+' · '+esc(c.grupo)+'</div>';
+
+  // vaga aberta: mesma moldura, tom de convite
+  if(p.vaga){
+    return '<div class="card vaga"><div class="card-top">'+grupo+
+      '<span class="selo" style="color:var(--cinza);background:var(--papel2);'+
+      'border-color:var(--linha)">vaga aberta</span></div>'+
+      '<div class="card-body"><div class="card-t">'+esc(c.label)+'</div>'+
+      '<div class="card-s">'+esc(c.label)+' · '+esc(p.cidade)+'</div>'+
+      '<p class="vaga-txt">'+esc(p.vagaTxt)+'</p>'+
+      '<div class="tags">'+(c.tags||[]).slice(0,4).map(t=>'<span class="tag">'+esc(t)+'</span>').join('')+'</div>'+
+      '<hr class="linha-azul"><div class="card-contatos">'+
+      '<a class="btn sec" style="max-width:none" href="#busca">Cadastrar nesta categoria</a>'+
+      '</div></div></div>';
+  }
+
+  const m=media(p.notas);
+  // titulo no padrao Marca (Responsavel) — o parentese so entra quando ajuda
+  const titulo=esc(p.marca)+(p.resp?' <span>('+esc(p.resp)+')</span>':'');
+
+  const metricas=METRICAS.map((rot,i)=>{
+    const v=p.notas[i];
+    return '<div class="aval-l"><span class="aval-rot">'+(i+1)+'. '+esc(rot)+'</span>'+
+      '<span class="aval-bar"><i style="width:'+(v/5*100).toFixed(0)+'%"></i></span>'+
+      '<span class="aval-v">'+v.toFixed(1)+'</span></div>';
+  }).join('');
+
+  const redes=[
+    p.email?['mail','E-mail','mailto:'+p.email]:null,
+    p.insta?['insta','Instagram','https://instagram.com/'+p.insta]:null,
+    p.linkedin?['in','LinkedIn','https://linkedin.com/company/'+p.linkedin]:null,
+    p.site?['site','Website','https://'+p.site]:null,
+  ].filter(Boolean).map(([ic,rot,href])=>
+    '<a class="rede" href="'+esc(href)+'" target="_blank" rel="noopener">'+IC[ic]+esc(rot)+'</a>'
+  ).join('');
+
+  return '<div class="card" data-grupo="'+c.grupo_n+'" data-oferta="'+(p.voucher?1:0)+'">'+
+    '<div class="card-top">'+grupo+
+      (p.verif?'<span class="selo">'+IC.ok+' Verificado</span>':'')+'</div>'+
+    '<div class="card-body">'+
+      '<h3 class="card-t">'+titulo+'</h3>'+
+      '<div class="card-s">'+esc(c.label)+' · '+esc(p.cidade)+'</div>'+
+      '<p class="card-slogan">“'+esc(p.slogan)+'”</p>'+
+      (p.voucher?'<div class="card-voucher">'+IC.tag+'<span><b>Oferta:</b> '+
+        esc(p.voucher)+'</span></div>':'')+
+      '<div class="tags">'+(c.tags||[]).slice(0,5).map(t=>'<span class="tag">'+esc(t)+'</span>').join('')+'</div>'+
+      '<div class="aval">'+
+        '<div class="aval-top"><span class="aval-media">'+m.toFixed(1)+'<em> / 5.0</em></span>'+
+        '<span class="aval-est" title="Média geral">'+estrelasM(m)+'</span>'+
+        '<span class="aval-n">'+p.n+' avaliações<br>da obra</span></div>'+
+        '<div class="aval-lista">'+metricas+'</div>'+
+        '<div class="aval-ind">Indicariam este profissional: <b>'+p.indica+'%</b></div>'+
+      '</div>'+
+      '<div class="card-espec"><b>Escopo / CNAE '+esc(p.cnae)+'</b>'+esc(p.escopo)+'</div>'+
+      '<div class="card-end">'+IC.pin+'<span>'+esc(p.end)+'</span></div>'+
+      '<hr class="linha-azul">'+
+      '<div class="card-contatos">'+
+        '<a class="btn-whats" href="https://wa.me/'+esc(p.whats)+'" target="_blank" rel="noopener">'+
+        IC.whats+'Falar no WhatsApp</a>'+
+        '<div class="redes">'+redes+'</div>'+
+      '</div>'+
+    '</div></div>';
+}
+
+// ---- filtros do diretorio: grupo + ofertas (diretriz 7) ----
+const FILTRO={grupo:'todos', oferta:false};
+
+function fGrupo(v){FILTRO.grupo=v;renderCards()}
+function fOferta(){FILTRO.oferta=!FILTRO.oferta;renderCards()}
+
+function renderCards(){
+  const lista=PREST.filter(p=>{
+    const c=CATS[p.slug]; if(!c)return false;
+    if(FILTRO.grupo!=='todos' && String(c.grupo_n)!==FILTRO.grupo) return false;
+    if(FILTRO.oferta && !p.voucher) return false;
+    return true;
+  });
+
+  // grupos presentes na amostra, na ordem da obra
+  const gs=[...new Set(PREST.map(p=>CATS[p.slug]&&CATS[p.slug].grupo_n).filter(Boolean))].sort();
+  const nOf=PREST.filter(p=>p.voucher).length;
+
+  document.getElementById('fbar').innerHTML=
+    '<span class="fbar-rot">Filtrar:</span>'+
+    '<button class="fb'+(FILTRO.grupo==='todos'?' on':'')+'" onclick="fGrupo(\'todos\')">'+
+      'Todos <span class="fb-c">'+PREST.length+'</span></button>'+
+    gs.map(n=>{
+      const g=DADOS.grupos.find(x=>x.n===n), qtd=PREST.filter(p=>CATS[p.slug].grupo_n===n).length;
+      return '<button class="fb'+(FILTRO.grupo===String(n)?' on':'')+'" onclick="fGrupo(\''+n+'\')">'+
+        esc(g?g.titulo:'Grupo '+n)+' <span class="fb-c">'+qtd+'</span></button>';
+    }).join('')+
+    '<button class="fb oferta'+(FILTRO.oferta?' on':'')+'" onclick="fOferta()">'+
+      IC.tag+'Com ofertas e vouchers <span class="fb-c">'+nOf+'</span></button>';
+
+  document.getElementById('cards-grid').innerHTML=lista.map(cardHTML).join('');
+  document.getElementById('cards-vazio').innerHTML=lista.length?'':
+    '<div class="fvazio"><b>Nenhum resultado com esse filtro</b>'+
+    'Nesta amostra, o grupo escolhido não tem prestador com oferta ativa. '+
+    'Tela vazia aqui é informação: mostra onde o diretório ainda precisa crescer.</div>';
+}
+renderCards();
+
+// ---- antes / depois do nome no card (espelha nomes_cards.py) ----
+// [como esta, como fica, por que, pendencia?]
+const NOMES=[
+ ['Luiza','Eletro Ativa (Luiza)','nome próprio no topo não diz o serviço',0],
+ ['Monica','Monica','falta o nome comercial — não dá para inventar, tem que perguntar',1],
+ ['Marmoraria Parthenon - Flavio','Marmoraria Parthenon (Flavio)','hífen solto vira parênteses',0],
+ ['Eletromais / Eletromais (Ernandes)','Eletromais (Ernandes)','duas fichas na mesma marca: a pessoa desempata',0],
+ ['Sama','Sama','falta o ramo — "Sama Arquitetura" resolve',1],
+ ['VZP Engenharia','VZP Engenharia','já está no padrão, nada a fazer',0],
+];
+document.getElementById('ab').innerHTML=
+ '<div class="abh ruim">Como está</div><div class="abh bom">Como fica</div>'+
+ NOMES.map(([a,b,m,pend])=>
+   '<div class="abc esq"><div class="abt">'+esc(a)+'</div></div>'+
+   '<div class="abc dir"><div class="abt">'+esc(b)+
+     (pend?' <span class="falta">a completar</span>':'')+'</div>'+
+   '<div class="abm">'+esc(m)+'</div></div>').join('');
+
+// ==================== 05 — aplicativo (protótipo estático) ====================
+// Nada aqui persiste: e uma maquete navegavel para decidir o que vale construir.
+// Os fornecedores sao os cadastros reais; distancias e valores sao ilustrativos.
+
+const FRENTES=[
+ ['geo','01','Geolocalização automática',
+  'Captura a posição da obra e ordena os fornecedores pelo raio de atendimento — não pela ordem alfabética.',
+  'Controle','Frete é preço. Ver quem está a 4 km antes de pedir cotação a quem está a 40 km corta custo de entrega e prazo.'],
+ ['push','02','Notificações de cotação e pedido',
+  'Alerta a equipe de compras quando um pedido é gerado, quando um prazo estoura ou quando uma certidão vence.',
+  'Proatividade','A certidão que vence em 8 dias avisa antes, não no dia do pagamento. Sem alerta, o problema chega junto com a nota.'],
+ ['cam','03','Leitura de CNPJ e cartão pela câmera',
+  'Escaneia cartão de visita, nota ou CNPJ e preenche razão social, categoria e situação cadastral.',
+  'Eficiência','O cadastro digitado à mão erra a categoria e o CNPJ. Lido da fonte, já entra consultável na Receita.'],
+ ['off','04','Modo offline para canteiro',
+  'Lista, catálogo e status de compra consultáveis sem sinal. O que foi feito sem rede sobe quando a rede volta.',
+  'Campo','Canteiro sem sinal é regra, não exceção. Se o app só funciona conectado, o encarregado volta ao caderno.'],
+ ['aval','05','Avaliação e histórico de desempenho',
+  'Prazo, qualidade do material e atendimento avaliados pela obra, com histórico por fornecedor.',
+  'Gestão','Sem histórico, a escolha se repete por hábito. Com histórico, o atraso de 11 dias aparece na hora de recontratar.'],
+ ['aprov','06','Assinatura e aprovação rápida',
+  'Fila de aprovação em formato de feed: o gestor libera ou devolve orçamento e ordem de serviço com um toque.',
+  'Controle','Aprovação por WhatsApp não deixa rastro. Aqui fica registrado quem liberou, quando e por qual valor.'],
+ ['rank','07','Gamificação de entregas e prazos',
+  'Pontuação e ranking interno a partir das notas da frente 05, com faixa por desempenho e posição visível ao fornecedor.',
+  'Competitividade','Fornecedor que sabe que é medido entrega diferente. A nota isolada informa; o ranking cria consequência — desde que a régua seja justa.'],
+];
+
+const TABS=[['geo','◎','Perto'],['push','◔','Alertas'],['cam','▣','Câmera'],
+            ['off','☁','Offline'],['aval','★','Notas'],['aprov','✓','Aprovar'],
+            ['rank','◆','Placar']];
+
+const APP={tela:'geo'};
+
+function apTab(k){APP.tela=k;apRender()}
+
+function apRender(){
+  const t=TELAS[APP.tela];
+  document.getElementById('ap-k').textContent=t.k;
+  document.getElementById('ap-t').textContent=t.t;
+  document.getElementById('ap-s').textContent=t.s();
+  document.getElementById('ap-body').innerHTML=t.body();
+  document.getElementById('ap-tabs').innerHTML=TABS.map(([k,i,n])=>
+    '<button class="aptab'+(APP.tela===k?' on':'')+'" onclick="apTab(\''+k+'\')">'+
+    '<i>'+i+'</i>'+n+'</button>').join('');
+  document.querySelectorAll('.frente').forEach(el=>
+    el.classList.toggle('on',el.dataset.k===APP.tela));
+  document.getElementById('ap-body').scrollTop=0;
+}
+
+document.getElementById('frentes').innerHTML=FRENTES.map(([k,n,t,d,gl,g])=>
+  '<button class="frente" data-k="'+k+'" onclick="apTab(\''+k+'\')">'+
+  '<span class="fr-n">'+n+'</span><span><span class="fr-t">'+esc(t)+'</span>'+
+  '<span class="fr-d">'+esc(d)+'</span>'+
+  '<span class="fr-g"><b>'+esc(gl)+'</b>'+esc(g)+'</span></span></button>').join('');
+
+function linha(t,s,r,rl,et){
+  return '<div class="row"><div class="row-b"><div class="row-t">'+esc(t)+
+    (et?' <span class="et '+et[1]+'">'+esc(et[0])+'</span>':'')+'</div>'+
+    '<div class="row-s">'+esc(s)+'</div></div>'+
+    (r?'<div class="row-r">'+esc(r)+(rl?'<em>'+esc(rl)+'</em>':'')+'</div>':'')+'</div>';
+}
+function chips(opts,atual,fn){
+  return '<div class="filtros">'+opts.map(([v,l])=>
+    '<button class="filtro'+(String(atual)===String(v)?' on':'')+'" onclick="'+fn+
+    '(\''+v+'\')">'+esc(l)+'</button>').join('')+'</div>';
+}
+function sec(t){return '<div class="apsec">'+esc(t)+'</div>'}
+
+// ---- dados de amostra: fornecedores reais dos cadastros ----
+// [nome, categoria, km, doc, nota, entregas]  doc: 1 ok · 2 vence · 3 vencido
+const FORN=[
+ ['Eletromais (Ernandes)','Eletricista',2.4,1,4.6,18],
+ ['Calfa Ferragens','Pedreiro / Serralheiro',3.1,1,4.4,32],
+ ['Marmoraria Parthenon (Flavio)','Marmoraria',4.8,2,4.8,9],
+ ['Vedalaje MT (Maurílio)','Impermeabilização',5.2,1,4.2,6],
+ ['Aplik Vidros (Patrick)','Vidraçaria',6.0,1,4.5,4],
+ ['Data Topografia (Wellington)','Topografia',7.3,1,4.9,3],
+ ['Casa do Construtor Vendas','Locação de equipamentos',8.1,1,4.0,21],
+ ['Tecnopeters (Carlos Fenerich)','Encanador',9.4,3,3.6,7],
+ ['Eletrosol','Energia solar',11.2,2,4.3,2],
+ ['Andimes e Ferramentas (Jonas)','Locação de equipamentos',14.7,1,3.9,11],
+ ['LS Topografia (Lizandro)','Topografia',22.5,1,4.7,5],
+ ['Impernop (Joelma)','Impermeabilização',31.0,1,4.1,8],
+];
+const DOCET=[null,['regular','ok'],['vence em 8 dias','lj'],['vencida','al']];
+
+APP.raio='10'; APP.soDoc=false;
+function apRaio(v){APP.raio=v;apRender()}
+function apDoc(){APP.soDoc=!APP.soDoc;apRender()}
+
+const TELAS={};
+
+TELAS.geo={
+ k:'01 · Geolocalização', t:'Perto da obra',
+ s:()=>'Obra: Loteamento Florença · Sorriso/MT — posição capturada pelo aparelho',
+ body(){
+   const r=APP.raio, lista=FORN
+     .filter(f=>r==='0'||f[2]<=+r)
+     .filter(f=>!APP.soDoc||f[3]===1);
+   return chips([['5','até 5 km'],['10','até 10 km'],['25','até 25 km'],['0','todos']],r,'apRaio')+
+     '<div class="filtros" style="margin-top:-6px">'+
+     '<button class="filtro'+(APP.soDoc?' on':'')+'" onclick="apDoc()">só documentação regular</button>'+
+     '</div>'+
+     (lista.length?
+       sec(lista.length+' fornecedores · mais perto primeiro')+
+       lista.map(f=>linha(f[0],f[1]+' · nota '+f[4].toFixed(1),
+         f[2].toFixed(1)+' km','da obra',DOCET[f[3]])).join('')
+       :'<div class="apvazio"><b>Nenhum no raio</b>Abra o raio ou libere o filtro de documentação. '+
+        'Tela vazia aqui é informação: significa que a obra depende de fornecedor de fora.</div>')+
+     '<div class="apvazio" style="padding:14px 4px 2px;text-align:left;font-size:10px">'+
+     'A ordem é por distância, não por cadastro. Frete entra no preço, e o fornecedor '+
+     'a 31 km custa mais caro que o mesmo material a 3 km.</div>';
+ }
+};
+
+// ---- notificacoes ----
+// [tipo, titulo, detalhe, quando, etiqueta]
+const ALERTAS=[
+ ['doc','Certidão do Tecnopeters vencida','CND federal fora da validade. Pagamento previsto para sexta.','há 20 min',['bloqueia pagamento','al']],
+ ['ped','Pedido 1188 aguarda aprovação','Calfa Ferragens · R$ 14.320,00 · vergalhão e arame','há 1 h',['aprovar','lj']],
+ ['doc','ART do Eletrosol vence em 8 dias','Renovação do CREA antes da instalação do sistema fotovoltaico.','há 3 h',['prazo curto','lj']],
+ ['praz','Entrega atrasada — pedido 1174','Marmoraria Parthenon · previsto dia 04, hoje é 11.','há 5 h',['7 dias','al']],
+ ['ped','Cotação 209 respondida','3 de 4 fornecedores responderam. Falta Andimes e Ferramentas.','ontem',['revisar','az']],
+ ['praz','Material recebido — pedido 1170','Casa do Construtor · conferido pelo encarregado no canteiro.','ontem',['conferido','ok']],
+];
+const FTIPO={todos:'todos',doc:'documentação',ped:'pedidos',praz:'prazos'};
+APP.fAlerta='todos';
+function apAlerta(v){APP.fAlerta=v;apRender()}
+
+TELAS.push={
+ k:'02 · Notificações', t:'O que exige ação',
+ s:()=>{const n=ALERTAS.filter(a=>a[4][1]==='al').length;
+        return n+' itens travam pagamento ou prazo · '+ALERTAS.length+' alertas nas últimas 24 h'},
+ body(){
+   const f=APP.fAlerta, lista=ALERTAS.filter(a=>f==='todos'||a[0]===f);
+   return chips(Object.entries(FTIPO),f,'apAlerta')+
+     lista.map(a=>linha(a[1],a[2],a[3],'',a[4])).join('')+
+     '<div class="apvazio" style="padding:16px 4px 2px;text-align:left;font-size:10px">'+
+     'A ordem é por consequência, não por horário: o que impede pagar ou atrasa a obra '+
+     'sobe. Certidão vencida avisa com antecedência — não no dia em que o financeiro '+
+     'tenta liberar a nota.</div>';
+ }
+};
+
+// ---- camera: leitura de CNPJ / cartao ----
+APP.lido=0;
+function apLer(){APP.lido=APP.lido?0:1;apRender()}
+
+TELAS.cam={
+ k:'03 · Câmera', t:'Ler CNPJ e cartão',
+ s:()=>APP.lido?'Cartão de visita lido — confira antes de gravar'
+                :'Aponte para o cartão, a nota ou o CNPJ impresso',
+ body(){
+   if(!APP.lido)
+     return '<div style="border:1px dashed var(--tenue);border-radius:4px;height:184px;'+
+       'display:flex;align-items:center;justify-content:center;text-align:center;'+
+       'color:var(--fraco);font-size:10.5px;line-height:1.6;font-weight:300;padding:20px;'+
+       'background:var(--papel2)">Enquadre o cartão<br>dentro da moldura</div>'+
+       '<button class="apb" style="margin-top:11px" onclick="apLer()">Simular leitura</button>'+
+       sec('o que é preenchido')+
+       linha('Razão social e CNPJ','Conferidos na base da Receita — situação cadastral e CNAE.','','',['automático','az'])+
+       linha('Categoria sugerida','O CNAE cai na taxonomia dos 6 grupos, sem o prestador escolher errado.','','',['taxonomia','az'])+
+       linha('Contato e endereço','Telefone e cidade vão para o card; o endereço alimenta a distância.','','',null)+
+       '<div class="apvazio" style="padding:14px 4px 2px;text-align:left;font-size:10px">'+
+       'O cadastro digitado à mão é a origem de "Materiais de Construção" com dezenas '+
+       'de fichas genéricas. Lido do documento, a categoria vem do CNAE — não do palpite.</div>';
+   return sec('lido do cartão')+
+     linha('CALFA COMÉRCIO DE FERRAGENS LTDA','Nome fantasia: Calfa Ferragens','','',['razão social','az'])+
+     linha('CNPJ 11.222.333/0001-44','Ativa desde 2009 · sem restrição na Receita','','',['ativa','ok'])+
+     linha('CNAE 4744-0/01','Comércio varejista de ferragens e ferramentas','','',null)+
+     sec('sugerido pelo sistema')+
+     linha('Grupo 5 · Materiais e Locação','Categoria: Materiais de Construção','','',['do CNAE','lj'])+
+     linha('Marca (Responsável)','Título do card: "Calfa Ferragens" — já está no padrão.','','',['seção 03.1','az'])+
+     sec('pendente de conferência')+
+     linha('CND, FGTS e CNDT','Não vêm no cartão. Consulta separada antes do primeiro pedido.','','',['obrigatório','al'])+
+     '<div class="apduo"><button class="apb">Gravar cadastro</button>'+
+     '<button class="apb g" onclick="apLer()">Ler outro</button></div>';
+ }
+};
+
+// ---- modo offline ----
+APP.rede=0;  // 0 = sem sinal
+APP.fila=[['Recebimento do pedido 1174','Marmoraria Parthenon · 2 peças conferidas'],
+          ['Avaliação do pedido 1170','Casa do Construtor · prazo 5, material 4'],
+          ['Foto da nota 88.412','Anexada ao pedido 1188']];
+function apRede(){APP.rede=APP.rede?0:1;apRender()}
+function apSubir(){APP.fila=[];apRender()}
+
+TELAS.off={
+ k:'04 · Offline', t:'Canteiro sem sinal',
+ s:()=>APP.rede?'Conectado — '+(APP.fila.length?APP.fila.length+' itens prontos para subir':'tudo sincronizado')
+               :'Sem sinal · consultando a cópia local de 11/08 às 07:12',
+ body(){
+   const off=!APP.rede;
+   return '<div class="filtros"><button class="filtro'+(off?' on':'')+'" onclick="apRede()">'+
+     (off?'sem sinal — tocar para conectar':'conectado — tocar para simular queda')+'</button></div>'+
+     sec('disponível sem rede')+
+     linha('12 fornecedores','Nome, categoria, telefone e distância — a lista inteira em cache.','','',['local','ok'])+
+     linha('36 categorias e 1.054 termos','A busca por sinônimos roda no aparelho, sem chamar o servidor.','','',['local','ok'])+
+     linha('Status de 7 pedidos','Última posição conhecida de cada compra em andamento.','07:12','sincronia',['local','ok'])+
+     sec('exige rede')+
+     linha('Consulta de CND, FGTS e CNDT','Certidão é dado que muda no dia. Cache aqui seria risco fiscal.','','',['bloqueado','al'])+
+     linha('Aprovação de pedido','A liberação precisa de registro no servidor no instante do toque.','','',['bloqueado','al'])+
+     (APP.fila.length?sec('fila para subir ('+APP.fila.length+')')+
+       APP.fila.map(f=>linha(f[0],f[1],'','',['aguardando','lj'])).join('')+
+       (APP.rede?'<button class="apb" onclick="apSubir()">Sincronizar agora</button>':'')
+      :sec('fila para subir')+'<div class="apvazio" style="padding:22px 10px">'+
+       '<b>Nada pendente</b>Tudo o que o canteiro registrou já está no servidor.</div>')+
+     '<div class="apvazio" style="padding:14px 4px 2px;text-align:left;font-size:10px">'+
+     'A separação importa: consulta funciona offline, decisão não. Certidão e aprovação '+
+     'guardadas em cache dariam a resposta de ontem para o pagamento de hoje.</div>';
+ }
+};
+
+// ---- avaliacao e historico ----
+// nota por eixo: prazo, material, atendimento
+const AVAL=[
+ ['Data Topografia (Wellington)','Topografia',[5,5,5],3,'locação de marcos, sem retrabalho'],
+ ['Marmoraria Parthenon (Flavio)','Marmoraria',[3,5,5],9,'acabamento impecável, entrega atrasou 7 dias'],
+ ['Eletromais (Ernandes)','Eletricista',[5,4,5],18,'atende no mesmo dia'],
+ ['Calfa Ferragens','Pedreiro / Serralheiro',[4,4,5],32,'preço firme, entrega própria'],
+ ['Casa do Construtor Vendas','Locação',[4,4,4],21,'equipamento ok, revisão no prazo'],
+ ['Tecnopeters (Carlos Fenerich)','Encanador',[3,4,3],7,'2 retrabalhos em prumada'],
+];
+const EIXOS=['prazo','material','atendimento'];
+APP.eixo=0;
+function apEixo(v){APP.eixo=+v;apRender()}
+
+function estrelas(n){return '★★★★★'.slice(0,n)+'☆☆☆☆☆'.slice(0,5-n)}
+
+TELAS.aval={
+ k:'05 · Desempenho', t:'Quem entrega de fato',
+ s:()=>'Ordenado por '+EIXOS[APP.eixo]+' · avaliação feita pela obra, não pelo escritório',
+ body(){
+   const e=APP.eixo;
+   const lista=AVAL.slice().sort((a,b)=>b[2][e]-a[2][e]||b[3]-a[3]);
+   return chips(EIXOS.map((l,i)=>[String(i),l]),String(e),'apEixo')+
+     lista.map(a=>linha(a[0],a[1]+' · '+a[4],estrelas(a[2][e]),a[3]+' compras',
+       a[2][e]<=3?['atenção','al']:(a[2][e]===5?['referência','ok']:null))).join('')+
+     sec('o que o histórico muda')+
+     linha('Parthenon: material 5, prazo 3','Acabamento é referência, prazo não. Serve para peça sem data crítica.','','',['nuance','lj'])+
+     linha('Tecnopeters: 2 retrabalhos','Somado à certidão vencida, é o cadastro a tratar primeiro.','','',['prioridade','al'])+
+     '<div class="apvazio" style="padding:14px 4px 2px;text-align:left;font-size:10px">'+
+     'Nota única esconde o essencial. Separada por eixo, ela responde à pergunta real: '+
+     'melhor no quê, e para qual etapa da obra.</div>';
+ }
+};
+
+// ---- aprovacao de pedidos ----
+// [n, fornecedor, item, valor, quem pediu, obs, docOk]
+const PEDIDOS=[
+ [1188,'Calfa Ferragens','Vergalhão 10 mm e arame recozido',14320.00,'Encarregado · Rodrigo','3 cotações, menor preço',1],
+ [1189,'Tecnopeters (Carlos Fenerich)','Prumada de água fria — mão de obra',8750.00,'Engenharia · VZP','CND federal vencida',0],
+ [1190,'Casa do Construtor Vendas','Locação de betoneira · 30 dias',2180.00,'Encarregado · Rodrigo','contrato em vigor',1],
+ [1191,'Aplik Vidros (Patrick)','Box e espelhos — 4 banheiros',6940.00,'Compras · Vitor','cotação única, justificar',1],
+];
+APP.dec={};
+function apDec(n,v){APP.dec[n]=v;apRender()}
+function apZerar(){APP.dec={};apRender()}
+
+TELAS.aprov={
+ k:'06 · Aprovação', t:'Fila de liberação',
+ s:()=>{const p=PEDIDOS.filter(x=>!APP.dec[x[0]]);
+   if(!p.length)return 'Fila zerada · 4 decisões registradas nesta sessão';
+   const t=p.reduce((a,x)=>a+x[3],0);
+   return p.length+' pedidos · R$ '+t.toLocaleString('pt-BR',{minimumFractionDigits:2})+' aguardando'},
+ body(){
+   const pend=PEDIDOS.filter(x=>!APP.dec[x[0]]);
+   const feitos=PEDIDOS.filter(x=>APP.dec[x[0]]);
+   let h='';
+   if(!pend.length)
+     h+='<div class="apvazio"><b>Fila zerada</b>Toda decisão fica registrada com autor, '+
+        'valor e horário. Aprovação por mensagem não deixa esse rastro.</div>';
+   pend.forEach(p=>{
+     const v='R$ '+p[3].toLocaleString('pt-BR',{minimumFractionDigits:2});
+     h+='<div class="row" style="flex-direction:column;gap:0;padding:13px 13px 11px">'+
+       '<div style="display:flex;justify-content:space-between;gap:10px;width:100%">'+
+       '<div class="row-t">Pedido '+p[0]+' · '+esc(p[1])+'</div>'+
+       '<div class="row-r" style="white-space:nowrap">'+v+'</div></div>'+
+       '<div class="row-s" style="width:100%">'+esc(p[2])+'</div>'+
+       '<div class="row-s" style="width:100%;margin-top:4px">'+esc(p[4])+' · '+esc(p[5])+'</div>'+
+       '<div style="margin-top:7px">'+(p[6]
+         ?'<span class="et ok">documentação regular</span>'
+         :'<span class="et al">certidão vencida — não liberar</span>')+'</div>'+
+       '<div class="apduo">'+
+       (p[6]?'<button class="apb" onclick="apDec('+p[0]+',\'ap\')">Aprovar</button>'
+            :'<button class="apb" disabled style="opacity:.4;cursor:not-allowed">Aprovar</button>')+
+       '<button class="apb al" onclick="apDec('+p[0]+',\'dv\')">Devolver</button></div>'+
+       '</div>';
+   });
+   if(feitos.length){
+     h+=sec('decidido nesta sessão');
+     feitos.forEach(p=>h+=linha('Pedido '+p[0]+' · '+p[1],
+       APP.dec[p[0]]==='ap'?'Aprovado por Vitor · registrado com data e valor'
+                           :'Devolvido para revisão · fornecedor notificado',
+       'R$ '+p[3].toLocaleString('pt-BR',{minimumFractionDigits:2}),'',
+       APP.dec[p[0]]==='ap'?['aprovado','ok']:['devolvido','al']));
+     h+='<button class="apb g" onclick="apZerar()">Recarregar a fila</button>';
+   }
+   h+='<div class="apvazio" style="padding:14px 4px 2px;text-align:left;font-size:10px">'+
+     'O pedido 1189 não tem botão de aprovar: a certidão vencida trava antes do toque. '+
+     'É o controle onde ele custa menos — na origem, não na conciliação.</div>';
+   return h;
+ }
+};
+
+// ---- 07 gamificacao: ranking derivado das notas da frente 05 ----
+// Peso deliberado: prazo pesa mais que atendimento. Em compras, atraso para a obra;
+// atendimento simpatico nao. Quem define o peso define o comportamento premiado.
+const RPESO={prazo:40,material:35,atend:25};
+const RMIN=5;   // compras necessarias para entrar na faixa
+
+function rPontos(n){return n[0]*RPESO.prazo+n[1]*RPESO.material+n[2]*RPESO.atend}
+function rFaixa(p){
+  if(p>=460)return ['ouro','ok'];
+  if(p>=400)return ['prata','az'];
+  if(p>=340)return ['bronze','lj'];
+  return ['em observação','al'];
+}
+APP.minimo=true;
+function apMin(){APP.minimo=!APP.minimo;apRender()}
+
+TELAS.rank={
+ k:'07 · Gamificação', t:'Ranking do trimestre',
+ s:()=>APP.minimo
+   ? 'Régua: prazo 40 · material 35 · atendimento 25 — mínimo de '+RMIN+' compras para pontuar'
+   : 'Régua sem mínimo de compras — veja o que acontece com a ordem',
+ body(){
+   const todos=AVAL.map(a=>({nome:a[0],cat:a[1],n:a[2],compras:a[3],
+                             obs:a[4],p:rPontos(a[2])}));
+   const dentro=todos.filter(f=>!APP.minimo||f.compras>=RMIN)
+                     .sort((a,b)=>b.p-a.p||b.compras-a.compras);
+   const fora=APP.minimo?todos.filter(f=>f.compras<RMIN)
+                              .sort((a,b)=>b.p-a.p):[];
+   let h='<div class="filtros"><button class="filtro'+(APP.minimo?' on':'')+
+     '" onclick="apMin()">exigir '+RMIN+' compras</button></div>';
+
+   h+=sec('classificados');
+   dentro.forEach((f,i)=>{
+     const [fx,cor]=rFaixa(f.p);
+     h+=linha((i+1)+'º · '+f.nome, f.cat+' · '+f.compras+' compras · '+f.obs,
+              f.p+' pts','de 500',[fx,cor]);
+   });
+
+   if(fora.length){
+     h+=sec('amostra curta — pontuam, não classificam');
+     fora.forEach(f=>h+=linha(f.nome,f.cat+' · só '+f.compras+' compras · '+f.obs,
+       f.p+' pts','sem faixa',['amostra curta','lj']));
+   }
+
+   h+=sec('a distorção que a régua corrige');
+   h+=linha('Data Topografia tem 5,5,5 em 3 compras',
+     APP.minimo
+       ? 'Com o mínimo de '+RMIN+', fica fora da faixa: nota perfeita em amostra pequena não é desempenho comprovado.'
+       : 'Sem o mínimo, lidera o ranking com 500 pts — à frente de quem entregou 32 vezes. É o ranking premiando quem quase não trabalhou.',
+     '','',APP.minimo?['corrigido','ok']:['distorção','al']);
+   h+=linha('Parthenon: material 5, prazo 3',
+     'Perde posição porque prazo pesa 40. Continua sendo a melhor escolha para peça sem data crítica — o ranking ordena, não decide.',
+     '','',['nuance','lj']);
+
+   h+='<div class="apvazio" style="padding:16px 4px 2px;text-align:left;font-size:10px">'+
+     'O ranking só melhora o serviço se a régua for defensável. Publicado sem mínimo de '+
+     'amostra, ele ensina o fornecedor a recusar obra grande e aceitar só serviço pequeno '+
+     'e fácil — o oposto do que a construtora precisa.</div>';
+   return h;
+ }
+};
+
+apRender();
+</script>
+</body>
+</html>
